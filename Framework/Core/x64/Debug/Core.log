@@ -1,0 +1,2 @@
+﻿  Precompiled.cpp
+E:\Kick_Engine\Framework\Core\Src\Precompiled.cpp(1,10): fatal  error C1083: Cannot open precompiled header file: 'x64\Debug\Core.pch': No such file or directory
