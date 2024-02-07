@@ -3,7 +3,6 @@
 #include <Core/Inc/Core.h>
 #include <Math/Inc/Kick_Math.h>
 
-//make a wrapper around this
 #include <d3d11_1.h>
 #include <d3dcompiler.h>
 
@@ -11,6 +10,9 @@
 #pragma comment(lib, "d3dcompiler.lib")
 #pragma comment(lib, "dxguid.lib")
 
+#include <gl/GL.h>
+#include "GL/glext.h"
+#include "GL/wglext.h"
 
 template<class T>
 inline void SafeRelease(T*& ptr)

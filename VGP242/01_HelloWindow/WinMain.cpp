@@ -1,6 +1,7 @@
 #include <Kick_Engine/Inc/Kick_Engine.h>
 
 using namespace Kick_Engine;
+using namespace Kick_Engine::Graphics;
 
 class MainState : public AppState
 {
@@ -8,6 +9,7 @@ public:
 	void Initialize()
 	{	
 		LOG("MAIN STATE INITIALIZED");
+		GraphicsSystem::Get()->SetClearColor(Colors::HotPink);
 		mLifeTime = 2.0f;
 	}
 
@@ -36,6 +38,7 @@ public:
 	void Initialize()
 	{
 		LOG("GAME STATE INITIALIZED");
+		GraphicsSystem::Get()->SetClearColor(Colors::Aqua);
 		mLifeTime = 2.0f;
 	}
 
@@ -58,7 +61,7 @@ private:
 	float mLifeTime = 0.0f;
 };
 
-int WINAPI WinMain(HINSTANCE instance, HINSTANCE, LPSTR, int)
+int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ PSTR lpCmdLine, _In_ int nCmdShow)
 {
 	App& myApp = Kick_Engine::MainApp();
 	myApp.AddState<MainState>("MainState");

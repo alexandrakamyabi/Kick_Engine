@@ -1,17 +1,12 @@
 #pragma once
 
-#include "Colours.h"
-#include "GraphicsSystem.h"
+#include "GraphicsAPI.h"
 
 namespace Kick_Engine::Graphics
 {
-	class Graphics_D3D11 final : GraphicsSystem
+	class Graphics_D3D11 final : public GraphicsAPI
 	{
 	public:
-		static void StaticInitialize(HWND window, bool fullscreen);
-		static void StaticTerminate();
-		static Graphics_D3D11* Get();
-
 		Graphics_D3D11() = default;
 		virtual ~Graphics_D3D11();
 
@@ -24,6 +19,7 @@ namespace Kick_Engine::Graphics
 		void Terminate();
 
 		void BeginRender();
+		void Render(size_t verticesSize);
 		void EndRender();
 
 		void ToggleFullScreen();
@@ -32,7 +28,7 @@ namespace Kick_Engine::Graphics
 		void ResetRenderTarget();
 		void ResetViewport();
 
-		void SetClearColour(const Colour& colour);
+		void SetClearColor(const Color& color);
 		void SetVSync(bool vSync);
 
 		uint32_t GetBackBufferWidth() const;
@@ -40,10 +36,18 @@ namespace Kick_Engine::Graphics
 
 		float GetBackBufferAspectRatio() const;
 
+		void CreateTriangles(const std::vector<Vertex>& vertices);
+		void CreateShaders(std::filesystem::path filePath);
+
 		ID3D11Device* GetDevice() { return mD3DDevice; }
 		ID3D11DeviceContext* GetContext() { return mImmediateContext; }
 
 	private:
+		ID3D11Buffer* mVertexBuffer = nullptr;
+		ID3D11VertexShader* mVertexShader = nullptr;
+		ID3D11InputLayout* mInputLayout = nullptr;
+		ID3D11PixelShader* mPixelShader = nullptr;
+
 		ID3D11Device* mD3DDevice = nullptr;
 		ID3D11DeviceContext* mImmediateContext = nullptr;
 
@@ -56,7 +60,7 @@ namespace Kick_Engine::Graphics
 		DXGI_SWAP_CHAIN_DESC mSwapChainDesc{};
 		D3D11_VIEWPORT mViewPort{};
 
-		Colour mClearColour = Colours::Black;
+		Color mClearColor = Colors::Black;
 		UINT mVSync = 1;
 	};
 }
