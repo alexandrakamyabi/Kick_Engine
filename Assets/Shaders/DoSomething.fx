@@ -1,4 +1,4 @@
-
+//simple shader that only uses position and color
 
 struct VS_OUTPUT
 {

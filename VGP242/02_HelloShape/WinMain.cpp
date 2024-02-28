@@ -6,7 +6,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 {
 	App& myApp = Kick_Engine::MainApp();
 	myApp.AddState<TriforceState>("TriforceState");
-    myApp.AddState<ChaosEmrald>("ChaosEmrald");
+	myApp.AddState<ChaosEmrald>("ChaosEmrald");
 	myApp.AddState<FeeeshState>("FeeeshState");
 	myApp.AddState<TriangleState>("TriangleState");
 

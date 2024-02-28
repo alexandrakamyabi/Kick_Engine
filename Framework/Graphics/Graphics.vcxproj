@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -136,20 +136,44 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Inc\Camera.h" />
     <ClInclude Include="Inc\Colours.h" />
     <ClInclude Include="Inc\Common.h" />
+    <ClInclude Include="Inc\ConstantBuffer.h" />
     <ClInclude Include="Inc\Graphics.h" />
-    <ClInclude Include="Inc\GraphicsAPI.h" />
-    <ClInclude Include="Inc\GraphicsAPI_GL4.h" />
+    <ClInclude Include="Inc\GraphicsType.h" />
     <ClInclude Include="Inc\GraphicsSystem.h" />
-    <ClInclude Include="Inc\GraphicsAPI_D3D11.h" />
+    <ClInclude Include="Inc\GraphicsType_D3D11.h" />
+    <ClInclude Include="Inc\MeshBuffer.h" />
+    <ClInclude Include="Inc\MeshBuffer_D3D11.h" />
+    <ClInclude Include="Inc\MeshBuilder.h" />
+    <ClInclude Include="Inc\MeshTypes.h" />
+    <ClInclude Include="Inc\PixelShader_D3D11.h" />
+    <ClInclude Include="Inc\Sampler.h" />
+    <ClInclude Include="Inc\SimpleDraw.h" />
+    <ClInclude Include="Inc\Texture.h" />
+    <ClInclude Include="Inc\VertexShader_D3D11.h" />
+    <ClInclude Include="Inc\VertexTypes.h" />
     <ClInclude Include="Src\Precompiled.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Src\GraphicsAPI_GL4.cpp" />
+    <ClCompile Include="Src\Camera.cpp" />
+    <ClCompile Include="Src\ConstantBuffer.cpp" />
     <ClCompile Include="Src\GraphicsSystem.cpp" />
-    <ClCompile Include="Src\GraphicsAPI_D3D11.cpp" />
+    <ClCompile Include="Src\GraphicsType_D3D11.cpp" />
+    <ClCompile Include="Src\MeshBuffer_D3D11.cpp" />
+    <ClCompile Include="Src\MeshBuilder.cpp" />
+    <ClCompile Include="Src\PixelShader_D3D11.cpp" />
     <ClCompile Include="Src\Precompiled.cpp" />
+    <ClCompile Include="Src\Sampler.cpp" />
+    <ClCompile Include="Src\SimpleDraw.cpp" />
+    <ClCompile Include="Src\Texture.cpp" />
+    <ClCompile Include="Src\VertexShader_D3D11.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\External\DirectXTK\DirectXTK_Desktop_2019.vcxproj">
+      <Project>{e0b52ae7-e160-4d32-bf3f-910b785e5a8e}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

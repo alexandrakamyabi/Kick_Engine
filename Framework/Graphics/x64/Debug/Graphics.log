@@ -1,1 +1,11 @@
-﻿
+﻿  MeshBuilder.cpp
+C:\Users\Kamyabi\Desktop\EngineD-main\Framework\Graphics\Src\MeshBuilder.cpp(80,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\Kamyabi\Desktop\EngineD-main\Framework\Graphics\Src\MeshBuilder.cpp(112,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\Kamyabi\Desktop\EngineD-main\Framework\Graphics\Src\MeshBuilder.cpp(137,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\Kamyabi\Desktop\EngineD-main\Framework\Graphics\Src\MeshBuilder.cpp(157,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\Kamyabi\Desktop\EngineD-main\Framework\Graphics\Src\MeshBuilder.cpp(188,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\Kamyabi\Desktop\EngineD-main\Framework\Graphics\Src\MeshBuilder.cpp(248,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\Kamyabi\Desktop\EngineD-main\Framework\Graphics\Src\MeshBuilder.cpp(284,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\Kamyabi\Desktop\EngineD-main\Framework\Graphics\Src\MeshBuilder.cpp(311,49): warning C4267: 'initializing': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\Users\Kamyabi\Desktop\EngineD-main\Framework\Graphics\Src\MeshBuilder.cpp(332,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  Graphics.vcxproj -> C:\Users\Kamyabi\Desktop\EngineD-main\x64\Debug\Graphics.lib
