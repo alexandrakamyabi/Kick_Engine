@@ -52,3 +52,9 @@ void PixelShader_D3D11::Bind(ID3D11DeviceContext* context)
 {
 	context->PSSetShader(mPixelShader, nullptr, 0);
 }
+
+void Kick_Engine::Graphics::PixelShader_D3D11::Bind()
+{
+	ID3D11DeviceContext* context = GraphicsSystem::Get()->GetContext();
+	context->PSSetShader(mPixelShader, nullptr, 0);
+}
