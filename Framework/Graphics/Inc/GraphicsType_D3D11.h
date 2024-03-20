@@ -24,6 +24,7 @@ namespace Kick_Engine::Graphics
 
 		void BeginRender() override;
 		void Render() override;
+		void Render(int objNum);
 		void EndRender() override;
 
 		void ToggleFullScreen() override;
@@ -42,14 +43,28 @@ namespace Kick_Engine::Graphics
 		template<class VertexType>
 		void CreateMeshBuffer(const std::vector<VertexType>& vertices)
 		{
-			mMeshBuffer.InitDevice(mD3DDevice);
-			mMeshBuffer.Initialize(vertices);
+			MeshBuffer_D3D11* meshBuffer = new MeshBuffer_D3D11();
+			meshBuffer->InitDevice(mD3DDevice);
+			meshBuffer->Initialize(vertices);
+			mMeshBuffers.push_back(meshBuffer);
 		}
 		template<class MeshType>
 		void CreateMeshBuffer(const MeshType& mesh)
 		{
-			mMeshBuffer.InitDevice(mD3DDevice);
-			mMeshBuffer.Initialize(mesh);
+			MeshBuffer_D3D11* meshBuffer = new MeshBuffer_D3D11();
+			meshBuffer->InitDevice(mD3DDevice);
+			meshBuffer->Initialize(mesh);
+			mMeshBuffers.push_back(meshBuffer);
+		}
+
+		void ClearBuffer()
+		{
+			for (auto buffer : mMeshBuffers)
+			{
+				buffer->Terminate();
+				delete buffer;
+			}
+			mMeshBuffers.clear();
 		}
 		
 		template<class VertexType>
@@ -71,7 +86,7 @@ namespace Kick_Engine::Graphics
 	private:
 		void SetVSync(bool vSync);
 
-		MeshBuffer_D3D11 mMeshBuffer; 
+		std::vector<MeshBuffer_D3D11*> mMeshBuffers; 
 		VertexShader_D3D11 mVertexShader;
 		PixelShader_D3D11 mPixelShader;
 		ConstantBuffer mConstantBuffer;

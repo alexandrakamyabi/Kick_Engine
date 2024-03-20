@@ -9,16 +9,16 @@ namespace
 	Color GetNextColour(int& index)
 	{
 		constexpr Color colorTable[] = {
-					Colors::Cyan,
-					Colors::Magenta,
-					Colors::LimeGreen,
-					Colors::Crimson,
-					Colors::DeepSkyBlue,
-					Colors::Gold,
-					Colors::Lavender,
-					Colors::Coral,
-					Colors::Turquoise,
-					Colors::Orchid
+			Colors::Red,
+			Colors::Yellow,
+			Colors::Pink,
+			Colors::Green,
+			Colors::Purple,
+			Colors::Orange,
+			Colors::Blue,
+			Colors::Indigo,
+			Colors::Beige,
+			Colors::DarkBlue
 		};
 
 		index = (index + 1) % std::size(colorTable);
