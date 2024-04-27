@@ -1,26 +1,2 @@
-﻿  BlendState.cpp
-  Camera.cpp
-  ConstantBuffer.cpp
-  DebugUI.cpp
-  GraphicsSystem.cpp
-  GraphicsType_D3D11.cpp
-C:\Users\Kamyabi\Desktop\EngineD-main\Framework\Graphics\Src\GraphicsType_D3D11.cpp(81,109): warning C4244: 'argument': conversion from 'float' to 'UINT8', possible loss of data
-  MeshBuffer_D3D11.cpp
-  MeshBuilder.cpp
-C:\Users\Kamyabi\Desktop\EngineD-main\Framework\Graphics\Src\MeshBuilder.cpp(80,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-C:\Users\Kamyabi\Desktop\EngineD-main\Framework\Graphics\Src\MeshBuilder.cpp(112,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-C:\Users\Kamyabi\Desktop\EngineD-main\Framework\Graphics\Src\MeshBuilder.cpp(137,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-C:\Users\Kamyabi\Desktop\EngineD-main\Framework\Graphics\Src\MeshBuilder.cpp(157,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-C:\Users\Kamyabi\Desktop\EngineD-main\Framework\Graphics\Src\MeshBuilder.cpp(188,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-C:\Users\Kamyabi\Desktop\EngineD-main\Framework\Graphics\Src\MeshBuilder.cpp(248,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-C:\Users\Kamyabi\Desktop\EngineD-main\Framework\Graphics\Src\MeshBuilder.cpp(284,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-C:\Users\Kamyabi\Desktop\EngineD-main\Framework\Graphics\Src\MeshBuilder.cpp(311,49): warning C4267: 'initializing': conversion from 'size_t' to 'uint32_t', possible loss of data
-C:\Users\Kamyabi\Desktop\EngineD-main\Framework\Graphics\Src\MeshBuilder.cpp(332,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-  PixelShader_D3D11.cpp
-  Precompiled.cpp
-  RenderTarget.cpp
-  Sampler.cpp
-  SimpleDraw.cpp
-  Texture.cpp
-  VertexShader_D3D11.cpp
-  Graphics.vcxproj -> C:\Users\Kamyabi\Desktop\EngineD-main\x64\Debug\Graphics.lib
+﻿  StandardEffect.cpp
+  Graphics.vcxproj -> E:\Kick_Engine\x64\Debug\Graphics.lib
