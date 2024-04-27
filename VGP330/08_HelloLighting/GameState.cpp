@@ -17,8 +17,8 @@ void GameState::Initialize()
 	TextureManager* tm = TextureManager::Get();
 	mMesh = MeshBuilder::CreateSphere(100, 100, 1.0f);
 	mRenderObject.meshBuffer.Initialize(mMesh);
-	mRenderObject.diffuseMapId = tm->LoadTexture("planets/earth/rock.jpg");
-	mRenderObject.normalMapId = tm->LoadTexture("planets/earth/dry_normal.png");
+	mRenderObject.diffuseMapId = tm->LoadTexture("planets/earth/earth.jpg");
+	mRenderObject.normalMapId = tm->LoadTexture("planets/earth/earth_normalmap.png");
 	mRenderObject.specMapId = tm->LoadTexture("planets/earth/spec_map.jpg");
 
 	std::filesystem::path shaderFilePath = L"../../Assets/Shaders/Standard.fx";
