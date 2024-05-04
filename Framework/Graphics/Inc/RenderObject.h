@@ -19,5 +19,6 @@ namespace Kick_Engine::Graphics
 		TextureID diffuseMapId;
 		TextureID normalMapId;
 		TextureID specMapId;
+		TextureID bumpMapId;
 	};
 }
