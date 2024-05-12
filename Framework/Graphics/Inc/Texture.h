@@ -1,7 +1,5 @@
 #pragma once
 
-//abstract this ??
-
 namespace Kick_Engine::Graphics
 {
 	class Texture
@@ -12,6 +10,8 @@ namespace Kick_Engine::Graphics
 			RGBA_U8,
 			RGBA_U32,
 		};
+
+		static void Unbind(uint32_t slot);
 
 		Texture() = default;
 		virtual ~Texture();

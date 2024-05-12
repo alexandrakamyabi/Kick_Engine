@@ -7,6 +7,8 @@
 
 namespace Kick_Engine::Graphics
 {
+	struct Model;
+
 	struct RenderObject
 	{
 		void Terminate();
@@ -21,4 +23,20 @@ namespace Kick_Engine::Graphics
 		TextureID specMapId;
 		TextureID bumpMapId;
 	};
+
+	using RenderGroup = std::vector<RenderObject>;
+	[[nodiscard]] RenderGroup CreateRenderGroup(const Model& model);
+	void CleanupRenderGroup(RenderGroup& renderGroup);
+
+	void SetRenderGroupPosition(RenderGroup& renderGroup, const Math::Vector3& position);
+
+	template<class Effect>
+	void DrawRenderGroup(Effect& effect, RenderGroup& renderGroup)
+	{
+		for (RenderObject& renderObject : renderGroup)
+		{
+			effect.Render(renderObject);
+		}
+	}
+
 }

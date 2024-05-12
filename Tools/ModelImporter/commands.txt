@@ -1,0 +1,1 @@
+-scale 2.01 ../../Assets/Models/Character_01/ruka.fbx ../../Assets/Models/Character_01/ruka.model

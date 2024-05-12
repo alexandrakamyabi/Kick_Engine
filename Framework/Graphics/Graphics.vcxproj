@@ -153,7 +153,9 @@
     <ClInclude Include="Inc\MeshBuilder.h" />
     <ClInclude Include="Inc\MeshTypes.h" />
     <ClInclude Include="Inc\Model.h" />
+    <ClInclude Include="Inc\ModelIO.h" />
     <ClInclude Include="Inc\PixelShader_D3D11.h" />
+    <ClInclude Include="Inc\PostProcessingEffect.h" />
     <ClInclude Include="Inc\RenderObject.h" />
     <ClInclude Include="Inc\RenderTarget.h" />
     <ClInclude Include="Inc\Sampler.h" />
@@ -175,7 +177,9 @@
     <ClCompile Include="Src\GraphicsType_D3D11.cpp" />
     <ClCompile Include="Src\MeshBuffer_D3D11.cpp" />
     <ClCompile Include="Src\MeshBuilder.cpp" />
+    <ClCompile Include="Src\ModelIO.cpp" />
     <ClCompile Include="Src\PixelShader_D3D11.cpp" />
+    <ClCompile Include="Src\PostProcessingEffect.cpp" />
     <ClCompile Include="Src\Precompiled.cpp" />
     <ClCompile Include="Src\RenderObject.cpp" />
     <ClCompile Include="Src\RenderTarget.cpp" />
