@@ -42,7 +42,7 @@ void GameState::Initialize()
 	const uint32_t screenHeight = gs->GetBackBufferHeight();
 	mRenderTarget.Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U8);
 
-	mCombineTexture.Initialize("../../Assets/Images/misc/concrete.jpg");
+	mCombineTexture.Initialize("../../Assets/Images/misc/static.png");
 }
 
 void GameState::Terminate()
