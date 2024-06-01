@@ -21,8 +21,8 @@ namespace Kick_Engine::Graphics
 			Mirror,
 			Blur,
 			Combine2,
-			MotionBlur,
-			ChromaticAberration
+			ChromaticAberration,
+			Wave
 		};
 
 		void Initialize(const std::filesystem::path& filename);
@@ -31,11 +31,13 @@ namespace Kick_Engine::Graphics
 		void Begin();
 		void End();
 
+		void Update(float deltaTime);
 		void Render(const RenderObject& renderObject);
 
 		void DebugUI();
 
 		void SetTexture(const Texture* texture, uint32_t slot = 0);
+		void SetMode(Mode mode);
 
 	private:
 		struct PostProcessData
@@ -58,6 +60,9 @@ namespace Kick_Engine::Graphics
 		float mMirrorX = -1.0f;
 		float mMirrorY = 1.0f;
 		float mBlurStrength = 5.0f;
-		float mAberrationValue;
+		float mAberrationValue = 0.05f;
+		float mWaveLength = 0.05f;
+		float mNumWaves = 20.0f;
+		float mUVOffsetX = 0.0f;
 	};
 }

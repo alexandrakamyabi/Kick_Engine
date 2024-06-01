@@ -23,33 +23,20 @@ void GameState::Initialize()
 	mGround.meshBuffer.Initialize(groundMesh);
 	mGround.diffuseMapId = TextureManager::Get()->LoadTexture("planets/earth/rock.jpg");
 
-	MeshPX screenQuad = MeshBuilder::CreateScreenQuad();
-	mScreenQuad.meshBuffer.Initialize(screenQuad);
-
-
 	std::filesystem::path shaderFilePath = L"../../Assets/Shaders/Standard.fx";
 	mStandardEffect.Initialize(shaderFilePath);
 	mStandardEffect.SetCamera(mCamera);
 	mStandardEffect.SetDirectionalLight(mDirectionalLight);
+	mStandardEffect.SetLightCamera(mShadowEffect.GetLightCamera());
+	mStandardEffect.SetShadowMap(mShadowEffect.GetDepthMap());
 
-	shaderFilePath = L"../../Assets/Shaders/PostProcessing.fx";
-	mPostProcessEffect.Initialize(shaderFilePath);
-	mPostProcessEffect.SetTexture(&mRenderTarget);
-	mPostProcessEffect.SetTexture(&mCombineTexture, 1);
-
-	Graphics_D3D11* gs = GraphicsSystem::Get();
-	const uint32_t screenWidth = gs->GetBackBufferWidth();
-	const uint32_t screenHeight = gs->GetBackBufferHeight();
-	mRenderTarget.Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U8);
-
-	mCombineTexture.Initialize("../../Assets/Images/misc/static.png");
+	mShadowEffect.Initialize();
+	mShadowEffect.SetDirectionalLight(mDirectionalLight);
 }
 
 void GameState::Terminate()
 {
-	mCombineTexture.Terminate();
-	mScreenQuad.Terminate();
-	mRenderTarget.Terminate();
+	mShadowEffect.Terminate();
 	mStandardEffect.Terminate();
 	mGround.Terminate();
 	CleanupRenderGroup(mCharacter);
@@ -94,7 +81,7 @@ void GameState::Update(float deltaTime)
 		mCamera.Pitch(input->GetMouseMoveY() * turnSpeed * deltaTime);
 	}
 
-	mPostProcessEffect.Update(deltaTime);
+	//mPostProcessEffect.Update(deltaTime);
 }
 
 void GameState::Render()
@@ -102,16 +89,14 @@ void GameState::Render()
 	SimpleDraw::AddGroundPlane(10.0f, Colors::White);
 	SimpleDraw::Render(mCamera);
 
-	mRenderTarget.BeginRender();
+	mShadowEffect.Begin();
+		DrawRenderGroup(mShadowEffect, mCharacter);
+	mShadowEffect.End();
+
 	mStandardEffect.Begin();
 		DrawRenderGroup(mStandardEffect, mCharacter);
 		mStandardEffect.Render(mGround);
 	mStandardEffect.End();
-	mRenderTarget.EndRender();
-
-	mPostProcessEffect.Begin();
-		mPostProcessEffect.Render(mScreenQuad);
-	mPostProcessEffect.End();
 }
 
 void GameState::DebugUI()
@@ -129,17 +114,7 @@ void GameState::DebugUI()
 		ImGui::ColorEdit4("Specular##Light", &mDirectionalLight.specular.r);
 	}
 
-	ImGui::Separator();
-	ImGui::Text("Render Target:");
-	ImGui::Image(
-		mRenderTarget.GetRawData(),
-		{ 128, 128 },
-		{ 0,0 },
-		{ 1,1 },
-		{ 1, 1, 1, 1 },
-		{ 1, 1, 1, 1 }
-	);
 	mStandardEffect.DebugUI();
-	mPostProcessEffect.DebugUI();
+	mShadowEffect.DebugUI();
 	ImGui::End();
 }
