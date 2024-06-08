@@ -19,7 +19,7 @@ void GameState::Initialize()
 	ModelIO::LoadMaterial("../../Assets/Models/Character_01/ruka.model", model);
 	mCharacter = CreateRenderGroup(model);
 
-	Mesh groundMesh = MeshBuilder::CreateHorizontalPlane(20, 20, 1.0f);
+	Mesh groundMesh = MeshBuilder::CreateHorizontalPlane(20, 20, 0.5f);
 	mGround.meshBuffer.Initialize(groundMesh);
 	mGround.diffuseMapId = TextureManager::Get()->LoadTexture("planets/earth/rock.jpg");
 

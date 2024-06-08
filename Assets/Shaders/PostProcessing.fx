@@ -54,6 +54,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
     {
         float4 color = textureMap0.Sample(textureSampler, input.texCoord);
         finalColor = 1.0f - color;
+        //if texCoord.x > 0.6 { color = lerp(finalColor, black, saturate((texCoord.x - 0.6) / (0.6-0.8));
     }
     //mirror
     else if (mode == 3)
