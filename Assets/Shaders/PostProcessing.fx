@@ -52,7 +52,11 @@ float4 PS(VS_OUTPUT input) : SV_Target
     //Vignette
     else if (mode == 2)
     {
-        float4 color = textureMap0.Sample(textureSampler, input.texCoord);
+        float4 color0 = textureMap0.Sample(textureSampler, input.texCoord);
+        float4 color1 = textureMap1.Sample(textureSampler, float2(input.texCoord.x + params0, input.texCoord.y));
+        float4 color = (color0 + color1) * 0.5f;
+        
+        //float4 color = textureMap0.Sample(textureSampler, input.texCoord);
         float2 texCoord = input.texCoord;
 
     // Center coordinates for vignette calculation
