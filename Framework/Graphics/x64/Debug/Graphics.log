@@ -1,3 +1,7 @@
-﻿  ShadowEffect.cpp
-  StandardEffect.cpp
+﻿  PostProcessingEffect.cpp
+E:\Kick_Engine\Framework\Graphics\Src\PostProcessingEffect.cpp(72,51): warning C4244: 'initializing': conversion from 'uint32_t' to 'float', possible loss of data
+E:\Kick_Engine\Framework\Graphics\Src\PostProcessingEffect.cpp(72,27): warning C4244: 'initializing': conversion from 'uint32_t' to 'const float', possible loss of data
+E:\Kick_Engine\Framework\Graphics\Src\PostProcessingEffect.cpp(73,53): warning C4244: 'initializing': conversion from 'uint32_t' to 'float', possible loss of data
+E:\Kick_Engine\Framework\Graphics\Src\PostProcessingEffect.cpp(73,28): warning C4244: 'initializing': conversion from 'uint32_t' to 'const float', possible loss of data
+E:\Kick_Engine\Framework\Graphics\Src\PostProcessingEffect.cpp(128): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
   Graphics.vcxproj -> E:\Kick_Engine\x64\Debug\Graphics.lib

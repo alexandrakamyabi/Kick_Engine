@@ -49,13 +49,36 @@ float4 PS(VS_OUTPUT input) : SV_Target
         float4 color = textureMap0.Sample(textureSampler, input.texCoord);
         finalColor = (color.r + color.g + color.b) / 3.0f;
     }
-    //invert
+    //Vignette
     else if (mode == 2)
     {
         float4 color = textureMap0.Sample(textureSampler, input.texCoord);
-        finalColor = 1.0f - color;
-        //if texCoord.x > 0.6 { color = lerp(finalColor, black, saturate((texCoord.x - 0.6) / (0.6-0.8));
+        float2 texCoord = input.texCoord;
+
+        // X axis
+        if (texCoord.x > 0.6)
+        {
+            color = lerp(color, float4(0, 0, 0, 1), saturate((texCoord.x - 0.6) / (0.6 - 0.8)));
+        }
+        else if (texCoord.x < 0.4)
+        {
+            color = lerp(color, float4(0, 0, 0, 1), saturate((0.4 - texCoord.x) / (0.4 - 0.2)));
+        }
+
+        // Y axis
+        if (texCoord.y > 0.6)
+        {
+            color = lerp(color, float4(0, 0, 0, 1), saturate((texCoord.y - 0.6) / (0.6 - 0.8)));
+        }
+        else if (texCoord.y < 0.4)
+        {
+            color = lerp(color, float4(0, 0, 0, 1), saturate((0.4 - texCoord.y) / (0.4 - 0.2)));
+        }
+
+        finalColor = color;
     }
+
+
     //mirror
     else if (mode == 3)
     {
