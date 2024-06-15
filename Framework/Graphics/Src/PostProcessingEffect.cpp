@@ -59,7 +59,7 @@ void PostProcessingEffect::Begin()
 	{
 	case Mode::None: break;
 	case Mode::Monochrome: break;
-	case Mode::Invert: break;
+	case Mode::Vignette: break;
 	case Mode::Mirror: 
 	{
 		data.params0 = mMirrorX;
@@ -112,7 +112,7 @@ void PostProcessingEffect::End()
 
 void PostProcessingEffect::Update(float deltaTime)
 {
-	mUVOffsetX += deltaTime * 0.1f;
+	//mUVOffsetX += deltaTime * 0.1f;
 }
 
 void PostProcessingEffect::Render(const RenderObject& renderObject)

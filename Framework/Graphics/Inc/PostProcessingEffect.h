@@ -17,7 +17,7 @@ namespace Kick_Engine::Graphics
 		{
 			None,
 			Monochrome,
-			Invert,
+			Vignette,
 			Mirror,
 			Blur,
 			Combine2,

@@ -43,11 +43,13 @@ void GameState::Initialize()
 	mRenderTarget.Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U8);
 
 	mCombineTexture.Initialize("../../Assets/Images/misc/static.png");
+	//mPostProcessEffect.SetMode(PostProcessingEffect::Mode::Combine2);
+	mPostProcessEffect.SetMode(PostProcessingEffect::Mode::Vignette);
 }
 
 void GameState::Terminate()
 {
-	mCombineTexture.Terminate();
+	//mCombineTexture.Terminate();
 	mScreenQuad.Terminate();
 	mRenderTarget.Terminate();
 	mStandardEffect.Terminate();

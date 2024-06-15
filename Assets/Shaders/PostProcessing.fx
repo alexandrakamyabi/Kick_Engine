@@ -55,25 +55,21 @@ float4 PS(VS_OUTPUT input) : SV_Target
         float4 color = textureMap0.Sample(textureSampler, input.texCoord);
         float2 texCoord = input.texCoord;
 
-        // X axis
-        if (texCoord.x > 0.6)
-        {
-            color = lerp(color, float4(0, 0, 0, 1), saturate((texCoord.x - 0.6) / (0.6 - 0.8)));
-        }
-        else if (texCoord.x < 0.4)
-        {
-            color = lerp(color, float4(0, 0, 0, 1), saturate((0.4 - texCoord.x) / (0.4 - 0.2)));
-        }
+    // Center coordinates for vignette calculation
+        float2 center = float2(0.5, 0.5);
 
-        // Y axis
-        if (texCoord.y > 0.6)
-        {
-            color = lerp(color, float4(0, 0, 0, 1), saturate((texCoord.y - 0.6) / (0.6 - 0.8)));
-        }
-        else if (texCoord.y < 0.4)
-        {
-            color = lerp(color, float4(0, 0, 0, 1), saturate((0.4 - texCoord.y) / (0.4 - 0.2)));
-        }
+    // Calculate distance from the center
+        float distance = length(texCoord - center);
+
+    // vignette effect parameters 
+        float clearDistance = 0.2;
+        float blackDistance = 0.4;
+
+    // Calculate vignette factor
+        float vignette = saturate((distance - clearDistance) / (blackDistance - clearDistance));
+
+    // Apply vignette effect
+        color = lerp(color, float4(0, 0, 0, 1), vignette);
 
         finalColor = color;
     }
@@ -112,6 +108,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
         float4 color0 = textureMap0.Sample(textureSampler, input.texCoord);
         float4 color1 = textureMap1.Sample(textureSampler, float2(input.texCoord.x + params0, input.texCoord.y));
         finalColor = (color0 + color1) * 0.5f;
+        
     }
     //chromatic aberration
     else if (mode == 6)
