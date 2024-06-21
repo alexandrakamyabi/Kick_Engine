@@ -6,8 +6,8 @@ using namespace Kick_Engine::Input;
 
 void GameState::Initialize()
 {
-	mCamera.SetPosition({ 0.0f, 2.0f, -4.0f });
-	mCamera.SetLookAt({ 0.0f, 0.0f, 0.0f });
+	mCamera.SetPosition({ 0.0f, 3.50f, -3.0f });
+	mCamera.SetLookAt({ 0.0f, 3.0f, 0.0f });
 
 	mDirectionalLight.direction = Math::Normalize({ 1.0f, -1.0f, 1.0f });
 	mDirectionalLight.ambient = { 0.5f, 0.5f, 0.5f, 1.0f };
