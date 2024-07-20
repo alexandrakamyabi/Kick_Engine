@@ -1,76 +1,82 @@
 #pragma once
 
 #include "ConstantBuffer.h"
-#include "Sampler.h"
-#include "VertexShader_D3D11.h"
-#include "PixelShader_D3D11.h"
 #include "LightTypes.h"
+#include "PixelShader_D3D11.h"
+#include "Sampler.h"
 #include "Material.h"
+#include "VertexShader_D3D11.h"
 
 namespace Kick_Engine::Graphics
 {
-	class Camera;
-	class Texture;
-	struct RenderObject;
+    class Camera;
+    class Texture;
+    struct RenderObject;
 
-	class StandardEffect
-	{
-	public:
-		void Initialize(const std::filesystem::path& filename);
-		void Terminate();
+    class StandardEffect
+    {
+    public:
+        void Initialize(const std::filesystem::path& filePath);
+        void Terminate();
 
-		void Begin();
-		void End();
+        void Begin();
+        void End();
 
-		void Render(const RenderObject& renderObject);
+        void Render(const RenderObject& renderObject);
 
-		void SetCamera(const Camera& camera);
-		void SetLightCamera(const Camera& camera);
-		void SetDirectionalLight(const DirectionalLight& directionalLight);
-		void SetShadowMap(const Texture& shadowMap);
+        void SetCamera(const Camera& camera);
+        void SetLightCamera(const Camera& camera);
 
-		void DebugUI();
+        void SetDirectionalLight(const DirectionalLight& directionalLight);
+        void SetShadowMap(const Texture& shadowMap);
+        void SetShadowMapFar(const Texture& shadowMapFar);
 
-	private: 
-		struct TransformData
-		{
-			Math::Matrix4 wvp;
-			Math::Matrix4 lwvp;
-			Math::Matrix4 world;
-			Math::Vector3 viewPosition;
-			float padding = 0.0f;
-		};
+        void DebugUI();
 
-		struct SettingsData
-		{
-			int useDiffuseMap = 1;
-			int useNormalMap = 1;
-			int useSpecMap = 1;
-			int useLighting = 1;
-			int useBumpMap = 1;
-			int useShadowMap = 1;
-			float bumpWeight = 0.0f;
-			float depthBias = 0.000002f;
-		};
+    private:
+        struct TransformData
+        {
+            Math::Matrix4 wvp;
+            Math::Matrix4 lwvp;
+            Math::Matrix4 lfwvp;
+            Math::Matrix4 world;
+            Math::Vector3 viewPos;
+            float padding = 0.0f;
+        };
 
-		using TransformBuffer = TypedConstantBuffer<TransformData>;
-		using SettingsBuffer = TypedConstantBuffer<SettingsData>;
-		using LightBuffer = TypedConstantBuffer<DirectionalLight>;
-		using MaterialBuffer = TypedConstantBuffer<Material>;
+        struct SettingsData
+        {
+            int useDiffuseMap = 1;
+            int useNormalMap = 1;
+            int useSpecMap = 1;
+            int useLighting = 1;
+            int useBumpMap = 1;
+            int useShadowMap = 1;
+            float bumpWeight = 0.0f;
+            float depthBias = 0.0f;
+        };
 
-		TransformBuffer mTransformBuffer;
-		SettingsBuffer mSettingsBuffer;
-		LightBuffer mLightBuffer;
-		MaterialBuffer mMaterialBuffer;
+        using TransformBuffer = TypedConstantBuffer<TransformData>;
+        using SettingsBuffer = TypedConstantBuffer<SettingsData>;
+        using LightBuffer = TypedConstantBuffer<DirectionalLight>;
+        using MaterialBuffer = TypedConstantBuffer<Material>;
 
-		Sampler mSampler;
-		VertexShader_D3D11 mVertexShader;
-		PixelShader_D3D11 mPixelShader;
+        TransformBuffer mTransformBuffer;
+        SettingsBuffer mSettingsBuffer;
+        LightBuffer mLightBuffer;
+        MaterialBuffer mMaterialBuffer;
+        Sampler mSampler;
+        VertexShader_D3D11 mVertexShader;
+        PixelShader_D3D11 mPixelShader;
 
-		SettingsData mSettingsData;
-		const Camera* mCamera = nullptr;
-		const Camera* mLightCamera = nullptr;
-		const DirectionalLight* mDirectionalLight = nullptr;
-		const Texture* mShadowMap = nullptr;
-	};
+        SettingsData mSettingsData;
+
+        const Camera* mCamera = nullptr;
+        const Camera* mLightCamera = nullptr;
+
+        const DirectionalLight* mDirectionalLight = nullptr;
+
+        const Texture* mShadowMap = nullptr;
+        const Texture* mShadowMapFar = nullptr;
+    };
 }

@@ -81,7 +81,7 @@ void StandardEffect::Render(const RenderObject& renderObject)
 	TransformData transformData;
 	transformData.wvp = Math::Transpose(matFinal);
 	transformData.world = Math::Transpose(matWorld);
-	transformData.viewPosition = mCamera->GetPosition();
+	transformData.viewPos = mCamera->GetPosition();
 
 	if (settingsData.useShadowMap > 0)
 	{
