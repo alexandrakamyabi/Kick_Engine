@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Common.h"
-
+#include "Skeleton.h"
 #include "GraphicsSystem.h"
 #include "GraphicsType_D3D11.h"
 #include "BlendState.h"
@@ -15,6 +15,7 @@
 #include "KeyFrame.h"
 #include "MeshBuffer_D3D11.h"
 #include "MeshBuilder.h"
+#include "Bone.h"
 #include "MeshTypes.h"
 #include "Model.h"
 #include "Animation.h"

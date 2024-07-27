@@ -6,33 +6,39 @@ using namespace Kick_Engine::Graphics;
 
 namespace
 {
-	float GetLerpTime(float startTime, float endTime, float time, EaseType easeType)
+	namespace
 	{
-		float t = (time - startTime) / (endTime - startTime);
-		switch (easeType)
+		float GetLerpTime(float startTime, float endTime, float time, EaseType easeType)
 		{
-		case EaseType::Linear:break;
-		case EaseType::EaseInQuad:t = t * t; break;
-		case EaseType::EaseOutQuad:t = t * (2.0f - t); break;
-		case EaseType::EaseInOutQuad:
-		{
-			t = t * 2.0f;
-			if (t < 1.0f)
+			float t = (time - startTime) / (endTime - startTime);
+			switch (easeType)
 			{
-				t = 0.5f * t * t;
-			}
-			else
+			case EaseType::Linear:break;
+			case EaseType::EaseInQuad:t = t * t; break;
+			case EaseType::EaseOutQuad:t = t * (2.0f - t); break;
+			case EaseType::EaseInOutQuad:
 			{
-				t = t - 1.0f;
-				t = -0.5f * ((t * (t - 2.0f)) - 1.0f);
+				t = t * 2.0f;
+				if (t < 1.0f)
+				{
+					t = 0.5f * t * t;
+				}
+				else
+				{
+					t = t - 1.0f;
+					t = -0.5f * ((t * (t - 2.0f)) - 1.0f);
+				}
+				break;
 			}
+			default:
+				ASSERT(false, "Animation: ease type not supported.");
+				break;
+			}
+			return t;
 		}
-		default:
-			break;
-		}
-		return t;
 	}
 }
+
 
 Transform Animation::GetTransform(float time) const
 {

@@ -1,2 +1,7 @@
-﻿  StandardEffect.cpp
+﻿  Animation.cpp
+  AnimationBuilder.cpp
+  ModelIO.cpp
+E:\Kick_Engine\Framework\Graphics\Src\ModelIO.cpp(120,51): warning C4267: 'initializing': conversion from 'size_t' to 'uint32_t', possible loss of data
+E:\Kick_Engine\Framework\Graphics\Src\ModelIO.cpp(130,50): warning C4267: 'initializing': conversion from 'size_t' to 'uint32_t', possible loss of data
+  RenderObject.cpp
   Graphics.vcxproj -> E:\Kick_Engine\x64\Debug\Graphics.lib
