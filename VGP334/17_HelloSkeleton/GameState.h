@@ -15,7 +15,9 @@ protected:
 	Kick_Engine::Graphics::Camera mCamera;
 
 	Kick_Engine::Graphics::ModelId mModelId;
+	Kick_Engine::Graphics::ModelId mModelId_2;
 	Kick_Engine::Graphics::RenderGroup mCharacter;
+	Kick_Engine::Graphics::RenderGroup mCharacter_2;
 	Kick_Engine::Graphics::StandardEffect mStandardEffect;
 
 	bool mDrawSkeleton = false;

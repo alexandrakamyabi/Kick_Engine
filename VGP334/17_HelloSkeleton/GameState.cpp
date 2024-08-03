@@ -16,7 +16,9 @@ void GameState::Initialize()
 
 	mModelId = ModelManager::Get()->LoadModelId("../../Assets/Models/Character_01/mio_amakura.model");
 	mCharacter = CreateRenderGroup(mModelId);
-
+	mModelId_2 = ModelManager::Get()->LoadModelId("../../Assets/Models/Character_02/mayu_amakura.model");
+	mCharacter_2 = CreateRenderGroup(mModelId_2);
+	SetRenderGroupPosition(mCharacter_2, { -4.5f, 0.0f, 0.0f });
 	std::filesystem::path shaderFilePath = L"../../Assets/Shaders/Standard.fx";
 	mStandardEffect.Initialize(shaderFilePath);
 	mStandardEffect.SetCamera(mCamera);
@@ -73,18 +75,29 @@ void GameState::Render()
 {
 	if (mDrawSkeleton)
 	{
+		Matrix4 transform = mCharacter_2[0].transform.GetMatrix4();
 		AnimationUtil::BoneTransforms boneTransforms;
 		AnimationUtil::ComputeBoneTransforms(mModelId, boneTransforms);
+		// * transform
 		AnimationUtil::DrawSkeleton(mModelId, boneTransforms);
+
+		// transform = ModelId_2 Matrix4
+		AnimationUtil::ComputeBoneTransforms(mModelId_2, boneTransforms);
+		for (auto& boneTransform : boneTransforms) {
+
+			boneTransform = boneTransform * transform;
+	}
+		AnimationUtil::DrawSkeleton(mModelId_2, boneTransforms);
 	}
 
-	SimpleDraw::AddGroundPlane(10.0f, Colors::White);
+	SimpleDraw::AddGroundPlane(50.0f, Colors::White);
 	SimpleDraw::Render(mCamera);
 
 	if (!mDrawSkeleton)
 	{
 		mStandardEffect.Begin();
 			DrawRenderGroup(mStandardEffect, mCharacter);
+			DrawRenderGroup(mStandardEffect, mCharacter_2);
 		mStandardEffect.End();
 	}
 }
