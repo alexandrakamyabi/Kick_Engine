@@ -2,122 +2,125 @@
 
 using namespace Kick_Engine;
 using namespace Kick_Engine::Graphics;
-using namespace Kick_Engine::Math;
 using namespace Kick_Engine::Input;
 
-void MainState::UpdateCameraControl(float dt)
+void GameState::Initialize()
 {
-    auto input = Input::InputSystem::Get();
-    const float moveSpeed = input->IsKeyDown(KeyCode::LSHIFT) ? 10.0f : 1.0f;
-    const float turnSpeed = 0.8f;
+	mCamera.SetPosition({ 0.0f, 3.0f, -10.0f });
+	mCamera.SetLookAt({ 0.0f, 0.0f, 0.0f });
 
-    if (input->IsKeyDown(KeyCode::W))
-    {
-        mCamera.Walk(moveSpeed * dt);
-    }
-    if (input->IsKeyDown(KeyCode::A))
-    {
-        mCamera.Strafe(-moveSpeed * dt);
-    }
-    if (input->IsKeyDown(KeyCode::S))
-    {
-        mCamera.Walk(-moveSpeed * dt);
-    }
-    if (input->IsKeyDown(KeyCode::D))
-    {
-        mCamera.Strafe(moveSpeed * dt);
-    }
-    if (input->IsKeyDown(KeyCode::E))
-    {
-        mCamera.Rise(moveSpeed * dt);
-    }
-    if (input->IsKeyDown(KeyCode::Q))
-    {
-        mCamera.Rise(-moveSpeed * dt);
-    }
+	mDirectionalLight.direction = Math::Normalize({ 1.0f, -1.0f, 1.0f });
+	mDirectionalLight.ambient = { 0.5f, 0.5f, 0.5f, 1.0f };
+	mDirectionalLight.diffuse = { 0.8f, 0.8f, 0.8f, 1.0f };
+	mDirectionalLight.specular = { 1.0f, 1.0f, 1.0f, 1.0f };
 
-    if (input->IsMouseDown(MouseButton::LBUTTON))
-    {
-        mCamera.Yaw(input->GetMouseMoveX() * turnSpeed * dt);
-        mCamera.Pitch(input->GetMouseMoveY() * turnSpeed * dt);
-    }
+	Model model;
+	ModelIO::LoadModel("../../Assets/Models/Character_01/ruka.model", model);
+	ModelIO::LoadMaterial("../../Assets/Models/Character_01/ruka.model", model);
+	mCharacter = CreateRenderGroup(model);
+
+
+	std::filesystem::path shaderFilePath = L"../../Assets/Shaders/Standard1.fx";
+	mStandardEffect.Initialize(shaderFilePath);
+	mStandardEffect.SetCamera(mCamera);
+	mStandardEffect.SetDirectionalLight(mDirectionalLight);
 }
 
-void MainState::Initialize()
+void GameState::Terminate()
 {
-    mCamera.SetPosition({ 0.0f, 3.50f, -3.0f });
-    mCamera.SetLookAt({ 0.0f, 3.0f, 0.0f });
-
-    mDirectionalLight.direction = Math::Normalize({ 1.0f,-1.0f,1.0f });
-    mDirectionalLight.ambient = { 0.5f,0.5f,0.5f,1.0f };
-    mDirectionalLight.diffuse = { 0.8f,0.8f,0.8f,1.0f };
-    mDirectionalLight.specular = { 1.0f,1.0f,1.0f,1.0f };
-
-
-    mStandardEffect.Initialize(L"../../Assets/Shaders/Standard.fx");
-    mStandardEffect.SetCamera(mCamera);
-    mStandardEffect.SetDirectionalLight(mDirectionalLight);
-
-    Model model;
-    ModelIO::LoadModel("../../Assets/Models/Character_01/ruka.model", model);
-    ModelIO::LoadMaterial("../../Assets/Models/Character_01/ruka.model", model);
-    mCharacter = CreateRenderGroup(model);
+	mStandardEffect.Terminate();
+	CleanupRenderGroup(mCharacter);
 }
-void MainState::Terminate()
-{
-    CleanupRenderGroup(mCharacter);
-    mStandardEffect.Terminate();
-}
-void MainState::Update(const float deltaTime)
-{
-    UpdateCameraControl(deltaTime);
-}
-void MainState::Render()
-{
-    mStandardEffect.Begin();
-    DrawRenderGroup(mStandardEffect, mCharacter);
-    mStandardEffect.End();
-}
-void MainState::DebugUI()
-{
-    ImGui::Begin("Debug control", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
-    if (ImGui::CollapsingHeader("Light", ImGuiTreeNodeFlags_DefaultOpen))
-    {
-        if (ImGui::DragFloat3("Direction", &mDirectionalLight.direction.x, 0.1f))
-        {
-            mDirectionalLight.direction = Math::Normalize(mDirectionalLight.direction);
-        }
 
-        ImGui::ColorEdit4("Ambient##Light", &mDirectionalLight.ambient.r);
-        ImGui::ColorEdit4("Diffuse##Light", &mDirectionalLight.diffuse.r);
-        ImGui::ColorEdit4("Specular##Light", &mDirectionalLight.specular.r);
-    }
-    if (ImGui::CollapsingHeader("Quaternion", ImGuiTreeNodeFlags_DefaultOpen))
-    {
-        if (ImGui::DragFloat("Yaw", &mYaw, 0.01f))
-        {
-            Quaternion rot = Quaternion::CreateFromYawPitchRoll(mYaw, mPitch, mRoll);
-            for (auto& r : mCharacter)
-            {
-                r.transform.rotation = rot;
-            }
-        }
-        if (ImGui::DragFloat("Pitch", &mPitch, 0.01f))
-        {
-            Quaternion rot = Quaternion::CreateFromYawPitchRoll(mYaw, mPitch, mRoll);
-            for (auto& r : mCharacter)
-            {
-                r.transform.rotation = rot;
-            }
-        }
-        if (ImGui::DragFloat("Roll", &mRoll, 0.01f))
-        {
-            Quaternion rot = Quaternion::CreateFromYawPitchRoll(mYaw, mPitch, mRoll);
-            for (auto& r : mCharacter)
-            {
-                r.transform.rotation = rot;
-            }
-        }
-    }
-    ImGui::End();
+void GameState::Update(float deltaTime)
+{
+	auto input = Input::InputSystem::Get();
+	const float moveSpeed = input->IsKeyDown(KeyCode::LSHIFT) ? 10.0f : 1.0f;
+	const float turnSpeed = 0.1f;
+
+	if (input->IsKeyDown(KeyCode::W))
+	{
+		mCamera.Walk(moveSpeed * deltaTime);
+	}
+	else if (input->IsKeyDown(KeyCode::S))
+	{
+		mCamera.Walk(-moveSpeed * deltaTime);
+	}
+
+	if (input->IsKeyDown(KeyCode::D))
+	{
+		mCamera.Strafe(moveSpeed * deltaTime);
+	}
+	else if (input->IsKeyDown(KeyCode::A))
+	{
+		mCamera.Strafe(-moveSpeed * deltaTime);
+	}
+
+	if (input->IsKeyDown(KeyCode::E))
+	{
+		mCamera.Rise(moveSpeed * deltaTime);
+	}
+	else if (input->IsKeyDown(KeyCode::Q))
+	{
+		mCamera.Rise(-moveSpeed * deltaTime);
+	}
+
+	if (input->IsMouseDown(MouseButton::RBUTTON))
+	{
+		mCamera.Yaw(input->GetMouseMoveX() * turnSpeed * deltaTime);
+		mCamera.Pitch(input->GetMouseMoveY() * turnSpeed * deltaTime);
+	}
+}
+
+void GameState::Render()
+{
+	SimpleDraw::AddTransform(mTransform.GetMatrix4());
+	SimpleDraw::AddGroundPlane(10.0f, Colors::White);
+	SimpleDraw::Render(mCamera);
+
+	mStandardEffect.Begin();
+	DrawRenderGroup(mStandardEffect, mCharacter);
+	mStandardEffect.End();
+}
+
+void GameState::DebugUI()
+{
+	ImGui::Begin("Debug Controls", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
+	if (ImGui::CollapsingHeader("Light", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		if (ImGui::DragFloat3("Direction", &mDirectionalLight.direction.x, 0.01f))
+		{
+			mDirectionalLight.direction = Math::Normalize(mDirectionalLight.direction);
+		}
+
+		ImGui::ColorEdit4("Ambient##Light", &mDirectionalLight.ambient.r);
+		ImGui::ColorEdit4("Diffuse##Light", &mDirectionalLight.diffuse.r);
+		ImGui::ColorEdit4("Specular##Light", &mDirectionalLight.specular.r);
+	}
+	bool updateRotation = false;
+	if (ImGui::DragFloat("PlayerYaw", &mYaw, 0.01f))
+	{
+		updateRotation = true;
+	}
+	if (ImGui::DragFloat("PlayerPitch", &mPitch, 0.01f))
+	{
+		updateRotation = true;
+	}
+	if (ImGui::DragFloat("PlayerRoll", &mRoll, 0.01f))
+	{
+		updateRotation = true;
+	}
+
+	mStandardEffect.DebugUI();
+	ImGui::End();
+
+	if (updateRotation)
+	{
+		Quaternion q = Quaternion::CreateFromYawPitchRoll(mYaw, mPitch, mRoll);
+		for (auto& ro : mCharacter)
+		{
+			ro.transform.rotation = q;
+			mTransform.rotation = q;
+		}
+	}
 }

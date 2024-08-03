@@ -4,6 +4,7 @@
 #include "TextureManager.h"
 #include "Transform.h"
 #include "Material.h"
+#include "ModelManager.h"
 
 namespace Kick_Engine::Graphics
 {
@@ -22,23 +23,24 @@ namespace Kick_Engine::Graphics
 		TextureID normalMapId;
 		TextureID specMapId;
 		TextureID bumpMapId;
+
+		ModelId modelId;
+		const Skeleton* skeleton = nullptr;
 	};
 
 	using RenderGroup = std::vector<RenderObject>;
-	[[nodiscard]] RenderGroup CreateRenderGroup(const Model& model);
+	[[nodiscard]] RenderGroup CreateRenderGroup(const Model& model, ModelId id = 0);
+	[[nodiscard]] RenderGroup CreateRenderGroup(ModelId id);
 	void CleanupRenderGroup(RenderGroup& renderGroup);
 
 	void SetRenderGroupPosition(RenderGroup& renderGroup, const Math::Vector3& position);
 
 	template<class Effect>
-	void DrawRenderGroup(Effect& effect, const RenderGroup& renderGroup)
-
+	void DrawRenderGroup(Effect& effect, RenderGroup& renderGroup)
 	{
-		for (const RenderObject& renderObject : renderGroup)
+		for (RenderObject& renderObject : renderGroup)
 		{
-
 			effect.Render(renderObject);
-
 		}
 	}
 

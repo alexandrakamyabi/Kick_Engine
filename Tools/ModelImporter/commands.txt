@@ -1,1 +1,1 @@
--scale 2.01 ../../Assets/Models/Character_01/ruka.fbx ../../Assets/Models/Character_01/ruka.model
+-scale 0.30 ../../Assets/Models/Character_02/mayu_amakura.fbx ../../Assets/Models/Character_02/mayu_amakura.model

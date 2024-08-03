@@ -10,7 +10,7 @@ namespace Kick_Engine::Graphics
 		int index = -1;
 
 		Bone* parent = nullptr;
-		int parentIndex = 1;
+		int parentIndex = -1;
 
 		std::vector<Bone*> children;
 		std::vector<int> childrenIndices;

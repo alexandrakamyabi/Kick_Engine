@@ -7,10 +7,10 @@ using namespace Kick_Engine::Graphics;
 namespace
 {
 	template<class T>
-	inline void PushKey(keyFrames<T>& keyframes, const T& value, float t, EaseType easetype)
+	inline void PushKey(Keyframes<T>& keyframes, const T& value, float t, EaseType easeType)
 	{
-		ASSERT(keyframes.empty() || keyframes.back().time <= t, "Animation: ");
-		keyframes.emplace_back(value, t, easetype);
+		ASSERT(keyframes.empty() || keyframes.back().time <= t, "AnimationBuilder: cannot add keyframe back in time");
+		keyframes.emplace_back(value, t, easeType);
 	}
 }
 
@@ -37,9 +37,9 @@ AnimationBuilder& AnimationBuilder::AddScaleKey(const Math::Vector3& scale, floa
 
 Animation AnimationBuilder::Build()
 {
-	ASSERT(!mWorkingCopy.mPositionKeys.empty() ||
-		!mWorkingCopy.mRotationKeys.empty() ||
-		!mWorkingCopy.mScaleKeys.empty(),
-		"AnimationBuilder: no animaiton keys are present");
-	return mWorkingCopy;
+	ASSERT(!mWorkingCopy.mPositionKeys.empty()
+		|| !mWorkingCopy.mRotationKeys.empty()
+		|| !mWorkingCopy.mScaleKeys.empty(),
+		"AnimationBuilder: no animation keys were added");
+	return std::move(mWorkingCopy);
 }

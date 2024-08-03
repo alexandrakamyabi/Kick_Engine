@@ -2,17 +2,15 @@
 
 #include "GameState.h"
 
-using namespace Kick_Engine;
-
-int WINAPI WinMain(HINSTANCE instance, HINSTANCE, LPSTR, int)
+int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ PSTR lpCmdLine, _In_ int nCmdShow)
 {
 	App& myApp = Kick_Engine::MainApp();
-	myApp.AddState<MainState>("MainState");
+	myApp.AddState<GameState>("GameState");
 
 	AppConfig config;
-	config.appName = L"Hello Light";
+	config.appName = L"Hello Quaternion";
 
 	myApp.Run(config);
 
-	return(0);
+	return (0);
 }
