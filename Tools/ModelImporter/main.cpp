@@ -15,6 +15,7 @@ struct Arguments
 	std::filesystem::path inputFileName;
 	std::filesystem::path outputFileName;
 	float scale = 1.0f;
+	bool animOnly = false;
 };
 
 Vector3 ToVector3(const aiVector3D& v)
@@ -80,6 +81,11 @@ std::optional<Arguments> ParseArgs(int argc, char* argv[])
 		if (strcmp(argv[i], "-scale") == 0)
 		{
 			args.scale = atof(argv[i + 1]);
+			++i;
+		}
+		else if (strcmp(argv[i], "-animOnly") == 0)
+		{
+			args.animOnly = atoi(argv[i + 1]) == 1;
 			++i;
 		}
 	}
@@ -265,11 +271,13 @@ int main(int argc, char* argv[])
 
 	Model model;
 	BoneIndexLookup boneIndexLookup;
-	if (scene->HasMeshes())
+
+	printf("Build skeleton...\n");
+	model.skeleton = std::make_unique<Skeleton>();
+	BuildSkeleton(*scene->mRootNode, nullptr, *model.skeleton, boneIndexLookup);
+
+	if (!args.animOnly && scene->HasMeshes())
 	{
-		printf("Build skeleton...\n");
-		model.skeleton = std::make_unique<Skeleton>();
-		BuildSkeleton(*scene->mRootNode, nullptr, *model.skeleton, boneIndexLookup);
 		for (uint32_t meshIndex = 0; meshIndex < scene->mNumMeshes; ++meshIndex)
 		{
 			const aiMesh* assimpMesh = scene->mMeshes[meshIndex];
@@ -368,9 +376,10 @@ int main(int argc, char* argv[])
 				}
 			}
 		}
+
 	}
 
-	if (scene->HasMaterials())
+	if (!args.animOnly && scene->HasMaterials())
 	{
 		printf("Reading Material Data...\n");
 
@@ -452,34 +461,47 @@ int main(int argc, char* argv[])
 		}
 	}
 
-	printf("Saving Model...\n");
-	if (ModelIO::SaveModel(args.outputFileName, model))
+	if (!args.animOnly)
 	{
-		printf("Saved Model success");
-	}
-	else
-	{
-		printf("Failed to save model data[%s]...\n", args.outputFileName.u8string().c_str());
+		printf("Saving Model...\n");
+		if (ModelIO::SaveModel(args.outputFileName, model))
+		{
+			printf("Saved Model success");
+		}
+		else
+		{
+			printf("Failed to save model data[%s]...\n", args.outputFileName.u8string().c_str());
+		}
+
+		printf("Saving Material...\n");
+		if (ModelIO::SaveMaterial(args.outputFileName, model))
+		{
+			printf("Saved Material success\n");
+		}
+		else
+		{
+			printf("Failed to save Material data...\n");
+		}
+
+		printf("Saving Skeleton...\n");
+		if (ModelIO::SaveSkeleton(args.outputFileName, model))
+		{
+			printf("Saved Skeleton Success...\n");
+		}
+		else
+		{
+			printf("Failed to save Skeleton data...\n");
+		}
 	}
 
-	printf("Saving Material...\n");
-	if (ModelIO::SaveMaterial(args.outputFileName, model))
+	printf("Saving Animation...\n");
+	if (ModelIO::SaveAnimation(args.outputFileName, model))
 	{
-		printf("Saved Material success\n");
+		printf("Saving Animation Success...\n");
 	}
 	else
 	{
-		printf("Failed to save Material data...\n");
-	}
-
-	printf("Saving Skeleton...\n");
-	if (ModelIO::SaveSkeleton(args.outputFileName, model))
-	{
-		printf("Saved Skeleton Success...\n");
-	}
-	else
-	{
-		printf("Failed to save Skeleton data...\n");
+		printf("Failed to save Animation data...\n");
 	}
 
 	return 0;
