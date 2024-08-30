@@ -19,14 +19,14 @@ RenderGroup Graphics::CreateRenderGroup(ModelId id, const Animator* animator)
 RenderGroup Graphics::CreateRenderGroup(const Model& model, ModelId id, const Animator* animator)
 {
 	auto TryLoadTexture = [](const auto& textureName)->TextureID
-	{
-		if (textureName.empty())
 		{
-			return 0;
-		}
+			if (textureName.empty())
+			{
+				return 0;
+			}
 
-		return TextureManager::Get()->LoadTexture(textureName, false);
-	};
+			return TextureManager::Get()->LoadTexture(textureName, false);
+		};
 
 	RenderGroup renderGroup;
 	renderGroup.reserve(model.meshData.size());

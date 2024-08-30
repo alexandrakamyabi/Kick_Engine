@@ -251,12 +251,12 @@ bool ModelIO::SaveSkeleton(std::filesystem::path filePath, const Model& model)
 	}
 
 	auto WriteMatrix = [&file](auto& m)
-	{
-		fprintf_s(file, "%f %f %f %f\n", m._11, m._12, m._13, m._14);
-		fprintf_s(file, "%f %f %f %f\n", m._21, m._22, m._23, m._24);
-		fprintf_s(file, "%f %f %f %f\n", m._31, m._32, m._33, m._34);
-		fprintf_s(file, "%f %f %f %f\n", m._41, m._42, m._43, m._44);
-	};
+		{
+			fprintf_s(file, "%f %f %f %f\n", m._11, m._12, m._13, m._14);
+			fprintf_s(file, "%f %f %f %f\n", m._21, m._22, m._23, m._24);
+			fprintf_s(file, "%f %f %f %f\n", m._31, m._32, m._33, m._34);
+			fprintf_s(file, "%f %f %f %f\n", m._41, m._42, m._43, m._44);
+		};
 
 	uint32_t boneCount = model.skeleton->bones.size();
 	fprintf_s(file, "BoneCount: %d\n", boneCount);

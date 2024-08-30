@@ -13,7 +13,7 @@ namespace
 	{
 		"None",
 		"Monochrome",
-		"Invert",
+		"Vignette",
 		"Mirror",
 		"Blur",
 		"Combine2",
@@ -59,7 +59,7 @@ void PostProcessingEffect::Begin()
 	{
 	case Mode::None: break;
 	case Mode::Monochrome: break;
-	case Mode::Invert: break;
+	case Mode::Vignette: break;
 	case Mode::Mirror: 
 	{
 		data.params0 = mMirrorX;

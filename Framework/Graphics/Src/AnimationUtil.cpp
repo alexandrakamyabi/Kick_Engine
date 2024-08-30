@@ -81,3 +81,4 @@ void AnimationUtil::DrawSkeleton(ModelId id, const BoneTransforms& boneTransform
 		}
 	}
 }
+

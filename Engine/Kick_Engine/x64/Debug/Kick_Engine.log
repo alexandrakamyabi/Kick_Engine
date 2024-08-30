@@ -1,4 +1,16 @@
 ﻿  Precompiled.cpp
+E:\Kick_Engine\External\Bullet\BulletSoftBody\btSoftBody.h(38,53): warning C4305: 'initializing': truncation from 'double' to 'btScalar'
+E:\Kick_Engine\External\Bullet\BulletSoftBody\btSoftBody.h(1232,17): warning C4244: 'initializing': conversion from 'double' to 'btScalar', possible loss of data
+E:\Kick_Engine\External\Bullet\BulletSoftBody\btSoftBody.h(1357,21): warning C4244: '+=': conversion from 'double' to 'btScalar', possible loss of data
+E:\Kick_Engine\External\Bullet\BulletSoftBody\btSoftBody.h(1361,21): warning C4244: 'initializing': conversion from 'double' to 'btScalar', possible loss of data
+E:\Kick_Engine\External\Bullet\BulletSoftBody\btSoftBody.h(1385,20): warning C4244: '=': conversion from 'double' to 'btScalar', possible loss of data
+E:\Kick_Engine\External\Bullet\BulletSoftBody\btSoftBody.h(1387,23): warning C4244: '=': conversion from 'double' to 'btScalar', possible loss of data
+E:\Kick_Engine\External\Bullet\BulletSoftBody\btSoftBody.h(1269,17): warning C4244: 'initializing': conversion from 'double' to 'btScalar', possible loss of data
+E:\Kick_Engine\External\Bullet\BulletSoftBody\btSoftBody.h(1303,1): message : see reference to function template instantiation 'void btSoftBody::updateFace<btDbvtNode>(DBVTNODE *,bool,bool)' being compiled
+          with
+          [
+              DBVTNODE=btDbvtNode
+          ]
   App.cpp
   Kick_Engine.cpp
   Generating Code...

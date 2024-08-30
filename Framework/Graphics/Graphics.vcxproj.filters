@@ -166,10 +166,13 @@
     <ClInclude Include="Inc\NormalMapEffect.h">
       <Filter>Inc\Effects</Filter>
     </ClInclude>
-    <ClInclude Include="Inc\AnimationClip.h">
+    <ClInclude Include="Inc\Animator.h">
       <Filter>Inc\Animation</Filter>
     </ClInclude>
-    <ClInclude Include="Inc\Animator.h">
+    <ClInclude Include="Inc\ParticleSystemEffect.h">
+      <Filter>Inc\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\AnimationClip.h">
       <Filter>Inc\Animation</Filter>
     </ClInclude>
   </ItemGroup>
@@ -275,6 +278,9 @@
     </ClCompile>
     <ClCompile Include="Src\Animator.cpp">
       <Filter>Src\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\ParticleSystemEffect.cpp">
+      <Filter>Src\Effects</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

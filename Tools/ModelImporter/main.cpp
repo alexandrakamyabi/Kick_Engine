@@ -114,7 +114,7 @@ void ExportEmbeddedTexture(const aiTexture* texture, const Arguments& args, cons
 	fclose(file);
 }
 
-std::string FindTexture(const aiScene* scene, const aiMaterial* aiMat, aiTextureType textureType,
+std::string FindTexture(const aiScene* scene, const aiMaterial* aiMat, aiTextureType textureType, 
 	const Arguments& args, const std::string suffix, uint32_t materialIndex)
 {
 	const uint32_t textureCount = aiMat->GetTextureCount(textureType);
@@ -146,7 +146,7 @@ std::string FindTexture(const aiScene* scene, const aiMaterial* aiMat, aiTexture
 			{
 				fileName += ".jpg";
 			}
-			else if (embeddedTexture->CheckFormat("png"))
+			else if(embeddedTexture->CheckFormat("png"))
 			{
 				fileName += ".png";
 			}
@@ -185,7 +185,7 @@ std::string FindTexture(const aiScene* scene, const aiMaterial* aiMat, aiTexture
 	return textureName.filename().u8string();
 }
 
-Bone* BuildSkeleton(const aiNode& sceneNode, Bone* parent, Skeleton& skeleton, BoneIndexLookup& boneIndexLookup)
+Bone* BuildSkeleton(const aiNode&sceneNode, Bone* parent, Skeleton& skeleton, BoneIndexLookup& boneIndexLookup)
 {
 	Bone* bone = nullptr;
 	std::string boneName = sceneNode.mName.C_Str();
@@ -259,6 +259,7 @@ int main(int argc, char* argv[])
 
 	const Arguments& args = argOpt.value();
 	Assimp::Importer importer;
+	importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);
 	const uint32_t flags = aiProcessPreset_TargetRealtime_Quality | aiProcess_ConvertToLeftHanded;
 	const aiScene* scene = importer.ReadFile(args.inputFileName.u8string().c_str(), flags);
 	if (scene == nullptr)
@@ -376,7 +377,7 @@ int main(int argc, char* argv[])
 				}
 			}
 		}
-
+		
 	}
 
 	if (!args.animOnly && scene->HasMaterials())
@@ -403,7 +404,7 @@ int main(int argc, char* argv[])
 			materialData.material.emissive = ToColor(emissive);
 			materialData.material.specular = ToColor(specular);
 			materialData.material.power = static_cast<float>(specularPower);
-
+			
 			materialData.diffuseMapName = FindTexture(scene, assimpMaterial, aiTextureType_DIFFUSE, args, "_diff", materialIndex);
 			materialData.normalMapName = FindTexture(scene, assimpMaterial, aiTextureType_NORMALS, args, "_norm", materialIndex);
 			materialData.bumpMapName = FindTexture(scene, assimpMaterial, aiTextureType_DISPLACEMENT, args, "_bump", materialIndex);
@@ -443,7 +444,7 @@ int main(int argc, char* argv[])
 				for (uint32_t keyIndex = 0; keyIndex < aiBoneAnim->mNumPositionKeys; ++keyIndex)
 				{
 					const aiVectorKey& pos = aiBoneAnim->mPositionKeys[keyIndex];
-					builder.AddPositionKey(ToVector3(pos.mValue) * args.scale, static_cast<float>(pos.mTime));
+					builder.AddPositionKey(ToVector3(pos.mValue)* args.scale, static_cast<float>(pos.mTime));
 				}
 				for (uint32_t keyIndex = 0; keyIndex < aiBoneAnim->mNumRotationKeys; ++keyIndex)
 				{
