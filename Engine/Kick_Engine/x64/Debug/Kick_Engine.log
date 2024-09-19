@@ -5,6 +5,7 @@ E:\Kick_Engine\External\Bullet\BulletSoftBody\btSoftBody.h(1357,21): warning C42
 E:\Kick_Engine\External\Bullet\BulletSoftBody\btSoftBody.h(1361,21): warning C4244: 'initializing': conversion from 'double' to 'btScalar', possible loss of data
 E:\Kick_Engine\External\Bullet\BulletSoftBody\btSoftBody.h(1385,20): warning C4244: '=': conversion from 'double' to 'btScalar', possible loss of data
 E:\Kick_Engine\External\Bullet\BulletSoftBody\btSoftBody.h(1387,23): warning C4244: '=': conversion from 'double' to 'btScalar', possible loss of data
+E:\Kick_Engine\Framework\Audio\Inc\Audio.h(5,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
 E:\Kick_Engine\External\Bullet\BulletSoftBody\btSoftBody.h(1269,17): warning C4244: 'initializing': conversion from 'double' to 'btScalar', possible loss of data
 E:\Kick_Engine\External\Bullet\BulletSoftBody\btSoftBody.h(1303,1): message : see reference to function template instantiation 'void btSoftBody::updateFace<btDbvtNode>(DBVTNODE *,bool,bool)' being compiled
           with
@@ -13,5 +14,6 @@ E:\Kick_Engine\External\Bullet\BulletSoftBody\btSoftBody.h(1303,1): message : se
           ]
   App.cpp
   Kick_Engine.cpp
+  EventManager.cpp
   Generating Code...
   Kick_Engine.vcxproj -> E:\Kick_Engine\x64\Debug\Kick_Engine.lib
