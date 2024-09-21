@@ -26,8 +26,22 @@ protected:
 	Kick_Engine::Graphics::ModelId mModelId2;
 	Kick_Engine::Graphics::RenderGroup mCharacter2;
 	Kick_Engine::Graphics::Animator mCharacterAnimator2;
-	Kick_Engine::Graphics::StandardEffect mStandardEffect;
+	Kick_Engine::Graphics::ModelId mModelId3;
+	Kick_Engine::Graphics::RenderGroup mCharacter3;	
+	Kick_Engine::Graphics::ModelId mModelId4;
+	Kick_Engine::Graphics::RenderGroup mCharacter4;
+	Kick_Engine::Graphics::Transform mTransform;
+	Kick_Engine::Graphics::RenderObject mGround;
 
+	Kick_Engine::Graphics::RenderObject mCloth;
+	Kick_Engine::Graphics::Mesh mClothMesh;
+	Kick_Engine::Physics::SoftBody mClothSoftBody;
+	Kick_Engine::Physics::CollisionShape mGroundShape;
+	Kick_Engine::Physics::RigidBody mGroundRB;
+	Kick_Engine::Graphics::Animator mCharacterAnimator3;
+	Kick_Engine::Graphics::StandardEffect mStandardEffect;
+	Kick_Engine::Graphics::ParticleSystemEffect mParticleEffect;
+	Kick_Engine::Physics::ParticleSystem mParticleSystem;
 	Kick_Engine::ListenerId mSpaceEventId = 0;
 	Kick_Engine::ListenerId mAnimEventId = 0;
 

@@ -5,7 +5,7 @@
 -scale 0.01 -animOnly 1 ../../Assets/Models/Animations/waveDance.fbx ../../Assets/Models/Animations/waveDance.fbx
 -scale 0.01 -animOnly 1 ../../Assets/Models/Animations/stepDance.fbx ../../Assets/Models/Animations/stepDance.fbx
 
--scale 0.0001 ../../Assets/Models/final/len.fbx ../../Assets/Models/final/len.fbx
+-scale 1.0 ../../Assets/Models/final/concert.fbx ../../Assets/Models/final/concert.fbx
 
 -scale 0.01 ../../Assets/Models/Racer/Racer.fbx ../../Assets/Models/final/rin.model
 -scale 0.01 -animOnly 1 ../../Assets/Models/Racer/RacerAnimations/Walking.fbx ../../Assets/Models/Racer/RacerAnimations/Walking.fbx

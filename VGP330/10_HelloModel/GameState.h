@@ -17,4 +17,6 @@ protected:
 	Kick_Engine::Graphics::RenderGroup mCharacter;
 	Kick_Engine::Graphics::RenderGroup mBag;
 	Kick_Engine::Graphics::StandardEffect mStandardEffect;
+	Kick_Engine::Graphics::ParticleSystemEffect mParticleEffect;
+	Kick_Engine::Physics::ParticleSystem mParticleSystem;
 };
