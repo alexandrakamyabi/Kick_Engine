@@ -108,8 +108,13 @@ void GameState::Terminate()
 {
 	mStandardEffect.Terminate();
 	mParticleSystem.Terminate();
+	mCloth.Terminate();
+	mClothSoftBody.Terminate();
+	mGroundRB.Terminate();
+	mGroundShape.Terminate();
 	mParticleEffect.Terminate();
 	CleanupRenderGroup(mCharacter);
+	CleanupRenderGroup(mCharacter2);
 }
 
 void GameState::Update(float deltaTime)
@@ -198,9 +203,6 @@ void GameState::Render()
 	SimpleDraw::AddGroundPlane(10.0f, Colors::White);
 	SimpleDraw::Render(mCamera);
 	mCloth.meshBuffer.Update(mClothMesh.vertices.data(), mClothMesh.vertices.size());
-	mParticleEffect.Begin();
-	mParticleSystem.Render(mParticleEffect);
-	mParticleEffect.End();
 	if (!mDrawSkeleton)
 	{
 		mStandardEffect.Begin();
@@ -211,7 +213,10 @@ void GameState::Render()
 			mStandardEffect.Render(mCloth);
 		mStandardEffect.End();
 	}
-	
+
+	mParticleEffect.Begin();
+	mParticleSystem.Render(mParticleEffect);
+	mParticleEffect.End();
 }
 
 void GameState::DebugUI()
