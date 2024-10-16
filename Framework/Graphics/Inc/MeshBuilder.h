@@ -23,6 +23,7 @@ namespace Kick_Engine::Graphics
 		static MeshPX CreateVerticalPlanePX(uint32_t numRows, uint32_t numCols, float spacing);
 		static MeshPX CreateHorizontalPlanePX(uint32_t numRows, uint32_t numCols, float spacing);
 		static Mesh CreateHorizontalPlane(uint32_t numRows, uint32_t numCols, float spacing);
+		static MeshD CreatePlane(uint32_t numRows, uint32_t numCols, float spacing, Kick_Engine::Color color);
 
 		//Cylinder
 		static MeshPC CreateCylinderPC(uint32_t slices, uint32_t rings);

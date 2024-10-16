@@ -31,6 +31,8 @@ namespace Kick_Engine::Graphics
 
 		void DebugUI();
 
+		void SetLightingMode(bool mode);
+
 	private: 
 		struct TransformData
 		{
@@ -76,5 +78,7 @@ namespace Kick_Engine::Graphics
 		const Camera* mLightCamera = nullptr;
 		const DirectionalLight* mDirectionalLight = nullptr;
 		const Texture* mShadowMap = nullptr;
+
+		bool mUseLighting = true;
 	};
 }

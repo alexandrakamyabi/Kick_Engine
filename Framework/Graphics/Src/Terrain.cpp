@@ -18,6 +18,8 @@ void Terrain::Initialize(const std::filesystem::path& fileName, float heightScal
 	mHeightScale = heightScale;
 	mRows = dimensions;
 	mColumns = dimensions;
+	float halfRow = mRows * 0.5f;
+	float halfColumn = mColumns * 0.5f;
 	const float tileCount = 10.0f;
 
 	mMesh.vertices.resize(mRows * mColumns);
@@ -30,8 +32,8 @@ void Terrain::Initialize(const std::filesystem::path& fileName, float heightScal
 			const uint32_t index = x + (z * mColumns);
 
 			Vertex& vertex = mMesh.vertices[index];
-			const float posX = static_cast<float>(x);
-			const float posZ = static_cast<float>(z);
+			const float posX = static_cast<float>(x) - halfColumn;
+			const float posZ = static_cast<float>(z) - halfRow;
 			vertex.position = { posX, height, posZ };
 			vertex.normal = Math::Vector3::YAxis;
 			vertex.tangent = Math::Vector3::XAxis;
@@ -115,6 +117,18 @@ float Terrain::GetHeight(const Math::Vector3& position) const
 	}
 
 	return height;
+}
+
+float Terrain::GetVertexHeight(const Math::Vector3& position) const
+{
+	const int x = static_cast<int>(position.x);
+	const int z = static_cast<int>(position.z);
+
+	const uint32_t index = x + (z * mColumns);
+
+	Vertex vertex = mMesh.vertices[index];
+	
+	return vertex.position.y;
 }
 
 const Mesh& Terrain::GetMesh() const
