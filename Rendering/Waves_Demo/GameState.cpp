@@ -4,19 +4,41 @@ using namespace Kick_Engine;
 using namespace Kick_Engine::Graphics;
 using namespace Kick_Engine::Input;
 
+#define PI = 3.14f
+
 void GameState::Initialize()
 {
 	m_Camera.SetPosition({ -1.0f, 4.0f, -8.0f });
 	m_Camera.SetLookAt({ 0.0f, 0.0f, 0.0f });
 
+	m_DirectionalLight.direction = Math::Normalize({ 1.0f, -1.0f, 1.0f });
+
 	GraphicsSystem::Get()->SetClearColor(Colors::SkyBlue);
 
-	MeshD mesh = MeshBuilder::CreatePlane(100, 100, 0.1f, Colors::White);
+	MeshPC mesh = MeshBuilder::CreateHorizontalPlanePC(100, 100, 0.1f, Colors::DarkBlue);
 	m_Water.meshBuffer.Initialize(mesh);
+
+	//Vector2 direction;
+	//Vector2 origin;       --not needed right now
+	//float   frequency;
+	//float   amplitude;
+	//float   phase;
+	//float   steepness;
+
+	mWaves.push_back({
+		{0.5f, 0.5f},
+		{0.0f, 0.0f},
+		1.0f,
+		1.0f,
+		1.0f,
+		1.0f
+		});
+	m_WaveEffect.InitializeWaves(mWaves);
 
 	std::filesystem::path shaderFilePath = L"../../Assets/Shaders/WaveShader.fx";
 	m_WaveEffect.Initialize(shaderFilePath);
 	m_WaveEffect.SetCamera(m_Camera);
+	m_WaveEffect.SetDirectionalLight(m_DirectionalLight);
 }
 
 void GameState::Terminate()
@@ -66,6 +88,7 @@ void GameState::Update(float deltaTime)
 	}
 #pragma endregion
 
+	m_WaveEffect.Update(deltaTime);
 }
 
 void GameState::Render()
@@ -81,6 +104,10 @@ void GameState::DebugUI()
 
 		Math::Vector3 position = m_Camera.GetPosition();
 		ImGui::DragFloat3("Camera Position", &position.x, 0.1f);
+		if (ImGui::DragFloat3("Directional Light", &m_DirectionalLight.direction.x, 0.01f))
+		{
+			m_DirectionalLight.direction = Math::Normalize(m_DirectionalLight.direction);
+		}
 
 		m_WaveEffect.DebugUI();
 

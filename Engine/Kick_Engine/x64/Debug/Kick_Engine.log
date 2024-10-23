@@ -13,7 +13,14 @@ E:\Kick_Engine\External\Bullet\BulletSoftBody\btSoftBody.h(1303,1): message : se
               DBVTNODE=btDbvtNode
           ]
   App.cpp
-  EventManager.cpp
+  CameraComponent.cpp
+E:\Kick_Engine\Engine\Kick_Engine\Src\CameraComponent.cpp(26,50): warning C4390: ';': empty controlled statement found; is this the intent?
+  CameraService.cpp
   Kick_Engine.cpp
+  EventManager.cpp
+  FPSCameraComponent.cpp
+  GameObject.cpp
+  GameWorld.cpp
+  TransformComponent.cpp
   Generating Code...
   Kick_Engine.vcxproj -> E:\Kick_Engine\x64\Debug\Kick_Engine.lib

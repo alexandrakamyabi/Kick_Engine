@@ -4,22 +4,30 @@ cbuffer WorldBuffer : register(b0)
 {
     matrix wvp;
     matrix worldMatrix;
+    float3 lightDirection;
+    float3 cameraPos;
 }
 
-cbuffer TimeBuffer : register(b1)
+cbuffer SettingsBuffer : register(b1)
+{
+    float normalStrength;
+    float3 diffuseReflectance;
+}
+
+cbuffer TimeBuffer : register(b2)
 {
     float time;
 }
 
-
+cbuffer WaveBuffer : register(b3)
+{
+    int waveCount;
+}
 
 struct VS_INPUT
 {
     float3 position : POSITION;
-    float3 normal : NORMAL;
-    float3 tangent : TANGENT;
     float4 color : COLOR;
-    float2 uv : TEXCOORD;
 };
 
 struct VS_OUTPUT
@@ -38,8 +46,11 @@ struct Wave
     float amplitude;
     float phase;
     float steepness;
-    int waveType;
 };
+
+StructuredBuffer<Wave> waves : register(t0);
+
+#define PI 3.1415926f
 
 float2 GetDirection(float3 pos, Wave wave)
 {
@@ -65,9 +76,25 @@ float Sine(float3 worldPos, Wave wave)
     return wave.amplitude * sin(pos * wave.frequency + t);
 }
 
-float3 CalculateOffset(float3 worldPos, Wave wave)
+float3 SineNormal(float3 worldPos, Wave wave)
 {
-    return float3(0.0f, Sine(worldPos, wave), 0.0f);
+    float2 dir = GetDirection(worldPos, wave);
+    float pos = GetWaveCoord(worldPos, dir, wave);
+    float t = GetTime(wave);
+
+    float2 n = wave.frequency * wave.amplitude * dir * cos(pos * wave.frequency + t);
+
+    return float3(-n.x, 1.0f, -n.y);
+}
+
+float CalculateOffset(float3 worldPos, Wave wave)
+{
+    return Sine(worldPos, wave);
+}
+
+float3 CalculateNormal(float3 worldPos, Wave wave)
+{
+    return SineNormal(worldPos, wave);
 }
 
 
@@ -75,28 +102,53 @@ VS_OUTPUT VS(VS_INPUT input)
 {
 	VS_OUTPUT output;
     
-    output.worldPos = mul(float4(input.position, 1.0f), worldMatrix);
+    float height = 0.0f;
+    float3 normal = 0.0f;
     
-    float3 height = 0.0f;
+   
     
     for (int wi = 0; wi < waveCount; ++wi)
     {
-        height += CalculateOffset(output.worldPos, Waves);
+       height += CalculateOffset(input.position, waves[wi]);
+       normal += CalculateNormal(input.position, waves[wi]);
     }
     
-    float4 newPos = float4(input.position + height, 0.0f);
+    output.worldPos = input.position;
     
-    output.worldPos = mul(newPos, worldMatrix);
-    output.position = mul(newPos, wvp);
+    input.position.y += height;
+   
+    output.position = mul(float4(input.position, 1.0f), wvp);
+    output.worldPos = mul(input.position, (float3x3) worldMatrix);
     output.color = input.color;
-    output.normal = 0.0f;
+    output.normal = float3(0.0f, 0.0f, 0.0f);
 	
 	return output;
 }
 
 float4 PS(VS_OUTPUT input) : SV_Target
 {
-    return input.color;
-
+    float3 lightDir = -normalize(lightDirection);
+    //float3 viewDir = normalize(cameraPos - input.worldPos);
+    //float3 halfwayDir = normalize(lightDir + viewDir);
+    
+    float3 normal = 0.0f;
+    
+    for (int wi = 0; wi < 1; ++wi)
+    {
+        normal += CalculateNormal(input.worldPos, waves[wi]);
+    }
+    
+    normal = normalize(normal);
+    normal = normalize(mul(normal, (float3x3) worldMatrix));
+    
+    normal.xz *= normalStrength;
+    normal = normalize(normal);
+    
+    float ndotl = max(0.0f, dot(lightDir, normal));
+    
+    float3 diffReflect = diffuseReflectance / 3.1415926f;
+    float3 diffuse = input.color.rgb * ndotl * diffReflect;
+    
+    return float4(diffuse, 1.0f);
 }
 

@@ -1,12 +1,10 @@
 ﻿  Animation.cpp
-E:\Kick_Engine\Framework\Graphics\Src\Animation.cpp(112): warning C4172: returning address of local variable or temporary
-E:\Kick_Engine\Framework\Graphics\Src\Animation.cpp(64): warning C4172: returning address of local variable or temporary
 E:\Kick_Engine\Framework\Graphics\Src\Animation.cpp(88): warning C4172: returning address of local variable or temporary
+E:\Kick_Engine\Framework\Graphics\Src\Animation.cpp(64): warning C4172: returning address of local variable or temporary
+E:\Kick_Engine\Framework\Graphics\Src\Animation.cpp(112): warning C4172: returning address of local variable or temporary
   AnimationBuilder.cpp
   AnimationUtil.cpp
   Animator.cpp
-  BlendState.cpp
-  Camera.cpp
   ComicBookEffect.cpp
 E:\Kick_Engine\Framework\Graphics\Src\ComicBookEffect.cpp(15,50): warning C4244: 'initializing': conversion from 'uint32_t' to 'float', possible loss of data
 E:\Kick_Engine\Framework\Graphics\Src\ComicBookEffect.cpp(15,26): warning C4244: 'initializing': conversion from 'uint32_t' to 'const float', possible loss of data
@@ -16,9 +14,7 @@ E:\Kick_Engine\Framework\Graphics\Src\ComicBookEffect.cpp(17,46): warning C4244:
 E:\Kick_Engine\Framework\Graphics\Src\ComicBookEffect.cpp(17,33): warning C4244: 'argument': conversion from 'const float' to 'uint32_t', possible loss of data
 E:\Kick_Engine\Framework\Graphics\Src\ComicBookEffect.cpp(44,43): warning C4244: '=': conversion from 'uint32_t' to 'float', possible loss of data
 E:\Kick_Engine\Framework\Graphics\Src\ComicBookEffect.cpp(45,45): warning C4244: '=': conversion from 'uint32_t' to 'float', possible loss of data
-  ConstantBuffer.cpp
   CrosshatchShadowEffect.cpp
-  DebugUI.cpp
   DepthMapEffect.cpp
   FogEffect.cpp
 E:\Kick_Engine\Framework\Graphics\Src\FogEffect.cpp(18,71): warning C4305: 'argument': truncation from 'double' to 'float'
@@ -34,16 +30,12 @@ E:\Kick_Engine\Framework\Graphics\Src\GaussianBlurEffect.cpp(17,40): warning C42
 E:\Kick_Engine\Framework\Graphics\Src\GaussianBlurEffect.cpp(44,43): warning C4244: '=': conversion from 'uint32_t' to 'float', possible loss of data
 E:\Kick_Engine\Framework\Graphics\Src\GaussianBlurEffect.cpp(45,45): warning C4244: '=': conversion from 'uint32_t' to 'float', possible loss of data
 E:\Kick_Engine\Framework\Graphics\Src\GaussianBlurEffect.cpp(71,25): warning C4018: '<': signed/unsigned mismatch
-  GraphicsSystem.cpp
   GraphicsType_D3D11.cpp
 E:\Kick_Engine\Framework\Graphics\Src\GraphicsType_D3D11.cpp(81,109): warning C4244: 'argument': conversion from 'float' to 'UINT8', possible loss of data
   GrassBuffer.cpp
 E:\Kick_Engine\Framework\Graphics\Src\GrassBuffer.cpp(102,20): warning C4018: '<': signed/unsigned mismatch
 E:\Kick_Engine\Framework\Graphics\Src\GrassBuffer.cpp(104,21): warning C4018: '<': signed/unsigned mismatch
 E:\Kick_Engine\Framework\Graphics\Src\GrassBuffer.cpp(124,23): warning C4244: 'argument': conversion from 'uint32_t' to 'float', possible loss of data
-  GrassEffect.cpp
-E:\Kick_Engine\Framework\Graphics\Src\GrassEffect.cpp(23,71): warning C4305: 'argument': truncation from 'double' to 'float'
-  GrassShader.cpp
   MeshBuffer_D3D11.cpp
   MeshBuilder.cpp
 E:\Kick_Engine\Framework\Graphics\Src\MeshBuilder.cpp(80,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
@@ -66,26 +58,15 @@ E:\Kick_Engine\Framework\Graphics\Src\ModelIO.cpp(379,62): warning C4267: 'initi
 E:\Kick_Engine\Framework\Graphics\Src\ModelIO.cpp(430,42): warning C4390: ';': empty controlled statement found; is this the intent?
   ModelManager.cpp
   MoebiusEffect.cpp
-  Noise.cpp
-E:\Kick_Engine\Framework\Graphics\Src\Noise.cpp(18,10): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-E:\Kick_Engine\Framework\Graphics\Src\Noise.cpp(24,10): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-E:\Kick_Engine\Framework\Graphics\Src\Noise.cpp(48,11): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-E:\Kick_Engine\Framework\Graphics\Src\Noise.cpp(49,11): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-E:\Kick_Engine\Framework\Graphics\Src\Noise.cpp(50,11): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-E:\Kick_Engine\Framework\Graphics\Src\Noise.cpp(51,11): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
   NormalMapEffect.cpp
   ParticleSystemEffect.cpp
-  PixelShader_D3D11.cpp
   PostProcessingEffect.cpp
 E:\Kick_Engine\Framework\Graphics\Src\PostProcessingEffect.cpp(72,51): warning C4244: 'initializing': conversion from 'uint32_t' to 'float', possible loss of data
 E:\Kick_Engine\Framework\Graphics\Src\PostProcessingEffect.cpp(72,27): warning C4244: 'initializing': conversion from 'uint32_t' to 'const float', possible loss of data
 E:\Kick_Engine\Framework\Graphics\Src\PostProcessingEffect.cpp(73,53): warning C4244: 'initializing': conversion from 'uint32_t' to 'float', possible loss of data
 E:\Kick_Engine\Framework\Graphics\Src\PostProcessingEffect.cpp(73,28): warning C4244: 'initializing': conversion from 'uint32_t' to 'const float', possible loss of data
 E:\Kick_Engine\Framework\Graphics\Src\PostProcessingEffect.cpp(128): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-  Precompiled.cpp
   RenderObject.cpp
-  RenderTarget.cpp
-  Sampler.cpp
   ShadowEffect.cpp
   SimpleDraw.cpp
   SimpleTerrain.cpp
@@ -98,6 +79,7 @@ E:\Kick_Engine\Framework\Graphics\Src\SimpleTerrain.cpp(81,32): warning C4018: '
 E:\Kick_Engine\Framework\Graphics\Src\SimpleTerrain.cpp(81,52): warning C4018: '>=': signed/unsigned mismatch
   StandardEffect.cpp
 E:\Kick_Engine\Framework\Graphics\Src\StandardEffect.cpp(203,32): warning C4804: '>': unsafe use of type 'bool' in operation
+  StructuredBuffer.cpp
   Terrain.cpp
 E:\Kick_Engine\Framework\Graphics\Src\Terrain.cpp(11,2): warning C4477: 'snprintf' : format string '%s' requires an argument of type 'char *', but variadic argument 4 has type 'const std::filesystem::path::value_type *'
 E:\Kick_Engine\Framework\Graphics\Src\Terrain.cpp(11,2): message : consider using '%ls' in the format string
@@ -107,8 +89,12 @@ E:\Kick_Engine\Framework\Graphics\Src\Terrain.cpp(11,2): message : consider usin
 E:\Kick_Engine\Framework\Graphics\Src\Terrain.cpp(86,32): warning C4018: '>': signed/unsigned mismatch
 E:\Kick_Engine\Framework\Graphics\Src\Terrain.cpp(86,52): warning C4018: '>=': signed/unsigned mismatch
   TerrainEffect.cpp
-  Texture.cpp
-  TextureManager.cpp
   VertexShader_D3D11.cpp
   WaveEffect.cpp
+E:\Kick_Engine\Framework\Graphics\Src\WaveEffect.cpp(27,26): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+E:\Kick_Engine\Framework\Graphics\Inc\StructuredBuffer.h(17): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
+E:\Kick_Engine\Framework\Graphics\Inc\StructuredBuffer.h(36,1): message : see reference to function template instantiation 'void Kick_Engine::Graphics::StructuredBuffer::Initialize<Kick_Engine::Graphics::WaveData>(const std::vector<Kick_Engine::Graphics::WaveData,std::allocator<Kick_Engine::Graphics::WaveData>> &)' being compiled
+E:\Kick_Engine\Framework\Graphics\Inc\StructuredBuffer.h(34,1): message : while compiling class template member function 'void Kick_Engine::Graphics::TypedStructuredBuffer<Kick_Engine::Graphics::WaveData>::Initialize(const std::vector<Kick_Engine::Graphics::WaveData,std::allocator<Kick_Engine::Graphics::WaveData>> &)'
+E:\Kick_Engine\Framework\Graphics\Src\WaveEffect.cpp(14,24): message : see reference to function template instantiation 'void Kick_Engine::Graphics::TypedStructuredBuffer<Kick_Engine::Graphics::WaveData>::Initialize(const std::vector<Kick_Engine::Graphics::WaveData,std::allocator<Kick_Engine::Graphics::WaveData>> &)' being compiled
+E:\Kick_Engine\Framework\Graphics\Inc\WaveEffect.h(79,14): message : see reference to class template instantiation 'Kick_Engine::Graphics::TypedStructuredBuffer<Kick_Engine::Graphics::WaveData>' being compiled
   Graphics.vcxproj -> E:\Kick_Engine\x64\Debug\Graphics.lib
