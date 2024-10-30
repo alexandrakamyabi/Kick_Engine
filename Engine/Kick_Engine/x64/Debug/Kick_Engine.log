@@ -1,4 +1,5 @@
-﻿  Precompiled.cpp
+﻿D:\VS\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(517,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (EngineD.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  Precompiled.cpp
 E:\Kick_Engine\External\Bullet\BulletSoftBody\btSoftBody.h(38,53): warning C4305: 'initializing': truncation from 'double' to 'btScalar'
 E:\Kick_Engine\External\Bullet\BulletSoftBody\btSoftBody.h(1232,17): warning C4244: 'initializing': conversion from 'double' to 'btScalar', possible loss of data
 E:\Kick_Engine\External\Bullet\BulletSoftBody\btSoftBody.h(1357,21): warning C4244: '+=': conversion from 'double' to 'btScalar', possible loss of data
@@ -14,13 +15,18 @@ E:\Kick_Engine\External\Bullet\BulletSoftBody\btSoftBody.h(1303,1): message : se
           ]
   App.cpp
   CameraComponent.cpp
-E:\Kick_Engine\Engine\Kick_Engine\Src\CameraComponent.cpp(26,50): warning C4390: ';': empty controlled statement found; is this the intent?
+E:\Kick_Engine\Engine\Kick_Engine\Src\CameraComponent.cpp(27,50): warning C4390: ';': empty controlled statement found; is this the intent?
   CameraService.cpp
   Kick_Engine.cpp
   EventManager.cpp
   FPSCameraComponent.cpp
   GameObject.cpp
+  GameObjectFactory.cpp
   GameWorld.cpp
+  MeshComponent.cpp
+  RenderObjectComponent.cpp
+  RenderService.cpp
+  SaveUtil.cpp
   TransformComponent.cpp
   Generating Code...
   Kick_Engine.vcxproj -> E:\Kick_Engine\x64\Debug\Kick_Engine.lib

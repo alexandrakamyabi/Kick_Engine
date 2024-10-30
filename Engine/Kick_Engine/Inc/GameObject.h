@@ -82,6 +82,8 @@ namespace Kick_Engine
 		}
 		
 	private:
+		void Save();
+
 		std::string mName = "EMPTY";
 		bool mInitialized = false;
 		uint32_t mUniqueId = 0;
@@ -91,5 +93,6 @@ namespace Kick_Engine
 
 		friend class GameWorld;
 		GameWorld* mWorld = nullptr;
+		std::filesystem::path mTemplateFilePath = "";
 	};
 }

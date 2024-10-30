@@ -15,6 +15,9 @@ namespace Kick_Engine
 		void Terminate() override;
 		void Update(float deltaTime);
 
+		void Serialize(rapidjson::Document& doc, rapidjson::Value& value) override;
+		void Deserialize(const rapidjson::Value& value) override;
+
 	private:
 		CameraComponent* mCameraComponent = nullptr;
 		float mShiftSpeed = 10.0f;
