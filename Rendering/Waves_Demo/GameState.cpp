@@ -13,31 +13,25 @@ void GameState::Initialize()
 
 	m_DirectionalLight.direction = Math::Normalize({ 1.0f, -1.0f, 1.0f });
 
+	mWaveLoader.Initialize();
+	mWaveLoader.SetEffect(&m_WaveEffect);
+
 	GraphicsSystem::Get()->SetClearColor(Colors::SkyBlue);
 
-	MeshPC mesh = MeshBuilder::CreateHorizontalPlanePC(100, 100, 0.1f, Colors::DarkBlue);
+	MeshPC mesh = MeshBuilder::CreateHorizontalPlanePC(500, 500, 0.1f, Colors::Blue);
 	m_Water.meshBuffer.Initialize(mesh);
 
-	//Vector2 direction;
-	//Vector2 origin;       --not needed right now
-	//float   frequency;
-	//float   amplitude;
-	//float   phase;
-	//float   steepness;
+	MeshPX sky = MeshBuilder::CreateSkyBoxPX(600);
+	mSky.meshBuffer.Initialize(sky);
+	mSky.diffuseMapId = TextureManager::Get()->LoadTexture("skybox/skybox_texture.jpg");
 
-	mWaves.push_back({
-		{0.5f, 0.5f},
-		{0.0f, 0.0f},
-		1.0f,
-		1.0f,
-		1.0f,
-		1.0f
-		});
-	m_WaveEffect.InitializeWaves(mWaves);
+	mAtmosphereEffect.Initialize();
+	mAtmosphereEffect.SetCamera(m_Camera);
 
 	std::filesystem::path shaderFilePath = L"../../Assets/Shaders/WaveShader.fx";
 	m_WaveEffect.Initialize(shaderFilePath);
 	m_WaveEffect.SetCamera(m_Camera);
+	m_WaveEffect.SetWaveData(mWaveLoader.GetData(), mWaveLoader.GetLightData());
 	m_WaveEffect.SetDirectionalLight(m_DirectionalLight);
 }
 
@@ -93,6 +87,10 @@ void GameState::Update(float deltaTime)
 
 void GameState::Render()
 {
+	mAtmosphereEffect.Begin();
+		mAtmosphereEffect.Render(mSky);
+	mAtmosphereEffect.End();
+
 	m_WaveEffect.Begin();
 		m_WaveEffect.Render(m_Water);
 	m_WaveEffect.End();
@@ -106,10 +104,12 @@ void GameState::DebugUI()
 		ImGui::DragFloat3("Camera Position", &position.x, 0.1f);
 		if (ImGui::DragFloat3("Directional Light", &m_DirectionalLight.direction.x, 0.01f))
 		{
-			m_DirectionalLight.direction = Math::Normalize(m_DirectionalLight.direction);
+			m_DirectionalLight.direction = m_DirectionalLight.direction;
 		}
 
 		m_WaveEffect.DebugUI();
+
+		mWaveLoader.DebugUI();
 
 	ImGui::End();
 }

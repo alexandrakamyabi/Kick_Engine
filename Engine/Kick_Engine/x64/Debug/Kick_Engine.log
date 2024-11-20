@@ -1,5 +1,5 @@
-﻿D:\VS\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(517,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (EngineD.vcxproj).  This can lead to incorrect clean and rebuild behavior.
-  Precompiled.cpp
+﻿  Precompiled.cpp
+E:\Kick_Engine\Framework\Graphics\Inc\WaveEffect.h(49): warning C4305: 'initializing': truncation from 'double' to 'float'
 E:\Kick_Engine\External\Bullet\BulletSoftBody\btSoftBody.h(38,53): warning C4305: 'initializing': truncation from 'double' to 'btScalar'
 E:\Kick_Engine\External\Bullet\BulletSoftBody\btSoftBody.h(1232,17): warning C4244: 'initializing': conversion from 'double' to 'btScalar', possible loss of data
 E:\Kick_Engine\External\Bullet\BulletSoftBody\btSoftBody.h(1357,21): warning C4244: '+=': conversion from 'double' to 'btScalar', possible loss of data
@@ -13,6 +13,8 @@ E:\Kick_Engine\External\Bullet\BulletSoftBody\btSoftBody.h(1303,1): message : se
           [
               DBVTNODE=btDbvtNode
           ]
+  AnimatorComponent.cpp
+E:\Kick_Engine\Engine\Kick_Engine\Src\AnimatorComponent.cpp(29,57): warning C4267: 'initializing': conversion from 'size_t' to 'uint32_t', possible loss of data
   App.cpp
   CameraComponent.cpp
 E:\Kick_Engine\Engine\Kick_Engine\Src\CameraComponent.cpp(27,50): warning C4390: ';': empty controlled statement found; is this the intent?
@@ -23,10 +25,24 @@ E:\Kick_Engine\Engine\Kick_Engine\Src\CameraComponent.cpp(27,50): warning C4390:
   GameObject.cpp
   GameObjectFactory.cpp
   GameWorld.cpp
+E:\Kick_Engine\Engine\Kick_Engine\Src\GameWorld.cpp(176,65): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
   MeshComponent.cpp
+  ModelComponent.cpp
+  PhysicsService.cpp
+E:\Kick_Engine\Engine\Kick_Engine\Src\PhysicsService.cpp(30,42): warning C4244: 'argument': conversion from 'uint32_t' to 'float', possible loss of data
+E:\Kick_Engine\Engine\Kick_Engine\Src\PhysicsService.cpp(47,56): warning C4244: '=': conversion from 'float' to 'uint32_t', possible loss of data
   RenderObjectComponent.cpp
   RenderService.cpp
+  RigidBodyComponent.cpp
   SaveUtil.cpp
+  SoundBankComponent.cpp
+  SoundEffectComponent.cpp
   TransformComponent.cpp
+  Generating Code...
+  Compiling...
+  UIRenderService.cpp
+  UISpriteComponent.cpp
+  UITextComponent.cpp
+  WaveComponent.cpp
   Generating Code...
   Kick_Engine.vcxproj -> E:\Kick_Engine\x64\Debug\Kick_Engine.lib

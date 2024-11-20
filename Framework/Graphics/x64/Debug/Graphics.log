@@ -5,6 +5,7 @@ E:\Kick_Engine\Framework\Graphics\Src\Animation.cpp(64): warning C4172: returnin
   AnimationBuilder.cpp
   AnimationUtil.cpp
   Animator.cpp
+  AtmosphereEffect.cpp
   BlendState.cpp
   Camera.cpp
   ComicBookEffect.cpp
@@ -50,11 +51,10 @@ E:\Kick_Engine\Framework\Graphics\Src\MeshBuilder.cpp(80,12): warning C4244: 'ar
 E:\Kick_Engine\Framework\Graphics\Src\MeshBuilder.cpp(112,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
 E:\Kick_Engine\Framework\Graphics\Src\MeshBuilder.cpp(146,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
 E:\Kick_Engine\Framework\Graphics\Src\MeshBuilder.cpp(166,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-E:\Kick_Engine\Framework\Graphics\Src\MeshBuilder.cpp(197,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-E:\Kick_Engine\Framework\Graphics\Src\MeshBuilder.cpp(257,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-E:\Kick_Engine\Framework\Graphics\Src\MeshBuilder.cpp(363,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-E:\Kick_Engine\Framework\Graphics\Src\MeshBuilder.cpp(390,49): warning C4267: 'initializing': conversion from 'size_t' to 'uint32_t', possible loss of data
-E:\Kick_Engine\Framework\Graphics\Src\MeshBuilder.cpp(411,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+E:\Kick_Engine\Framework\Graphics\Src\MeshBuilder.cpp(255,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+E:\Kick_Engine\Framework\Graphics\Src\MeshBuilder.cpp(361,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+E:\Kick_Engine\Framework\Graphics\Src\MeshBuilder.cpp(388,49): warning C4267: 'initializing': conversion from 'size_t' to 'uint32_t', possible loss of data
+E:\Kick_Engine\Framework\Graphics\Src\MeshBuilder.cpp(409,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
   ModelIO.cpp
 E:\Kick_Engine\Framework\Graphics\Src\ModelIO.cpp(12,49): warning C4267: 'initializing': conversion from 'size_t' to 'uint32_t', possible loss of data
 E:\Kick_Engine\Framework\Graphics\Src\ModelIO.cpp(19,40): warning C4267: '=': conversion from 'size_t' to 'uint32_t', possible loss of data
@@ -110,12 +110,28 @@ E:\Kick_Engine\Framework\Graphics\Src\Terrain.cpp(86,52): warning C4018: '>=': s
   TerrainEffect.cpp
   Texture.cpp
   TextureManager.cpp
+  UIFont.cpp
+  UISprite.cpp
+E:\Kick_Engine\Framework\Graphics\Src\UISprite.cpp(79,34): warning C4244: 'initializing': conversion from 'LONG' to 'float', possible loss of data
+E:\Kick_Engine\Framework\Graphics\Src\UISprite.cpp(79,20): warning C4244: 'initializing': conversion from 'LONG' to 'const float', possible loss of data
+E:\Kick_Engine\Framework\Graphics\Src\UISprite.cpp(80,36): warning C4244: 'initializing': conversion from 'LONG' to 'float', possible loss of data
+E:\Kick_Engine\Framework\Graphics\Src\UISprite.cpp(80,21): warning C4244: 'initializing': conversion from 'LONG' to 'const float', possible loss of data
+E:\Kick_Engine\Framework\Graphics\Src\UISprite.cpp(87,34): warning C4244: 'initializing': conversion from 'LONG' to 'float', possible loss of data
+E:\Kick_Engine\Framework\Graphics\Src\UISprite.cpp(87,20): warning C4244: 'initializing': conversion from 'LONG' to 'const float', possible loss of data
+E:\Kick_Engine\Framework\Graphics\Src\UISprite.cpp(88,36): warning C4244: 'initializing': conversion from 'LONG' to 'float', possible loss of data
+E:\Kick_Engine\Framework\Graphics\Src\UISprite.cpp(88,21): warning C4244: 'initializing': conversion from 'LONG' to 'const float', possible loss of data
+  UISpriteRenderer.cpp
   VertexShader_D3D11.cpp
   WaveEffect.cpp
-E:\Kick_Engine\Framework\Graphics\Src\WaveEffect.cpp(27,26): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-E:\Kick_Engine\Framework\Graphics\Inc\StructuredBuffer.h(17): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
-E:\Kick_Engine\Framework\Graphics\Inc\StructuredBuffer.h(36,1): message : see reference to function template instantiation 'void Kick_Engine::Graphics::StructuredBuffer::Initialize<Kick_Engine::Graphics::WaveData>(const std::vector<Kick_Engine::Graphics::WaveData,std::allocator<Kick_Engine::Graphics::WaveData>> &)' being compiled
-E:\Kick_Engine\Framework\Graphics\Inc\StructuredBuffer.h(34,1): message : while compiling class template member function 'void Kick_Engine::Graphics::TypedStructuredBuffer<Kick_Engine::Graphics::WaveData>::Initialize(const std::vector<Kick_Engine::Graphics::WaveData,std::allocator<Kick_Engine::Graphics::WaveData>> &)'
-E:\Kick_Engine\Framework\Graphics\Src\WaveEffect.cpp(14,24): message : see reference to function template instantiation 'void Kick_Engine::Graphics::TypedStructuredBuffer<Kick_Engine::Graphics::WaveData>::Initialize(const std::vector<Kick_Engine::Graphics::WaveData,std::allocator<Kick_Engine::Graphics::WaveData>> &)' being compiled
-E:\Kick_Engine\Framework\Graphics\Inc\WaveEffect.h(79,14): message : see reference to class template instantiation 'Kick_Engine::Graphics::TypedStructuredBuffer<Kick_Engine::Graphics::WaveData>' being compiled
+E:\Kick_Engine\Framework\Graphics\Inc\WaveEffect.h(49): warning C4305: 'initializing': truncation from 'double' to 'float'
+E:\Kick_Engine\Framework\Graphics\Src\WaveEffect.cpp(168,68): warning C4244: 'argument': conversion from 'float' to 'ImGuiColorEditFlags', possible loss of data
+E:\Kick_Engine\Framework\Graphics\Src\WaveEffect.cpp(169,70): warning C4244: 'argument': conversion from 'float' to 'ImGuiColorEditFlags', possible loss of data
+E:\Kick_Engine\Framework\Graphics\Src\WaveEffect.cpp(170,68): warning C4244: 'argument': conversion from 'float' to 'ImGuiColorEditFlags', possible loss of data
+E:\Kick_Engine\Framework\Graphics\Src\WaveEffect.cpp(174,60): warning C4244: 'argument': conversion from 'float' to 'ImGuiColorEditFlags', possible loss of data
+E:\Kick_Engine\Framework\Graphics\Src\WaveEffect.cpp(175,80): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Kick_Engine\Framework\Graphics\Src\WaveEffect.cpp(176,89): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Kick_Engine\Framework\Graphics\Src\WaveEffect.cpp(177,78): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Kick_Engine\Framework\Graphics\Src\WaveEffect.cpp(178,68): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Kick_Engine\Framework\Graphics\Src\WaveEffect.cpp(179,76): warning C4305: 'argument': truncation from 'double' to 'float'
+E:\Kick_Engine\Framework\Graphics\Src\WaveEffect.cpp(180,68): warning C4244: 'argument': conversion from 'float' to 'ImGuiColorEditFlags', possible loss of data
   Graphics.vcxproj -> E:\Kick_Engine\x64\Debug\Graphics.lib

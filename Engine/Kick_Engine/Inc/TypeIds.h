@@ -9,6 +9,15 @@ namespace Kick_Engine
 		Camera,       // contains a Camera for viewing
 		FPSCamera,    // moves Camera with FPS controls
 		Mesh,         // Creates a mesh render object
+		Wave,         // Creates a Wave Effect
+		Model,        // Creates a model render object
+		Animator,     // manages and controls animations
+		Rigidbody,	  // physics object that gets added to the physics world
+		SoundEffect,  // adds a single sound effect to an object
+		SoundBank,    // adds an array of sound effects to an object
+		UIText,       // adds a text UI component
+		UISprite,     // adds a sprite to the UI
+		UIButton,     // adds a button to the UI
 		Count
 	};
 
@@ -17,6 +26,8 @@ namespace Kick_Engine
 		Invalid,
 		Camera,
 		Render,
+		Physics,
+		UIRender,
 		Count
 	};
 }

@@ -11,6 +11,7 @@ namespace Kick_Engine::Graphics
 	struct RenderObject;
 	struct DirectionalLight;
 
+	//Used in Sum of Sines version of effect
 	struct WaveData
 	{
 		Math::Vector2 direction;
@@ -38,20 +39,58 @@ namespace Kick_Engine::Graphics
 		void SetDirectionalLight(const DirectionalLight& light);
 		void DebugUI();
 
+		struct OceanData
+		{
+			int waveCount;
+			int pixelWaveCount;
+			float vertexFrequency = 1;
+			float vertexAmplitude = 1;
+			float vertexInitialSpeed = 1;
+			float vertexSeed = 0.6;
+			float vertexMaxPeak = 2;
+			float vertexPeakOffset = 0.3f;
+			float vertexFrequencyMult = 1.3f;
+			float vertexAmplitudeMult = 0.3f;
+			float vertexSpeedRamp = 1.6f;
+			float vertexSeedIter = 1.4326f;
+			float vertexHeight = 1;
+			float vertexDrag = 1;
+			float padding[2] = { 0.0f };
+		};
+
+		struct LightData
+		{
+			float normalStrength = 0.5f;
+			Math::Vector3 diffuseReflectance = { 1.0f, 1.0f, 2.0f };
+			float specNormalStrength = 0.5f;
+			Math::Vector3 specularReflectance = { 0.5f, 0.5f, 0.5f };
+			float shininess = 1.0f;
+			Math::Vector3 ambientColor = { 0.1f, 0.1f, 0.2f };
+			Math::Vector4 specularColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+			float tipAttenuation = 0.5f;
+			Math::Vector3 tipColor = { 0.5f, 0.5f, 0.5f };
+			Math::Vector4 diffuseColor = { 0.0f, 0.0f, 1.0f, 1.0f };
+			float fresnelNormalStrength = 1.0f;
+			float fresnelShininess = 1.0f;
+			float fresnelBias = 1.0f;
+			float fresnelStrength = 1.0f;
+			Math::Vector4 fresnelColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+		};
+
+
+		void SetWaveData(const OceanData& data, const LightData& lightData);
+		OceanData GetOceanData() { return mOceanData; }
+		LightData GetLightData() { return m_LightData; }
+
 	private:
 		struct TransformData
 		{
 			Math::Matrix4 wvp;
 			Math::Matrix4 worldMatrix;
 			Math::Vector3 lightDirection;
+			float padding1;
 			Math::Vector3 cameraPos;
-			float padding[2] = { 0.0f };
-		};
-
-		struct SettingsData
-		{
-			float normalStrength = 1.0f;
-			Math::Vector3 diffuseReflectance = { 1.0f, 1.0f, 5.0f };
+			float padding2;
 		};
 
 		struct TimeData
@@ -60,23 +99,16 @@ namespace Kick_Engine::Graphics
 			float padding[3] = { 0.0f };
 		};
 
-		struct OceanData
-		{
-			int waveCount;
-			float padding[3] = { 0.0f };
-		};
-
 		using TransformBuffer = TypedConstantBuffer<TransformData>;
-		using SettingsBuffer = TypedConstantBuffer<SettingsData>;
+		using LightBuffer = TypedConstantBuffer<LightData>;
 		using TimeBuffer = TypedConstantBuffer<TimeData>;
 		using OceanBuffer = TypedConstantBuffer<OceanData>;
 		using WaveBuffer = TypedStructuredBuffer<WaveData>;
 
 		TransformBuffer mTransformBuffer;
-		SettingsBuffer m_SettingsBuffer;
+		LightBuffer m_LightBuffer;
 		TimeBuffer mTimeBuffer;
 		OceanBuffer mOceanBuffer;
-		WaveBuffer mWaveBuffer;
 
 		VertexShader_D3D11 mVertexShader;
 		PixelShader_D3D11 mPixelShader;
@@ -84,10 +116,9 @@ namespace Kick_Engine::Graphics
 		const Camera* mCamera = nullptr;
 		const DirectionalLight* m_DirectionalLight = nullptr;
 
-		SettingsData m_SettingsData;
+		LightData m_LightData;
+		OceanData mOceanData;
 
 		float mCurrentTime = 0.0f;
-		int mWaveCount = 0;
-		std::vector<WaveData> mWaves;
 	};
 }

@@ -15,5 +15,9 @@ protected:
 	Kick_Engine::Graphics::Camera m_Camera;
 
 	Kick_Engine::Graphics::RenderObject m_Water;
+	Kick_Engine::Graphics::RenderObject mSky;
 	Kick_Engine::Graphics::WaveEffect m_WaveEffect;
+	Kick_Engine::Graphics::AtmosphereEffect mAtmosphereEffect;
+
+	Kick_Engine::WaveLoaderComponent mWaveLoader;
 };

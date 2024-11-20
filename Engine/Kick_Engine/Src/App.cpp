@@ -43,6 +43,8 @@ void App::Run(const AppConfig& config)
 	AudioSystem::StaticInitialize();
 	SoundEffectManager::StaticInitialize("../../Assets/Sounds/");
 	EventManager::StaticInitialize();
+	UIFont::StaticInitialize(UIFont::FontType::TimesNewRoman);
+	UISpriteRenderer::StaticInitialize();
 
 	ASSERT(mCurrentState != nullptr, "App: need an app state");
 	mCurrentState->Initialize();
@@ -73,7 +75,9 @@ void App::Run(const AppConfig& config)
 		float deltaTime = TimeUtil::GetDeltaTime();
 		if (deltaTime < 0.5f)
 		{
+#ifndef USE_PHYSICS_SERVICE
 			PhysicsWorld::Get()->Update(deltaTime);
+#endif
 			mCurrentState->Update(deltaTime);
 		}
 
@@ -88,6 +92,8 @@ void App::Run(const AppConfig& config)
 
 	mCurrentState->Terminate();
 
+	UISpriteRenderer::StaticTerminate();
+	UIFont::StaticTerminate();
 	EventManager::StaticTerminate();
 	SoundEffectManager::StaticTerminate();
 	AudioSystem::StaticTerminate();
