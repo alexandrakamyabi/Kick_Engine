@@ -1,8 +1,7 @@
 #pragma once
 
+// Engine Includes
+#include <Core/Inc/Core.h>
 
-//Engine Includes
-#include "Core/Inc/Core.h"
-
-//External Includes
+// DirectX Includes
 #include <DirectXTK/Inc/Audio.h>

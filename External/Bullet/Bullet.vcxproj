@@ -212,7 +212,7 @@
     <ClCompile Include="BulletDynamics\Vehicle\btWheelInfo.cpp" />
     <ClCompile Include="BulletInverseDynamics\details\MultiBodyTreeImpl.cpp" />
     <ClCompile Include="BulletInverseDynamics\details\MultiBodyTreeInitCache.cpp" />
-    <ClCompile Include="BulletInverseDynamics\IKick_Math.cpp" />
+    <ClCompile Include="BulletInverseDynamics\IDMath.cpp" />
     <ClCompile Include="BulletInverseDynamics\MultiBodyTree.cpp" />
     <ClCompile Include="BulletSoftBody\btDefaultSoftBodySolver.cpp" />
     <ClCompile Include="BulletSoftBody\btDeformableBackwardEulerObjective.cpp" />
@@ -606,7 +606,7 @@
     <ClInclude Include="BulletInverseDynamics\IDConfigBuiltin.hpp" />
     <ClInclude Include="BulletInverseDynamics\IDConfigEigen.hpp" />
     <ClInclude Include="BulletInverseDynamics\IDErrorMessages.hpp" />
-    <ClInclude Include="BulletInverseDynamics\IKick_Math.hpp" />
+    <ClInclude Include="BulletInverseDynamics\IDMath.hpp" />
     <ClInclude Include="BulletInverseDynamics\MultiBodyTree.hpp" />
     <ClInclude Include="BulletSoftBody\btCGProjection.h" />
     <ClInclude Include="BulletSoftBody\btConjugateGradient.h" />

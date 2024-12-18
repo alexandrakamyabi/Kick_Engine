@@ -2,81 +2,48 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Inc">
-      <UniqueIdentifier>{8fd07fba-c185-4b6a-ab2c-6b2b38e4f42f}</UniqueIdentifier>
+      <UniqueIdentifier>{e4fabdfe-d787-444d-bb15-cf9ed03390f0}</UniqueIdentifier>
     </Filter>
     <Filter Include="Src">
-      <UniqueIdentifier>{90dbe515-ecaf-4da9-967c-af4d2d963fbd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Inc\D3D11">
-      <UniqueIdentifier>{dd772226-5f41-4e29-be99-72e527432858}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Src\D3D11">
-      <UniqueIdentifier>{f008352a-bb2f-4f1a-97c3-aa437ffbe24c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Inc\Animation">
-      <UniqueIdentifier>{1ee8df22-e013-40cd-8723-536cd92d73b4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Src\Animation">
-      <UniqueIdentifier>{1d7109a8-d75a-4669-91e8-eef505c3709a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Src\Effects">
-      <UniqueIdentifier>{40add48c-d280-4739-af5b-7f1ee3542f10}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Inc\Effects">
-      <UniqueIdentifier>{a8f9e1a6-db94-47c3-8625-c8ea74cceada}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Inc\UI">
-      <UniqueIdentifier>{656003a8-3c9d-41f7-9a24-257570df115d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Src\UI">
-      <UniqueIdentifier>{4d5ea4c5-b40e-4572-87a9-8cd0cb920207}</UniqueIdentifier>
+      <UniqueIdentifier>{e94d7e44-dd3d-48ae-8ec4-7010f7287a2f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Src\Precompiled.h">
-      <Filter>Src</Filter>
+    <ClInclude Include="Inc\Common.h">
+      <Filter>Inc</Filter>
     </ClInclude>
     <ClInclude Include="Inc\Graphics.h">
       <Filter>Inc</Filter>
     </ClInclude>
-    <ClInclude Include="Inc\Common.h">
-      <Filter>Inc</Filter>
+    <ClInclude Include="Src\Precompiled.h">
+      <Filter>Src</Filter>
     </ClInclude>
-    <ClInclude Include="Inc\Colours.h">
+    <ClInclude Include="Inc\Colors.h">
       <Filter>Inc</Filter>
     </ClInclude>
     <ClInclude Include="Inc\GraphicsSystem.h">
       <Filter>Inc</Filter>
     </ClInclude>
-    <ClInclude Include="Inc\GraphicsType.h">
+    <ClInclude Include="Inc\VertexShader.h">
       <Filter>Inc</Filter>
     </ClInclude>
     <ClInclude Include="Inc\VertexTypes.h">
       <Filter>Inc</Filter>
     </ClInclude>
-    <ClInclude Include="Inc\MeshBuffer.h">
+    <ClInclude Include="Inc\PixelShader.h">
       <Filter>Inc</Filter>
     </ClInclude>
-    <ClInclude Include="Inc\MeshTypes.h">
+    <ClInclude Include="Inc\MeshBuffer.h">
       <Filter>Inc</Filter>
     </ClInclude>
     <ClInclude Include="Inc\Camera.h">
       <Filter>Inc</Filter>
     </ClInclude>
     <ClInclude Include="Inc\ConstantBuffer.h">
-      <Filter>Inc\D3D11</Filter>
+      <Filter>Inc</Filter>
     </ClInclude>
-    <ClInclude Include="Inc\GraphicsType_D3D11.h">
-      <Filter>Inc\D3D11</Filter>
-    </ClInclude>
-    <ClInclude Include="Inc\MeshBuffer_D3D11.h">
-      <Filter>Inc\D3D11</Filter>
-    </ClInclude>
-    <ClInclude Include="Inc\PixelShader_D3D11.h">
-      <Filter>Inc\D3D11</Filter>
-    </ClInclude>
-    <ClInclude Include="Inc\VertexShader_D3D11.h">
-      <Filter>Inc\D3D11</Filter>
+    <ClInclude Include="Inc\MeshTypes.h">
+      <Filter>Inc</Filter>
     </ClInclude>
     <ClInclude Include="Inc\MeshBuilder.h">
       <Filter>Inc</Filter>
@@ -90,25 +57,30 @@
     <ClInclude Include="Inc\SimpleDraw.h">
       <Filter>Inc</Filter>
     </ClInclude>
-    <ClInclude Include="Inc\DebugUI.h">
+    <ClInclude Include="Inc\BlendState.h">
       <Filter>Inc</Filter>
     </ClInclude>
-    <ClInclude Include="Inc\BlendState.h">
+    <ClInclude Include="Inc\DebugUI.h">
       <Filter>Inc</Filter>
     </ClInclude>
     <ClInclude Include="Inc\RenderTarget.h">
       <Filter>Inc</Filter>
     </ClInclude>
+    <ClInclude Include="Inc\Transform.h">
+      <Filter>Inc</Filter>
+    </ClInclude>
     <ClInclude Include="Inc\RenderObject.h">
       <Filter>Inc</Filter>
     </ClInclude>
-    <ClInclude Include="Inc\Transform.h">
+    <ClInclude Include="Inc\StandardEffect.h">
       <Filter>Inc</Filter>
     </ClInclude>
     <ClInclude Include="Inc\TextureManager.h">
       <Filter>Inc</Filter>
     </ClInclude>
-    <ClInclude Include="Inc\LightTypes.h" />
+    <ClInclude Include="Inc\LightTypes.h">
+      <Filter>Inc</Filter>
+    </ClInclude>
     <ClInclude Include="Inc\Material.h">
       <Filter>Inc</Filter>
     </ClInclude>
@@ -118,104 +90,60 @@
     <ClInclude Include="Inc\ModelIO.h">
       <Filter>Inc</Filter>
     </ClInclude>
+    <ClInclude Include="Inc\ModelManager.h">
+      <Filter>Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\PostProcessingEffect.h">
+      <Filter>Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\GaussianBlurEffect.h">
+      <Filter>Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\ShadowEffect.h">
+      <Filter>Inc</Filter>
+    </ClInclude>
     <ClInclude Include="Inc\Terrain.h">
       <Filter>Inc</Filter>
     </ClInclude>
-    <ClInclude Include="Inc\Animation.h">
-      <Filter>Inc\Animation</Filter>
+    <ClInclude Include="Inc\TerrainEffect.h">
+      <Filter>Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\BillboardEffect.h">
+      <Filter>Inc</Filter>
     </ClInclude>
     <ClInclude Include="Inc\Keyframe.h">
-      <Filter>Inc\Animation</Filter>
+      <Filter>Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Animation.h">
+      <Filter>Inc</Filter>
     </ClInclude>
     <ClInclude Include="Inc\AnimationBuilder.h">
-      <Filter>Inc\Animation</Filter>
+      <Filter>Inc</Filter>
     </ClInclude>
-    <ClInclude Include="Inc\Bone.h">
-      <Filter>Inc\Animation</Filter>
-    </ClInclude>
+    <ClInclude Include="Inc\Bone.h" />
     <ClInclude Include="Inc\Skeleton.h">
-      <Filter>Inc\Animation</Filter>
+      <Filter>Inc</Filter>
     </ClInclude>
     <ClInclude Include="Inc\AnimationUtil.h">
-      <Filter>Inc\Animation</Filter>
+      <Filter>Inc</Filter>
     </ClInclude>
-    <ClInclude Include="Inc\ModelManager.h">
-      <Filter>Inc\Animation</Filter>
-    </ClInclude>
-    <ClInclude Include="Inc\ComicBookEffect.h">
-      <Filter>Inc\Effects</Filter>
-    </ClInclude>
-    <ClInclude Include="Inc\CrosshatchShadowEffect.h">
-      <Filter>Inc\Effects</Filter>
-    </ClInclude>
-    <ClInclude Include="Inc\DepthMapEffect.h">
-      <Filter>Inc\Effects</Filter>
-    </ClInclude>
-    <ClInclude Include="Inc\GaussianBlurEffect.h">
-      <Filter>Inc\Effects</Filter>
-    </ClInclude>
-    <ClInclude Include="Inc\MoebiusEffect.h">
-      <Filter>Inc\Effects</Filter>
-    </ClInclude>
-    <ClInclude Include="Inc\TerrainEffect.h">
-      <Filter>Inc\Effects</Filter>
-    </ClInclude>
-    <ClInclude Include="Inc\StandardEffect.h">
-      <Filter>Inc\Effects</Filter>
-    </ClInclude>
-    <ClInclude Include="Inc\ShadowEffect.h">
-      <Filter>Inc\Effects</Filter>
-    </ClInclude>
-    <ClInclude Include="Inc\PostProcessingEffect.h">
-      <Filter>Inc\Effects</Filter>
-    </ClInclude>
-    <ClInclude Include="Inc\NormalMapEffect.h">
-      <Filter>Inc\Effects</Filter>
+    <ClInclude Include="Inc\AnimationClip.h">
+      <Filter>Inc</Filter>
     </ClInclude>
     <ClInclude Include="Inc\Animator.h">
-      <Filter>Inc\Animation</Filter>
+      <Filter>Inc</Filter>
     </ClInclude>
     <ClInclude Include="Inc\ParticleSystemEffect.h">
-      <Filter>Inc\Effects</Filter>
-    </ClInclude>
-    <ClInclude Include="Inc\GrassShader.h">
       <Filter>Inc</Filter>
     </ClInclude>
-    <ClInclude Include="Inc\GrassBuffer.h">
+    <ClInclude Include="Inc\UISpriteRenderer.h">
       <Filter>Inc</Filter>
     </ClInclude>
-    <ClInclude Include="Inc\GrassEffect.h">
-      <Filter>Inc\Effects</Filter>
-    </ClInclude>
-    <ClInclude Include="Inc\Noise.h">
-      <Filter>Inc</Filter>
-    </ClInclude>
-    <ClInclude Include="Inc\SimpleTerrain.h">
-      <Filter>Inc</Filter>
-    </ClInclude>
-    <ClInclude Include="Inc\FogEffect.h">
-      <Filter>Inc\Effects</Filter>
-    </ClInclude>
-    <ClInclude Include="Inc\WaveEffect.h">
-      <Filter>Inc\Effects</Filter>
-    </ClInclude>
-    <ClInclude Include="Inc\StructuredBuffer.h">
+    <ClInclude Include="Inc\UISprite.h">
       <Filter>Inc</Filter>
     </ClInclude>
     <ClInclude Include="Inc\UIFont.h">
-      <Filter>Inc\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Inc\UISprite.h">
-      <Filter>Inc\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Inc\UISpriteRenderer.h">
-      <Filter>Inc\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Inc\AtmosphereEffect.h">
-      <Filter>Inc\Effects</Filter>
-    </ClInclude>
-    <ClInclude Include="Inc\AnimationClip.h">
-      <Filter>Inc\Animation</Filter>
+      <Filter>Inc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -225,23 +153,20 @@
     <ClCompile Include="Src\GraphicsSystem.cpp">
       <Filter>Src</Filter>
     </ClCompile>
+    <ClCompile Include="Src\VertexShader.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\PixelShader.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\MeshBuffer.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
     <ClCompile Include="Src\Camera.cpp">
       <Filter>Src</Filter>
     </ClCompile>
-    <ClCompile Include="Src\VertexShader_D3D11.cpp">
-      <Filter>Src\D3D11</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\PixelShader_D3D11.cpp">
-      <Filter>Src\D3D11</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\MeshBuffer_D3D11.cpp">
-      <Filter>Src\D3D11</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\GraphicsType_D3D11.cpp">
-      <Filter>Src\D3D11</Filter>
-    </ClCompile>
     <ClCompile Include="Src\ConstantBuffer.cpp">
-      <Filter>Src\D3D11</Filter>
+      <Filter>Src</Filter>
     </ClCompile>
     <ClCompile Include="Src\MeshBuilder.cpp">
       <Filter>Src</Filter>
@@ -255,16 +180,16 @@
     <ClCompile Include="Src\SimpleDraw.cpp">
       <Filter>Src</Filter>
     </ClCompile>
-    <ClCompile Include="Src\DebugUI.cpp">
+    <ClCompile Include="Src\BlendState.cpp">
       <Filter>Src</Filter>
     </ClCompile>
-    <ClCompile Include="Src\BlendState.cpp">
+    <ClCompile Include="Src\DebugUI.cpp">
       <Filter>Src</Filter>
     </ClCompile>
     <ClCompile Include="Src\RenderTarget.cpp">
       <Filter>Src</Filter>
     </ClCompile>
-    <ClCompile Include="Src\RenderObject.cpp">
+    <ClCompile Include="Src\StandardEffect.cpp">
       <Filter>Src</Filter>
     </ClCompile>
     <ClCompile Include="Src\TextureManager.cpp">
@@ -273,92 +198,56 @@
     <ClCompile Include="Src\ModelIO.cpp">
       <Filter>Src</Filter>
     </ClCompile>
+    <ClCompile Include="Src\RenderObject.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\ModelManager.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\PostProcessingEffect.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\GaussianBlurEffect.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\ShadowEffect.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
     <ClCompile Include="Src\Terrain.cpp">
       <Filter>Src</Filter>
     </ClCompile>
+    <ClCompile Include="Src\TerrainEffect.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\BillboardEffect.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
     <ClCompile Include="Src\Animation.cpp">
-      <Filter>Src\Animation</Filter>
+      <Filter>Src</Filter>
     </ClCompile>
     <ClCompile Include="Src\AnimationBuilder.cpp">
-      <Filter>Src\Animation</Filter>
+      <Filter>Src</Filter>
     </ClCompile>
     <ClCompile Include="Src\AnimationUtil.cpp">
-      <Filter>Src\Animation</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\ModelManager.cpp">
-      <Filter>Src\Animation</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\ComicBookEffect.cpp">
-      <Filter>Src\Effects</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\CrosshatchShadowEffect.cpp">
-      <Filter>Src\Effects</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\DepthMapEffect.cpp">
-      <Filter>Src\Effects</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\GaussianBlurEffect.cpp">
-      <Filter>Src\Effects</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\MoebiusEffect.cpp">
-      <Filter>Src\Effects</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\NormalMapEffect.cpp">
-      <Filter>Src\Effects</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\PostProcessingEffect.cpp">
-      <Filter>Src\Effects</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\ShadowEffect.cpp">
-      <Filter>Src\Effects</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\TerrainEffect.cpp">
-      <Filter>Src\Effects</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\StandardEffect.cpp">
-      <Filter>Src\Effects</Filter>
+      <Filter>Src</Filter>
     </ClCompile>
     <ClCompile Include="Src\Animator.cpp">
-      <Filter>Src\Animation</Filter>
+      <Filter>Src</Filter>
     </ClCompile>
     <ClCompile Include="Src\ParticleSystemEffect.cpp">
-      <Filter>Src\Effects</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\GrassShader.cpp">
       <Filter>Src</Filter>
     </ClCompile>
-    <ClCompile Include="Src\GrassBuffer.cpp">
+    <ClCompile Include="Src\UISpriteRenderer.cpp">
       <Filter>Src</Filter>
     </ClCompile>
-    <ClCompile Include="Src\GrassEffect.cpp">
-      <Filter>Src\Effects</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Noise.cpp">
-      <Filter>Src</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\SimpleTerrain.cpp">
-      <Filter>Src</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\FogEffect.cpp">
-      <Filter>Src\Effects</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\WaveEffect.cpp">
-      <Filter>Src\Effects</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\StructuredBuffer.cpp">
+    <ClCompile Include="Src\UISprite.cpp">
       <Filter>Src</Filter>
     </ClCompile>
     <ClCompile Include="Src\UIFont.cpp">
-      <Filter>Src\UI</Filter>
+      <Filter>Src</Filter>
     </ClCompile>
-    <ClCompile Include="Src\UISprite.cpp">
-      <Filter>Src\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\UISpriteRenderer.cpp">
-      <Filter>Src\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\AtmosphereEffect.cpp">
-      <Filter>Src\Effects</Filter>
-    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

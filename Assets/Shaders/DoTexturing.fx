@@ -1,4 +1,4 @@
-//simple shader that only uses position and color and applies transform
+// Description: Simple shader that does texturing.
 
 cbuffer ConstantBuffer : register(b0)
 {
@@ -8,18 +8,24 @@ cbuffer ConstantBuffer : register(b0)
 Texture2D textureMap : register(t0);
 SamplerState textureSampler : register(s0);
 
-struct VS_OUTPUT
+struct VS_INPUT
 {
-	float4 position : SV_Position;
-	float2 texCoord : TEXCOORD;
+    float3 position : POSITION;
+    float2 texCoord : TEXCOORD;
 };
 
-VS_OUTPUT VS(float3 position : POSITION, float4 texCoord : TEXCOORD)
+struct VS_OUTPUT
 {
-	VS_OUTPUT output;
-    output.position = mul(float4(position, 1.0f), wvp);
-	output.texCoord = texCoord;
-	return output;
+    float4 position : SV_Position;
+    float2 texCoord : TEXCOORD;
+};
+
+VS_OUTPUT VS(VS_INPUT input)
+{
+    VS_OUTPUT output;
+    output.position = mul(float4(input.position, 1.0f), wvp);
+    output.texCoord = input.texCoord;
+    return output;
 }
 
 float4 PS(VS_OUTPUT input) : SV_Target

@@ -255,7 +255,7 @@
     <ClCompile Include="BulletInverseDynamics\details\MultiBodyTreeInitCache.cpp">
       <Filter>BulletInverseDynamics\details</Filter>
     </ClCompile>
-    <ClCompile Include="BulletInverseDynamics\IKick_Math.cpp">
+    <ClCompile Include="BulletInverseDynamics\IDMath.cpp">
       <Filter>BulletInverseDynamics</Filter>
     </ClCompile>
     <ClCompile Include="BulletInverseDynamics\MultiBodyTree.cpp">
@@ -1078,7 +1078,7 @@
     <ClInclude Include="BulletInverseDynamics\IDErrorMessages.hpp">
       <Filter>BulletInverseDynamics</Filter>
     </ClInclude>
-    <ClInclude Include="BulletInverseDynamics\IKick_Math.hpp">
+    <ClInclude Include="BulletInverseDynamics\IDMath.hpp">
       <Filter>BulletInverseDynamics</Filter>
     </ClInclude>
     <ClInclude Include="BulletDynamics\Vehicle\btRaycastVehicle.h">

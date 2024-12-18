@@ -30,14 +30,14 @@ public:
     btAlignedObjectArray<btVector3> m_vecs;
     int m_sz; // all m_indices value < m_sz
 public:
-	btReducedVector():m_sz(0)
-	{
-		m_indices.resize(0);
-		m_vecs.resize(0);
+    btReducedVector():m_sz(0)
+    {
+        m_indices.resize(0);
+        m_vecs.resize(0);
         m_indices.clear();
         m_vecs.clear();
-	}
-	
+    }
+    
     btReducedVector(int sz): m_sz(sz)
     {
         m_indices.resize(0);
@@ -70,41 +70,41 @@ public:
     
     btReducedVector operator+(const btReducedVector& other)
     {
-		btReducedVector ret(m_sz);
-		int i=0, j=0;
-		while (i < m_indices.size() && j < other.m_indices.size())
-		{
-			if (m_indices[i] < other.m_indices[j])
-			{
-				ret.m_indices.push_back(m_indices[i]);
-				ret.m_vecs.push_back(m_vecs[i]);
-				++i;
-			}
-			else if (m_indices[i] > other.m_indices[j])
-			{
-				ret.m_indices.push_back(other.m_indices[j]);
-				ret.m_vecs.push_back(other.m_vecs[j]);
-				++j;
-			}
-			else
-			{
-				ret.m_indices.push_back(other.m_indices[j]);
-				ret.m_vecs.push_back(m_vecs[i] + other.m_vecs[j]);
-				++i; ++j;
-			}
-		}
-		while (i < m_indices.size())
-		{
-			ret.m_indices.push_back(m_indices[i]);
-			ret.m_vecs.push_back(m_vecs[i]);
-			++i;
-		}
-		while (j < other.m_indices.size())
-		{
-			ret.m_indices.push_back(other.m_indices[j]);
-			ret.m_vecs.push_back(other.m_vecs[j]);
-			++j;
-		}
+        btReducedVector ret(m_sz);
+        int i=0, j=0;
+        while (i < m_indices.size() && j < other.m_indices.size())
+        {
+            if (m_indices[i] < other.m_indices[j])
+            {
+                ret.m_indices.push_back(m_indices[i]);
+                ret.m_vecs.push_back(m_vecs[i]);
+                ++i;
+            }
+            else if (m_indices[i] > other.m_indices[j])
+            {
+                ret.m_indices.push_back(other.m_indices[j]);
+                ret.m_vecs.push_back(other.m_vecs[j]);
+                ++j;
+            }
+            else
+            {
+                ret.m_indices.push_back(other.m_indices[j]);
+                ret.m_vecs.push_back(m_vecs[i] + other.m_vecs[j]);
+                ++i; ++j;
+            }
+        }
+        while (i < m_indices.size())
+        {
+            ret.m_indices.push_back(m_indices[i]);
+            ret.m_vecs.push_back(m_vecs[i]);
+            ++i;
+        }
+        while (j < other.m_indices.size())
+        {
+            ret.m_indices.push_back(other.m_indices[j]);
+            ret.m_vecs.push_back(other.m_vecs[j]);
+            ++j;
+        }
         ret.simplify();
         return ret;
     }
@@ -123,43 +123,43 @@ public:
     
     btReducedVector operator-(const btReducedVector& other)
     {
-		btReducedVector ret(m_sz);
-		int i=0, j=0;
-		while (i < m_indices.size() && j < other.m_indices.size())
-		{
-			if (m_indices[i] < other.m_indices[j])
-			{
-				ret.m_indices.push_back(m_indices[i]);
-				ret.m_vecs.push_back(m_vecs[i]);
-				++i;
-			}
-			else if (m_indices[i] > other.m_indices[j])
-			{
-				ret.m_indices.push_back(other.m_indices[j]);
-				ret.m_vecs.push_back(-other.m_vecs[j]);
-				++j;
-			}
-			else
-			{
-				ret.m_indices.push_back(other.m_indices[j]);
-				ret.m_vecs.push_back(m_vecs[i] - other.m_vecs[j]);
-				++i; ++j;
-			}
-		}
-		while (i < m_indices.size())
-		{
-			ret.m_indices.push_back(m_indices[i]);
-			ret.m_vecs.push_back(m_vecs[i]);
-			++i;
-		}
-		while (j < other.m_indices.size())
-		{
-			ret.m_indices.push_back(other.m_indices[j]);
-			ret.m_vecs.push_back(-other.m_vecs[j]);
-			++j;
-		}
+        btReducedVector ret(m_sz);
+        int i=0, j=0;
+        while (i < m_indices.size() && j < other.m_indices.size())
+        {
+            if (m_indices[i] < other.m_indices[j])
+            {
+                ret.m_indices.push_back(m_indices[i]);
+                ret.m_vecs.push_back(m_vecs[i]);
+                ++i;
+            }
+            else if (m_indices[i] > other.m_indices[j])
+            {
+                ret.m_indices.push_back(other.m_indices[j]);
+                ret.m_vecs.push_back(-other.m_vecs[j]);
+                ++j;
+            }
+            else
+            {
+                ret.m_indices.push_back(other.m_indices[j]);
+                ret.m_vecs.push_back(m_vecs[i] - other.m_vecs[j]);
+                ++i; ++j;
+            }
+        }
+        while (i < m_indices.size())
+        {
+            ret.m_indices.push_back(m_indices[i]);
+            ret.m_vecs.push_back(m_vecs[i]);
+            ++i;
+        }
+        while (j < other.m_indices.size())
+        {
+            ret.m_indices.push_back(other.m_indices[j]);
+            ret.m_vecs.push_back(-other.m_vecs[j]);
+            ++j;
+        }
         ret.simplify();
-		return ret;
+        return ret;
     }
     
     bool operator==(const btReducedVector& other) const
@@ -182,18 +182,18 @@ public:
     {
         return !(*this == other);
     }
-	
-	btReducedVector& operator=(const btReducedVector& other)
-	{
-		if (this == &other)
-		{
-			return *this;
-		}
+    
+    btReducedVector& operator=(const btReducedVector& other)
+    {
+        if (this == &other)
+        {
+            return *this;
+        }
         m_sz = other.m_sz;
-		m_indices.copyFromArray(other.m_indices);
-		m_vecs.copyFromArray(other.m_vecs);
-		return *this;
-	}
+        m_indices.copyFromArray(other.m_indices);
+        m_vecs.copyFromArray(other.m_vecs);
+        return *this;
+    }
     
     btScalar dot(const btReducedVector& other) const
     {
@@ -228,8 +228,8 @@ public:
     {
         return this->dot(*this);
     }
-	
-	void normalize();
+    
+    void normalize();
     
     // returns the projection of this onto other
     btReducedVector proj(const btReducedVector& other) const;
@@ -296,25 +296,25 @@ SIMD_FORCE_INLINE btReducedVector operator*(btScalar s, const btReducedVector& v
 
 SIMD_FORCE_INLINE btReducedVector operator/(const btReducedVector& v, btScalar s)
 {
-	return v * (1.0/s);
+    return v * (1.0/s);
 }
 
 SIMD_FORCE_INLINE btReducedVector& operator/=(btReducedVector& v, btScalar s)
 {
-	v = v/s;
-	return v;
+    v = v/s;
+    return v;
 }
 
 SIMD_FORCE_INLINE btReducedVector& operator+=(btReducedVector& v1, const btReducedVector& v2)
 {
-	v1 = v1+v2;
-	return v1;
+    v1 = v1+v2;
+    return v1;
 }
 
 SIMD_FORCE_INLINE btReducedVector& operator-=(btReducedVector& v1, const btReducedVector& v2)
 {
-	v1 = v1-v2;
-	return v1;
+    v1 = v1-v2;
+    return v1;
 }
 
 #endif /* btReducedVectors_h */

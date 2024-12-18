@@ -20,7 +20,7 @@ namespace Kick_Engine::Graphics
 		void BeginRender();
 		void EndRender();
 
-		void Render(const UISprite* sprite);
+		void Render(const UISprite* uiSprite);
 
 	private:
 		DirectX::CommonStates* mCommonStates = nullptr;

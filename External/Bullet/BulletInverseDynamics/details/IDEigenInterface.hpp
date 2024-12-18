@@ -21,18 +21,18 @@ typedef Eigen::Matrix<float, 3, Eigen::Dynamic, Eigen::DontAlign> mat3x;
 
 inline void resize(mat3x &m, Eigen::Index size)
 {
-	m.resize(3, size);
-	m.setZero();
+    m.resize(3, size);
+    m.setZero();
 }
 
 inline void setMatxxElem(const idArrayIdx row, const idArrayIdx col, const idScalar val, matxx *m)
 {
-	(*m)(row, col) = val;
+    (*m)(row, col) = val;
 }
 
 inline void setMat3xElem(const idArrayIdx row, const idArrayIdx col, const idScalar val, mat3x *m)
 {
-	(*m)(row, col) = val;
+    (*m)(row, col) = val;
 }
 
 }  // namespace btInverseDynamics

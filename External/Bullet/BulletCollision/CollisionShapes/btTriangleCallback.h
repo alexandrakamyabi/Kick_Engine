@@ -23,15 +23,15 @@ subject to the following restrictions:
 class btTriangleCallback
 {
 public:
-	virtual ~btTriangleCallback();
-	virtual void processTriangle(btVector3* triangle, int partId, int triangleIndex) = 0;
+    virtual ~btTriangleCallback();
+    virtual void processTriangle(btVector3* triangle, int partId, int triangleIndex) = 0;
 };
 
 class btInternalTriangleIndexCallback
 {
 public:
-	virtual ~btInternalTriangleIndexCallback();
-	virtual void internalProcessTriangleIndex(btVector3* triangle, int partId, int triangleIndex) = 0;
+    virtual ~btInternalTriangleIndexCallback();
+    virtual void internalProcessTriangleIndex(btVector3* triangle, int partId, int triangleIndex) = 0;
 };
 
 #endif  //BT_TRIANGLE_CALLBACK_H

@@ -70,41 +70,41 @@ typedef unsigned char u8;
 
 typedef struct 
 {
-	int m_n;
-	int m_start;
-	int m_staticIdx;
-	int m_paddings[1];
+    int m_n;
+    int m_start;
+    int m_staticIdx;
+    int m_paddings[1];
 } ConstBuffer;
 
 typedef struct 
 {
-	int m_a;
-	int m_b;
-	u32 m_idx;
+    int m_a;
+    int m_b;
+    u32 m_idx;
 }Elem;
 
 
 
 
 
-//	batching on the GPU
-__kernel void CreateBatchesBruteForce( __global struct b3Contact4Data* gConstraints, 	__global const u32* gN, __global const u32* gStart, int m_staticIdx )
+//    batching on the GPU
+__kernel void CreateBatchesBruteForce( __global struct b3Contact4Data* gConstraints,     __global const u32* gN, __global const u32* gStart, int m_staticIdx )
 {
-	int wgIdx = GET_GROUP_IDX;
-	int lIdx = GET_LOCAL_IDX;
-	
-	const int m_n = gN[wgIdx];
-	const int m_start = gStart[wgIdx];
-		
-	if( lIdx == 0 )
-	{
-		for (int i=0;i<m_n;i++)
-		{
-			int srcIdx = i+m_start;
-			int batchIndex = i;
-			gConstraints[ srcIdx ].m_batchIdx = batchIndex;	
-		}
-	}
+    int wgIdx = GET_GROUP_IDX;
+    int lIdx = GET_LOCAL_IDX;
+    
+    const int m_n = gN[wgIdx];
+    const int m_start = gStart[wgIdx];
+        
+    if( lIdx == 0 )
+    {
+        for (int i=0;i<m_n;i++)
+        {
+            int srcIdx = i+m_start;
+            int batchIndex = i;
+            gConstraints[ srcIdx ].m_batchIdx = batchIndex;    
+        }
+    }
 }
 
 
@@ -115,117 +115,117 @@ __kernel void CreateBatchesBruteForce( __global struct b3Contact4Data* gConstrai
 
 u32 readBuf(__local u32* buff, int idx)
 {
-	idx = idx % (32*CHECK_SIZE);
-	int bitIdx = idx%32;
-	int bufIdx = idx/32;
-	return buff[bufIdx] & (1<<bitIdx);
+    idx = idx % (32*CHECK_SIZE);
+    int bitIdx = idx%32;
+    int bufIdx = idx/32;
+    return buff[bufIdx] & (1<<bitIdx);
 }
 
 void writeBuf(__local u32* buff, int idx)
 {
-	idx = idx % (32*CHECK_SIZE);
-	int bitIdx = idx%32;
-	int bufIdx = idx/32;
-	buff[bufIdx] |= (1<<bitIdx);
-	//atom_or( &buff[bufIdx], (1<<bitIdx) );
+    idx = idx % (32*CHECK_SIZE);
+    int bitIdx = idx%32;
+    int bufIdx = idx/32;
+    buff[bufIdx] |= (1<<bitIdx);
+    //atom_or( &buff[bufIdx], (1<<bitIdx) );
 }
 
 u32 tryWrite(__local u32* buff, int idx)
 {
-	idx = idx % (32*CHECK_SIZE);
-	int bitIdx = idx%32;
-	int bufIdx = idx/32;
-	u32 ans = (u32)atom_or( &buff[bufIdx], (1<<bitIdx) );
-	return ((ans >> bitIdx)&1) == 0;
+    idx = idx % (32*CHECK_SIZE);
+    int bitIdx = idx%32;
+    int bufIdx = idx/32;
+    u32 ans = (u32)atom_or( &buff[bufIdx], (1<<bitIdx) );
+    return ((ans >> bitIdx)&1) == 0;
 }
 
 
-//	batching on the GPU
+//    batching on the GPU
 __kernel void CreateBatchesNew( __global struct b3Contact4Data* gConstraints, __global const u32* gN, __global const u32* gStart, __global int* batchSizes, int staticIdx )
 {
-	int wgIdx = GET_GROUP_IDX;
-	int lIdx = GET_LOCAL_IDX;
-	const int numConstraints = gN[wgIdx];
-	const int m_start = gStart[wgIdx];
-	b3Contact4Data_t tmp;
-	
-	__local u32 ldsFixedBuffer[CHECK_SIZE];
-		
-	
-	
-	
-	
-	if( lIdx == 0 )
-	{
-	
-		
-		__global struct b3Contact4Data* cs = &gConstraints[m_start];	
-	
-		
-		int numValidConstraints = 0;
-		int batchIdx = 0;
+    int wgIdx = GET_GROUP_IDX;
+    int lIdx = GET_LOCAL_IDX;
+    const int numConstraints = gN[wgIdx];
+    const int m_start = gStart[wgIdx];
+    b3Contact4Data_t tmp;
+    
+    __local u32 ldsFixedBuffer[CHECK_SIZE];
+        
+    
+    
+    
+    
+    if( lIdx == 0 )
+    {
+    
+        
+        __global struct b3Contact4Data* cs = &gConstraints[m_start];    
+    
+        
+        int numValidConstraints = 0;
+        int batchIdx = 0;
 
-		while( numValidConstraints < numConstraints)
-		{
-			int nCurrentBatch = 0;
-			//	clear flag
-	
-			for(int i=0; i<CHECK_SIZE; i++) 
-				ldsFixedBuffer[i] = 0;		
+        while( numValidConstraints < numConstraints)
+        {
+            int nCurrentBatch = 0;
+            //    clear flag
+    
+            for(int i=0; i<CHECK_SIZE; i++) 
+                ldsFixedBuffer[i] = 0;        
 
-			for(int i=numValidConstraints; i<numConstraints; i++)
-			{
+            for(int i=numValidConstraints; i<numConstraints; i++)
+            {
 
-				int bodyAS = cs[i].m_bodyAPtrAndSignBit;
-				int bodyBS = cs[i].m_bodyBPtrAndSignBit;
-				int bodyA = abs(bodyAS);
-				int bodyB = abs(bodyBS);
-				bool aIsStatic = (bodyAS<0) || bodyAS==staticIdx;
-				bool bIsStatic = (bodyBS<0) || bodyBS==staticIdx;
-				int aUnavailable = aIsStatic ? 0 : readBuf( ldsFixedBuffer, bodyA);
-				int bUnavailable = bIsStatic ? 0 : readBuf( ldsFixedBuffer, bodyB);
-				
-				if( aUnavailable==0 && bUnavailable==0 ) // ok
-				{
-					if (!aIsStatic)
-					{
-						writeBuf( ldsFixedBuffer, bodyA );
-					}
-					if (!bIsStatic)
-					{
-						writeBuf( ldsFixedBuffer, bodyB );
-					}
+                int bodyAS = cs[i].m_bodyAPtrAndSignBit;
+                int bodyBS = cs[i].m_bodyBPtrAndSignBit;
+                int bodyA = abs(bodyAS);
+                int bodyB = abs(bodyBS);
+                bool aIsStatic = (bodyAS<0) || bodyAS==staticIdx;
+                bool bIsStatic = (bodyBS<0) || bodyBS==staticIdx;
+                int aUnavailable = aIsStatic ? 0 : readBuf( ldsFixedBuffer, bodyA);
+                int bUnavailable = bIsStatic ? 0 : readBuf( ldsFixedBuffer, bodyB);
+                
+                if( aUnavailable==0 && bUnavailable==0 ) // ok
+                {
+                    if (!aIsStatic)
+                    {
+                        writeBuf( ldsFixedBuffer, bodyA );
+                    }
+                    if (!bIsStatic)
+                    {
+                        writeBuf( ldsFixedBuffer, bodyB );
+                    }
 
-					cs[i].m_batchIdx = batchIdx;
+                    cs[i].m_batchIdx = batchIdx;
 
-					if (i!=numValidConstraints)
-					{
+                    if (i!=numValidConstraints)
+                    {
 
-						tmp = cs[i];
-						cs[i] = cs[numValidConstraints];
-						cs[numValidConstraints]  = tmp;
+                        tmp = cs[i];
+                        cs[i] = cs[numValidConstraints];
+                        cs[numValidConstraints]  = tmp;
 
 
-					}
+                    }
 
-					numValidConstraints++;
-					
-					nCurrentBatch++;
-					if( nCurrentBatch == SIMD_WIDTH)
-					{
-						nCurrentBatch = 0;
-						for(int i=0; i<CHECK_SIZE; i++) 
-							ldsFixedBuffer[i] = 0;
-						
-					}
-				}
-			}//for
-			batchIdx ++;
-		}//while
-		
-		batchSizes[wgIdx] = batchIdx;
+                    numValidConstraints++;
+                    
+                    nCurrentBatch++;
+                    if( nCurrentBatch == SIMD_WIDTH)
+                    {
+                        nCurrentBatch = 0;
+                        for(int i=0; i<CHECK_SIZE; i++) 
+                            ldsFixedBuffer[i] = 0;
+                        
+                    }
+                }
+            }//for
+            batchIdx ++;
+        }//while
+        
+        batchSizes[wgIdx] = batchIdx;
 
-	}//if( lIdx == 0 )
-	
-	//return batchIdx;
+    }//if( lIdx == 0 )
+    
+    //return batchIdx;
 }

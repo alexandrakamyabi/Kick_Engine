@@ -42,10 +42,10 @@ subject to the following restrictions:
 #include <assert.h>
 #include <stdio.h>
 #define oclCHECKERROR(a, b)              \
-	if ((a) != (b))                      \
-	{                                    \
-		printf("OCL Error : %d\n", (a)); \
-		assert((a) == (b));              \
-	}
+    if ((a) != (b))                      \
+    {                                    \
+        printf("OCL Error : %d\n", (a)); \
+        assert((a) == (b));              \
+    }
 
 #endif  //B3_OPENCL_INCLUDE_H

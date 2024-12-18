@@ -31,7 +31,7 @@ class bDNA;
 // delete void* undefined
 typedef struct bStructHandle
 {
-	int unused;
+    int unused;
 } bStructHandle;
 typedef b3AlignedObjectArray<bStructHandle*> bListBasePtr;
 typedef b3HashMap<b3HashPtr, bStructHandle*> bPtrMap;

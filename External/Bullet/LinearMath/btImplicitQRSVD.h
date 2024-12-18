@@ -517,12 +517,12 @@ inline void singularValueDecomposition(
         sigma(0,0) = c2 * x - csy + s2 * z;
         sigma(1,1) = s2 * x + csy + c2 * z;
       } else
-      	{
-      		cosine = 1;
+          {
+              cosine = 1;
         sine = 0;
         sigma(0,0) = x;
         sigma(1,1) = z;
-      	}
+          }
     }
     
     // Sorting
@@ -571,18 +571,18 @@ inline void singularValueDecomposition(
  */
 inline btScalar wilkinsonShift(const btScalar a1, const btScalar b1, const btScalar a2)
 {
-	btScalar d = (btScalar)0.5 * (a1 - a2);
-	btScalar bs = b1 * b1;
-	btScalar val = d * d + bs;
-	if (val>SIMD_EPSILON)
-	{
-		btScalar denom = btFabs(d) + btSqrt(val);
+    btScalar d = (btScalar)0.5 * (a1 - a2);
+    btScalar bs = b1 * b1;
+    btScalar val = d * d + bs;
+    if (val>SIMD_EPSILON)
+    {
+        btScalar denom = btFabs(d) + btSqrt(val);
 
-		btScalar mu = a2 - copySign(bs / (denom), d);
-		// T mu = a2 - bs / ( d + sign_d*sqrt (d*d + bs));
-		return mu;
-	}
-	return a2;
+        btScalar mu = a2 - copySign(bs / (denom), d);
+        // T mu = a2 - bs / ( d + sign_d*sqrt (d*d + bs));
+        return mu;
+    }
+    return a2;
 }
 
 /**
@@ -774,8 +774,8 @@ inline int singularValueDecomposition(const btMatrix3x3& A,
     btScalar val = alpha_1 * alpha_1 + alpha_2 * alpha_2 + alpha_3 * alpha_3 + beta_1 * beta_1 + beta_2 * beta_2;
     if (val > SIMD_EPSILON)
     {
-	    tol *= btMax((btScalar)0.5 * btSqrt(val), (btScalar)1);
-		}    
+        tol *= btMax((btScalar)0.5 * btSqrt(val), (btScalar)1);
+        }    
     /**
      Do implicit shift QR until A^T A is block diagonal
      */

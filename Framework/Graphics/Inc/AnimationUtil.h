@@ -1,16 +1,13 @@
 #pragma once
 
 #include "ModelManager.h"
+#include "Animator.h"
 
-namespace Kick_Engine::Graphics
+namespace Kick_Engine::Graphics::AnimationUtil
 {
-	class Animator;
-	namespace AnimationUtil
-	{
-		using BoneTransforms = std::vector<Math::Matrix4>;
+    using BoneTransforms = std::vector<Kick_Math::Matrix4>;
 
-		void ComputeBoneTransforms(ModelId id, BoneTransforms& boneTransforms, const Animator* animator = nullptr);
-		void ApplyBoneOffsets(ModelId id, BoneTransforms& boneTransforms);
-		void DrawSkeleton(ModelId id, const BoneTransforms& boneTransforms);
-	}
+    void ComputerBoneTransform(ModelId id, BoneTransforms& boneTransforms, const Animator* animatior = nullptr);
+    void ApplyBoneOffsets(ModelId id, BoneTransforms& boneTransforms);
+    void DrawSkeleton(ModelId id, BoneTransforms& boneTransforms);
 }

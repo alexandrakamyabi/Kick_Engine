@@ -23,14 +23,14 @@ subject to the following restrictions:
 class btMotionState
 {
 public:
-	virtual ~btMotionState()
-	{
-	}
+    virtual ~btMotionState()
+    {
+    }
 
-	virtual void getWorldTransform(btTransform& worldTrans) const = 0;
+    virtual void getWorldTransform(btTransform& worldTrans) const = 0;
 
-	//Bullet only calls the update of worldtransform for active objects
-	virtual void setWorldTransform(const btTransform& worldTrans) = 0;
+    //Bullet only calls the update of worldtransform for active objects
+    virtual void setWorldTransform(const btTransform& worldTrans) = 0;
 };
 
 #endif  //BT_MOTIONSTATE_H

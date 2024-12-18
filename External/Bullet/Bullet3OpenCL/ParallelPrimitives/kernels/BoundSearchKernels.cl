@@ -23,17 +23,17 @@ typedef unsigned int u32;
 
 typedef struct
 {
-	u32 m_key; 
-	u32 m_value;
+    u32 m_key; 
+    u32 m_value;
 }SortData;
 
 
 
 typedef struct
 {
-	u32 m_nSrc;
-	u32 m_nDst;
-	u32 m_padding[2];
+    u32 m_nSrc;
+    u32 m_nDst;
+    u32 m_padding[2];
 } ConstBuffer;
 
 
@@ -41,66 +41,66 @@ typedef struct
 __attribute__((reqd_work_group_size(64,1,1)))
 __kernel
 void SearchSortDataLowerKernel(__global SortData* src, __global u32 *dst, 
-					unsigned int nSrc, unsigned int nDst)
+                    unsigned int nSrc, unsigned int nDst)
 {
-	int gIdx = GET_GLOBAL_IDX;
+    int gIdx = GET_GLOBAL_IDX;
 
-	if( gIdx < nSrc )
-	{
-		SortData first; first.m_key = (u32)(-1); first.m_value = (u32)(-1);
-		SortData end; end.m_key = nDst; end.m_value = nDst;
+    if( gIdx < nSrc )
+    {
+        SortData first; first.m_key = (u32)(-1); first.m_value = (u32)(-1);
+        SortData end; end.m_key = nDst; end.m_value = nDst;
 
-		SortData iData = (gIdx==0)? first: src[gIdx-1];
-		SortData jData = (gIdx==nSrc)? end: src[gIdx];
+        SortData iData = (gIdx==0)? first: src[gIdx-1];
+        SortData jData = (gIdx==nSrc)? end: src[gIdx];
 
-		if( iData.m_key != jData.m_key )
-		{
-//			for(u32 k=iData.m_key+1; k<=min(jData.m_key, nDst-1); k++)
-			u32 k = jData.m_key;
-			{
-				dst[k] = gIdx;
-			}
-		}
-	}
+        if( iData.m_key != jData.m_key )
+        {
+//            for(u32 k=iData.m_key+1; k<=min(jData.m_key, nDst-1); k++)
+            u32 k = jData.m_key;
+            {
+                dst[k] = gIdx;
+            }
+        }
+    }
 }
 
 
 __attribute__((reqd_work_group_size(64,1,1)))
 __kernel
 void SearchSortDataUpperKernel(__global SortData* src, __global u32 *dst, 
-					unsigned int nSrc, unsigned int nDst)
+                    unsigned int nSrc, unsigned int nDst)
 {
-	int gIdx = GET_GLOBAL_IDX+1;
+    int gIdx = GET_GLOBAL_IDX+1;
 
-	if( gIdx < nSrc+1 )
-	{
-		SortData first; first.m_key = 0; first.m_value = 0;
-		SortData end; end.m_key = nDst; end.m_value = nDst;
+    if( gIdx < nSrc+1 )
+    {
+        SortData first; first.m_key = 0; first.m_value = 0;
+        SortData end; end.m_key = nDst; end.m_value = nDst;
 
-		SortData iData = src[gIdx-1];
-		SortData jData = (gIdx==nSrc)? end: src[gIdx];
+        SortData iData = src[gIdx-1];
+        SortData jData = (gIdx==nSrc)? end: src[gIdx];
 
-		if( iData.m_key != jData.m_key )
-		{
-			u32 k = iData.m_key;
-			{
-				dst[k] = gIdx;
-			}
-		}
-	}
+        if( iData.m_key != jData.m_key )
+        {
+            u32 k = iData.m_key;
+            {
+                dst[k] = gIdx;
+            }
+        }
+    }
 }
 
 __attribute__((reqd_work_group_size(64,1,1)))
 __kernel
 void SubtractKernel(__global u32* A, __global u32 *B, __global u32 *C, 
-					unsigned int nSrc, unsigned int nDst)
+                    unsigned int nSrc, unsigned int nDst)
 {
-	int gIdx = GET_GLOBAL_IDX;
-	
+    int gIdx = GET_GLOBAL_IDX;
+    
 
-	if( gIdx < nDst )
-	{
-		C[gIdx] = A[gIdx] - B[gIdx];
-	}
+    if( gIdx < nDst )
+    {
+        C[gIdx] = A[gIdx] - B[gIdx];
+    }
 }
 

@@ -1,84 +1,77 @@
 #pragma once
 
 #include "ConstantBuffer.h"
+#include "PixelShader.h"
 #include "Sampler.h"
-#include "VertexShader_D3D11.h"
-#include "PixelShader_D3D11.h"
-#include "LightTypes.h"
 #include "Material.h"
+#include "VertexShader.h"
+#include "LightTypes.h"
 
 namespace Kick_Engine::Graphics
 {
-	class Camera;
-	class Texture;
-	struct RenderObject;
+    class Camera;
+    class RenderObject;
+    class Texture;
 
-	class StandardEffect
-	{
-	public:
-		void Initialize(const std::filesystem::path& filename);
-		void Terminate();
+    class StandardEffect
+    {
+    public:
+        void Initialize(const std::filesystem::path& filePath);
+        void Terminate();
 
-		void Begin();
-		void End();
+        void Begin();
+        void End();
 
-		void Render(const RenderObject& renderObject);
+        void Render(const RenderObject& renderObject);
 
-		void SetCamera(const Camera& camera);
-		void SetLightCamera(const Camera& camera);
-		void SetDirectionalLight(const DirectionalLight& directionalLight);
-		void SetShadowMap(const Texture& shadowMap);
+        void SetCamera(const Camera& camera);
+        void SetLightCamera(const Camera& camera);
+        void SetDirectionalLight(const DirectionalLight& directionalLight);
+        void SetShadowMap(const Texture& shadowMap);
 
-		void DebugUI();
+        void DebugUI();
+    private:
+        struct TransformData
+        {
+            Kick_Math::Matrix4 wvp;
+            Kick_Math::Matrix4 lwvp;
+            Kick_Math::Matrix4 world;
+            Kick_Math::Vector3 viewPosition;
+            float padding = 0.0f;
+        };
 
-		void SetLightingMode(bool mode);
+        struct SettingsData
+        {
+            int useDiffuseMap = 1;
+            int useNormalMap = 1;
+            int useSpecMap = 1;
+            int useBumpMap = 1;
+            int useShadowMap = 1;
+            int useSkinning = 1;
+            float bumpWeight = 1.0f;
+            float depthBias = 0.0003f;
+        };
 
-	private: 
-		struct TransformData
-		{
-			Math::Matrix4 wvp;
-			Math::Matrix4 lwvp;
-			Math::Matrix4 world;
-			Math::Vector3 viewPosition;
-			float padding = 0.0f;
-		};
+        using TransformBuffer = TypedConstantBuffer<TransformData>;
+        using LightBuffer = TypedConstantBuffer<DirectionalLight>;
+        using MaterialBuffer = TypedConstantBuffer<Material>;
+        using SettingsBuffer = TypedConstantBuffer<SettingsData>;
+        using BoneTransformBuffer = ConstantBuffer;
 
-		struct SettingsData
-		{
-			int useDiffuseMap = 1;
-			int useNormalMap = 1;
-			int useSpecMap = 1;
-			int useLighting = 1;
-			int useBumpMap = 1;
-			int useShadowMap = 1;
-			int useSkinning = 1;
-			float bumpWeight = 0.0f;
-			float depthBias = 0.000002f;
-			float padding[3] = { 0.0f };
-		};
+        TransformBuffer mTransformBuffer;
+        LightBuffer mLightBuffer;
+        MaterialBuffer mMaterialBuffer;
+        SettingsBuffer mSettingsBuffer;
+        BoneTransformBuffer mBoneTransformBuffer;
+        Sampler mSampler;
+        VertexShader mVertexShader;
+        PixelShader mPixelShader;
+        
 
-		using TransformBuffer = TypedConstantBuffer<TransformData>;
-		using SettingsBuffer = TypedConstantBuffer<SettingsData>;
-		using LightBuffer = TypedConstantBuffer<DirectionalLight>;
-		using MaterialBuffer = TypedConstantBuffer<Material>;
-		using BoneTransformBuffer = ConstantBuffer;
-
-		TransformBuffer mTransformBuffer;
-		SettingsBuffer mSettingsBuffer;
-		LightBuffer mLightBuffer;
-		MaterialBuffer mMaterialBuffer;
-		BoneTransformBuffer mBoneTransformBuffer;
-
-		Sampler mSampler;
-		VertexShader_D3D11 mVertexShader;
-		PixelShader_D3D11 mPixelShader;
-
-		SettingsData mSettingsData;
-		const Camera* mCamera = nullptr;
-		const Camera* mLightCamera = nullptr;
-		const DirectionalLight* mDirectionalLight = nullptr;
-		const Texture* mShadowMap = nullptr;
-
-		bool mUseLighting = true;
-	};
+        SettingsData mSettingsData;
+        const Camera* mCamera = nullptr;
+        const Camera* mLightCamera = nullptr;
+        const DirectionalLight* mDirectionalLight = nullptr;
+        const Texture* mShadowMap = nullptr;
+    };
 }

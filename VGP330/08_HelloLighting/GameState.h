@@ -1,21 +1,29 @@
 #pragma once
-#include <Kick_Engine/Inc/Kick_Engine.h>
+#include <../Kick_Engine/Inc/Kick_Engine.h>
+
 
 class GameState : public Kick_Engine::AppState
 {
 public:
-	virtual void Initialize() override;
-	void Terminate() override;
-	void Update(float deltaTime) override;
-	void Render() override;
-	void DebugUI() override;
+    ~GameState() = default;
+    void Initialize() override;
+    void Terminate() override;
+    void Render() override;
+    void Update(float deltaTime) override;
+    void DebugUI() override;
 
-protected:
-	Kick_Engine::Graphics::DirectionalLight mDirectionalLight;
-	Kick_Engine::Graphics::Camera mCamera;
-	Kick_Engine::Graphics::Mesh mMesh;
+private:
+    void UpdateCameraControl(float deltaTime);
 
-	Kick_Engine::Graphics::StandardEffect mStandardEffect;
-	Kick_Engine::Graphics::RenderObject mRenderObject;
+    Kick_Engine::Graphics::Camera mCamera;
+    Kick_Engine::Graphics::DirectionalLight mDirectionalLight;
+    Kick_Engine::Graphics::Mesh mSphere;
+    Kick_Engine::Graphics::RenderObject mEarth;
+    Kick_Engine::Graphics::StandardEffect mStandardEffect;
 
+    Kick_Engine::Graphics::Camera mRenderTargetCamera;
+    Kick_Engine::Graphics::RenderTarget mRenderTarget;
+
+    bool mUseCelShading = false;
+    Kick_Engine::Graphics::StandardEffect mCelShadingEffect;
 };

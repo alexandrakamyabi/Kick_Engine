@@ -1,321 +1,322 @@
 #include "Precompiled.h"
 #include "SimpleDraw.h"
 
+#include "BlendState.h"
 #include "Camera.h"
 #include "ConstantBuffer.h"
-#include "MeshBuffer_D3D11.h"
-#include "PixelShader_D3D11.h"
-#include "VertexShader_D3D11.h"
+#include "MeshBuffer.h"
+#include "PixelShader.h"
+#include "VertexShader.h"
 #include "VertexTypes.h"
-
-#include "BlendState.h"
-#include "GraphicsSystem.h"
 
 using namespace Kick_Engine;
 using namespace Kick_Engine::Graphics;
-using namespace Kick_Engine::Math::Constants;
+using namespace Kick_Engine::Kick_Math::Constants;
 
 namespace
 {
-	class SimpleDrawImpl
-	{
-	public:
-		void Initialize(uint32_t maxVertexCount);
-		void Terminate();
+    class SimpleDrawImpl
+    {
+    public:
+        void Initialize(uint32_t maxVertexCount);
+        void Terminate();
+        void AddLine(const Vector3& v0, const Vector3& v1, const Color& color);
+        void AddFace(const Vector3& v0, const Vector3& v1, const Vector3& v2, const Color& color);
 
-		void AddLine(const Vector3& v0, const Vector3& v1, const Color& color);
-		void AddFace(const Vector3& v0, const Vector3& v1, const Vector3& v2, const Color& color);
+        void Render(const Camera& camera);
+    private:
+        VertexShader mVertexShader;
+        PixelShader mPixelShader;
+        ConstantBuffer mConstantBuffer;
+        MeshBuffer mMeshBuffer;
 
-		void Render(const Camera& camera);
+        BlendState mBlendState;
 
-	private:
-		VertexShader_D3D11 mVertexShader;
-		PixelShader_D3D11 mPixelShader;
-		ConstantBuffer mConstantBuffer;
-		MeshBuffer_D3D11 mMeshBuffer;
-		BlendState mBlendState;
+        std::unique_ptr<VertexPC[]> mLineVertices;
+        std::unique_ptr<VertexPC[]> mFaceVertices;
 
-		std::unique_ptr<VertexPC[]> mLineVertices;
-		std::unique_ptr<VertexPC[]> mFaceVertices;
-		uint32_t mLineVertexCount = 0;
-		uint32_t mFaceVertexCount = 0;
-		uint32_t mMaxVertexCount = 0;
-	};
+        uint32_t mLineVertexCount = 0;
+        uint32_t mFaceVertexCount = 0;
+        uint32_t mMaxVertexCount = 0;
+    };
 
-	void SimpleDrawImpl::Initialize(uint32_t maxVertexCount)
-	{
-		ID3D11Device* device = GraphicsSystem::Get()->GetDevice();
-		std::filesystem::path shaderPath = L"../../Assets/Shaders/DoTransform.fx"; // change tp simpledraw.fx
-		mVertexShader.Initialize<VertexPC>(shaderPath);
-		mPixelShader.Initialize(shaderPath);
-		mConstantBuffer.Initialize(sizeof(Matrix4));
-		mMeshBuffer.InitDevice(device);
-		mMeshBuffer.Initialize(nullptr, sizeof(VertexPC), maxVertexCount);
-		mBlendState.Initialize(BlendState::Mode::AlphaBlend);
+    void SimpleDrawImpl::Initialize(uint32_t maxVertexCount)
+    {
+        std::filesystem::path shaderFile = L"../../Assets/Shaders/DoTransform.fx";
+        mVertexShader.Initialize<VertexPC>(shaderFile);
+        mPixelShader.Initialize(shaderFile);
+        mConstantBuffer.Initialize(sizeof(Matrix4));
+        mMeshBuffer.Initialize(nullptr, sizeof(VertexPC), maxVertexCount);
+        mBlendState.Initialize(BlendState::Mode::AlphaBlend);
 
-		mLineVertices = std::make_unique<VertexPC[]>(maxVertexCount);
-		mFaceVertices = std::make_unique<VertexPC[]>(maxVertexCount);
-		mLineVertexCount = 0;
-		mFaceVertexCount = 0;
-		mMaxVertexCount = maxVertexCount;
-	}
-	void SimpleDrawImpl::Terminate()
-	{
-		mBlendState.Terminate();
-		mMeshBuffer.Terminate();
-		mConstantBuffer.Terminate();
-		mPixelShader.Terminate();
-		mVertexShader.Terminate();
-	}
-	void SimpleDrawImpl::AddLine(const Vector3& v0, const Vector3& v1, const Color& color)
-	{
-		if (mLineVertexCount + 2 <= mMaxVertexCount)
-		{
-			mLineVertices[mLineVertexCount++] = VertexPC{ v0, color };
-			mLineVertices[mLineVertexCount++] = VertexPC{ v1, color };
-		}
-	}
-	void SimpleDrawImpl::AddFace(const Vector3& v0, const Vector3& v1, const Vector3& v2, const Color& color)
-	{
-		if (mFaceVertexCount + 3 <= mMaxVertexCount)
-		{
-			mFaceVertices[mFaceVertexCount++] = VertexPC{ v0, color };
-			mFaceVertices[mFaceVertexCount++] = VertexPC{ v1, color };
-			mFaceVertices[mFaceVertexCount++] = VertexPC{ v2, color };
-		}
-	}
-	void SimpleDrawImpl::Render(const Camera& camera)
-	{
-		const Matrix4 matview = camera.GetViewMatrix();
-		const Matrix4 matProj = camera.GetProjectionMatrix();
-		const Matrix4 transform = Transpose(matview * matProj);
+        mLineVertices = std::make_unique<VertexPC[]>(maxVertexCount);
+        mFaceVertices = std::make_unique<VertexPC[]>(maxVertexCount);
+        mLineVertexCount = 0;
+        mFaceVertexCount = 0;
+        mMaxVertexCount = maxVertexCount;
+        
+    }
+    void SimpleDrawImpl::Terminate()
+    {
+        mBlendState.Terminate();
+        mMeshBuffer.Terminate();
+        mConstantBuffer.Terminate();
+        mPixelShader.Terminate();
+        mVertexShader.Terminate();
+    }
+    void SimpleDrawImpl::AddLine(const Vector3& v0, const Vector3& v1, const Color& color)
+    {
+        if (mLineVertexCount + 2 <= mMaxVertexCount)
+        {
+            mLineVertices[mLineVertexCount++] = VertexPC{ v0, color };
+            mLineVertices[mLineVertexCount++] = VertexPC{ v1, color };
+        }
+    }
+    void SimpleDrawImpl::AddFace(const Vector3& v0, const Vector3& v1, const Vector3& v2, const Color& color)
+    {
+        if (mFaceVertexCount + 3 <= mMaxVertexCount)
+        {
+            mLineVertices[mFaceVertexCount++] = VertexPC{ v0, color };
+            mLineVertices[mFaceVertexCount++] = VertexPC{ v1, color };
+            mLineVertices[mFaceVertexCount++] = VertexPC{ v2, color };
+        }
+    }
+    void SimpleDrawImpl::Render(const Camera& camera)
+    {
+        auto matView = camera.GetViewMatrix();
+        auto matProj = camera.GetProjectionMatrix();
+        auto transform = Transpose(matView * matProj);
+        mConstantBuffer.Update(&transform);
+        mConstantBuffer.BindVS(0);
 
-		mConstantBuffer.Update(&transform);
-		mConstantBuffer.BindVS(0);
+        mVertexShader.Bind();
+        mPixelShader.Bind();
 
-		mVertexShader.Bind();
-		mPixelShader.Bind();
+        mBlendState.Set();
 
-		mBlendState.Set();
+        mMeshBuffer.Update(mLineVertices.get(), mLineVertexCount);
+        mMeshBuffer.SetTopology(MeshBuffer::Topology::Lines);
+        mMeshBuffer.Render();
 
-		mMeshBuffer.Update(mFaceVertices.get(), mFaceVertexCount);
-		mMeshBuffer.SetTopology(MeshBuffer::Topology::Triangles);
-		mMeshBuffer.Render();
+        mMeshBuffer.Update(mFaceVertices.get(), mLineVertexCount);
+        mMeshBuffer.SetTopology(MeshBuffer::Topology::Triangles);
+        mMeshBuffer.Render();
 
-		mMeshBuffer.Update(mLineVertices.get(), mLineVertexCount);
-		mMeshBuffer.SetTopology(MeshBuffer::Topology::Lines);
-		mMeshBuffer.Render();
+        BlendState::ClearState();
 
-		BlendState::ClearState();
+        mLineVertexCount = 0;
+        mFaceVertexCount = 0;
+    }
 
-		mLineVertexCount = 0;
-		mFaceVertexCount = 0;
-	}
-
-	std::unique_ptr<SimpleDrawImpl> sInstance;
+    std::unique_ptr<SimpleDrawImpl> sInstance;
 }
+
 
 void SimpleDraw::StaticInitialize(uint32_t maxVertexCount)
 {
-	sInstance = std::make_unique<SimpleDrawImpl>();
-	sInstance->Initialize(maxVertexCount);
+    sInstance = std::make_unique<SimpleDrawImpl>();
+    sInstance->Initialize(maxVertexCount);
 }
-
 void SimpleDraw::StaticTerminate()
 {
-	sInstance->Terminate();
-	sInstance.reset();
+    sInstance->Terminate();
+    sInstance.reset();
 }
 
 void SimpleDraw::AddLine(const Vector3& v0, const Vector3& v1, const Color& color)
 {
-	sInstance->AddLine(v0, v1, color);
+    sInstance->AddLine(v0, v1, color);
 }
-
 void SimpleDraw::AddFace(const Vector3& v0, const Vector3& v1, const Vector3& v2, const Color& color)
 {
-	sInstance->AddFace(v0, v1, v2, color);
+    sInstance->AddFace(v0, v1, v2, color);
 }
 
 void SimpleDraw::AddAABB(const Vector3& min, const Vector3& max, const Color& color)
 {
-	AddAABB(min.x, min.y, min.z, max.x, max.y, max.z, color);
+    AddAABB(min.x, min.y, min.z, max.x, max.y, max.z, color);
 }
-
 void SimpleDraw::AddAABB(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, const Color& color)
 {
-	const Vector3 trf = { maxX, maxY, minZ };
-	const Vector3 brf = { maxX, minY, minZ };
-	const Vector3 tlf = { minX, maxY, minZ };
-	const Vector3 blf = { minX, minY, minZ };
+    const Vector3 topRightF = { maxX, maxY, minZ };
+    const Vector3 botRightF = { maxX, minY, minZ };
+    const Vector3 topLeftF = { minX, maxY, minZ };
+    const Vector3 botLeftF = { minX, minY, minZ };
 
-	const Vector3 trb = { maxX, maxY, maxZ };
-	const Vector3 brb = { maxX, minY, maxZ };
-	const Vector3 tlb = { minX, maxY, maxZ };
-	const Vector3 blb = { minX, minY, maxZ };
+    const Vector3 topRightB = { maxX, maxY, maxZ };
+    const Vector3 botRightB = { maxX, minY, maxZ };
+    const Vector3 topLeftB = { minX, maxY, maxZ };
+    const Vector3 botLeftB = { minX, minY, maxZ };
 
-	//front
-	AddLine(trf, brf, color);
-	AddLine(brf, blf, color);
-	AddLine(blf, tlf, color);
-	AddLine(tlf, trf, color);
+    //front
+    AddLine(topRightF, botRightF, color);
+    AddLine(topRightF, botLeftF, color);
+    AddLine(topRightF, topLeftF, color);
+    AddLine(topLeftF, botRightF, color);
 
-	//back
-	AddLine(trb, brb, color);
-	AddLine(brb, blb, color);
-	AddLine(blb, tlb, color);
-	AddLine(tlb, trb, color);
+    //back
+    AddLine(topRightB, botRightB, color);
+    AddLine(botRightB, botLeftB, color);
+    AddLine(botLeftB, topLeftB, color);
+    AddLine(topLeftB, topRightB, color);
 
-	//top
-	AddLine(trb, trf, color);
-	AddLine(tlb, tlf, color);
+    //top
+    AddLine(topRightF, topRightB, color);
+    AddLine(topLeftF, topLeftB, color);
 
-	//bottom
-	AddLine(brb, brf, color);
-	AddLine(blb, blf, color);
+    //bottom
+    AddLine(botRightF, botRightB, color);
+    AddLine(botLeftF, topLeftB, color);
+
 }
 
 void SimpleDraw::AddFilledAABB(const Vector3& min, const Vector3& max, const Color& color)
 {
-	AddFilledAABB(min.x, min.y, min.z, max.x, max.y, max.z, color);
+    AddFilledAABB(min.x, min.y, min.z, max.x, max.y, max.z, color);
 }
-
 void SimpleDraw::AddFilledAABB(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, const Color& color)
 {
-	const Vector3 trf = { maxX, maxY, minZ };
-	const Vector3 brf = { maxX, minY, minZ };
-	const Vector3 tlf = { minX, maxY, minZ };
-	const Vector3 blf = { minX, minY, minZ };
+    const Vector3 topRightF = { maxX, maxY, minZ };
+    const Vector3 botRightF = { maxX, minY, minZ };
+    const Vector3 topLeftF = { minX, maxY, minZ };
+    const Vector3 botLeftF = { minX, minY, minZ };
 
-	const Vector3 trb = { maxX, maxY, maxZ };
-	const Vector3 brb = { maxX, minY, maxZ };
-	const Vector3 tlb = { minX, maxY, maxZ };
-	const Vector3 blb = { minX, minY, maxZ };
+    const Vector3 topRightB = { maxX, maxY, maxZ };
+    const Vector3 botRightB = { maxX, minY, maxZ };
+    const Vector3 topLeftB = { minX, maxY, maxZ };
+    const Vector3 botLeftB = { minX, minY, maxZ };
 
-	//Front
-	AddFace(trf, brf, blf, color);
-	AddFace(trf, blf, tlf, color);
-
-	//back
-	AddFace(trb, blb, brb, color);
-	AddFace(trb, tlb, blb, color);
-
-	//top
-	AddFace(trb, trf, tlf, color);
-	AddFace(trb, tlf, tlb, color);
-
-	//bottom
-	AddFace(brb, blf, brf, color);
-	AddFace(brb, blb, blf, color);
-
-	//right
-	AddFace(trb, brb, brf, color);
-	AddFace(trb, brf, trf, color);
-
-	//left
-	AddFace(tlb, blf, blb, color);
-	AddFace(tlb, tlf, blf, color);
+    //add faces
+    // front
+    AddFace(topRightF, botRightF, botLeftF, color);
+    AddFace(botLeftF, topLeftF, topRightF, color);
+    // back
+    AddFace(topRightB, botLeftB, botRightB, color);
+    AddFace(botLeftF, topRightB, topLeftB, color);
+    // top
+    AddFace(topRightB, topRightF, topLeftF, color);
+    AddFace(topLeftF, topLeftB, topRightB, color);
+    // bot
+    AddFace(botRightB, botLeftF, botRightF, color);
+    AddFace(botLeftF, botRightB, botLeftB, color);
+    // right
+    AddFace(topRightB, botRightB, botRightF, color);
+    AddFace(botRightF, topRightF, topRightB, color);
+    // left
+    AddFace(topLeftF, topLeftF, botRightF, color);
+    AddFace(botLeftB, topLeftB, topRightB, color);
 }
 
-void SimpleDraw::AddSphere(uint32_t slices, uint32_t rings, float radius, const Color& color)
+void SimpleDraw::AddSphere(int slices, int rings, float radius, const Color& color)
 {
-	AddSphere(slices, rings, radius, Math::Vector3::Zero, color);
+    AddSphere(slices, rings, radius, Vector3::Zero, color);
 }
 
-void SimpleDraw::AddSphere(uint32_t slices, uint32_t rings, float radius, const Math::Vector3& offset, const Color& color)
+void SimpleDraw::AddSphere(int slices, int rings, float radius, const Vector3& origin, const Color& color)
 {
-	Vector3 v0 = Vector3::Zero;
-	Vector3 v1 = Vector3::Zero;
+    Vector3 v0 = Vector3::Zero;
+    Vector3 v1 = Vector3::Zero;
+    
+    float vertRotation = (Kick_Math::Constants::Pi / static_cast<float>(rings - 1));
+    float horzRotation = (Kick_Math::Constants::TwoPi / static_cast<float>(slices));
+    for (int r = 0; r <= rings; r++)
+    {
+        float ring = static_cast<float>(r);
+        float phi = ring * vertRotation;
+        for (int s = 0; s <= slices; s++)
+        {
+            float slice0 = static_cast<float>(s);
+            float rotation0 = slice0 * horzRotation;
 
-	const float vertRotation = (TwoPi / static_cast<float>(rings - 1));
-	const float horzRotation = (TwoPi / static_cast<float>(slices - 1));
+            float slice1 = static_cast<float>(s + 1);
+            float rotation1 = slice1 * horzRotation;
+            v0 =
+            {
+                radius * sin(rotation0) * sin(phi),
+                radius * cos(phi),
+                radius * cos(rotation0) * sin(phi)
+            };
+            v1 =
+            {
+                radius * sin(rotation1) * sin(phi),
+                radius * cos(phi),
+                radius * cos(rotation1) * sin(phi)
+            };
 
-	for (uint32_t r = 0; r < rings; r++)
-	{
-		float rPos0 = static_cast<float>(r);
-		float rPos1 = static_cast<float>(r + 1);
-		float phi0 = rPos0 * vertRotation;
-		float phi1 = rPos1 * vertRotation;
-		for (uint32_t s = 0; s < slices; ++s)
-		{
-			float sPos0 = static_cast<float>(s);
-			float sPos1 = static_cast<float>(s + 1);
-			float rot0 = sPos0 * horzRotation;
-			float rot1 = sPos1 * horzRotation;
+            AddLine(v0 + origin, v1 + origin, color);
 
-			v0 = {
-				radius * sin(rot0) * sin(phi0),
-				radius * cos(phi0),
-				radius * cos(rot0) * sin(phi0)
-			};
-			v1 = {
-				radius * sin(rot1) * sin(phi0),
-				radius * cos(phi0),
-				radius * cos(rot1) * sin(phi0)
-			};
-			AddLine(v0 + offset, v1 + offset, color);
+            v0 =
+            {
+                radius * cos(phi),
+                radius * cos(rotation0) * sin(phi),
+                radius * sin(rotation0) * sin(phi)
+            };
+            v1 =
+            {
+                radius* cos(phi),
+                radius* cos(rotation1)* sin(phi),
+                radius * sin(rotation1) * sin(phi)
+            };
 
-			v1 = {
-				radius * sin(rot0) * sin(phi1),
-				radius * cos(phi1),
-				radius * cos(rot0) * sin(phi1)
-			};
-			AddLine(v0 + offset, v1 + offset, color);
-		}
-	}
+            AddLine(v0 + origin, v1 + origin, color);
+        }
+
+    }
+}
+
+void SimpleDraw::AddCircle(int slices, float radius, const Color& color)
+{
+    Vector3 v0 = Vector3::Zero;
+    Vector3 v1 = Vector3::Zero;
+    float horzRotation = (Kick_Math::Constants::TwoPi / static_cast<float>(slices));
+
+        for (int s = 0; s <= slices; s++)
+        {
+            float slice0 = static_cast<float>(s);
+            float rotation0 = slice0 * horzRotation;
+
+            float slice1 = static_cast<float>(s + 1);
+            float rotation1 = slice1 * horzRotation;
+            v0 =
+            {
+                radius * sin(rotation0),
+                0.0f,
+                radius * cos(rotation0)
+            };
+            v1 =
+            {
+                radius * sin(rotation1),
+                0.0f,
+                radius * cos(rotation1)
+            };
+
+            AddLine(v0, v1, color);
+        }
 }
 
 void SimpleDraw::AddGroundPlane(float size, const Color& color)
 {
-	const float hs = size * 0.5f;
-	const uint32_t iSize = static_cast<uint32_t>(size);
-	for (uint32_t i = 0; i <= iSize; ++i)
-	{
-		AddLine({ i - hs, 0.0f, -hs }, { i - hs, 0.0f, hs }, color);
-		AddLine({ -hs, 0.0f, i - hs }, { hs, 0.0f, i - hs }, color);
-	}
+    const float hs = size * 0.5f;
+    for (int i = 0; i <= size; ++i)
+    {
+        AddLine({ i - hs, 0.0f, -hs }, { i - hs, 0.0f, hs }, color);
+        AddLine({- hs, 0.0f, i - hs }, { hs, 0.0f, i - hs }, color);
+    }
 }
 
-void SimpleDraw::AddGroundCircle(uint32_t slices, float radius, const Color& color)
+void SimpleDraw::AddTransform(const Matrix4& m)
 {
-	Vector3 v0 = Vector3::Zero;
-	Vector3 v1 = Vector3::Zero;
-	float horzRotation = (TwoPi / static_cast<float>(slices - 1));
-	for (uint32_t s = 0; s < slices; ++s)
-	{
-		float sPos0 = static_cast<float>(s);
-		float sPos1 = static_cast<float>(s + 1);
-		float rot0 = sPos0 * horzRotation;
-		float rot1 = sPos1 * horzRotation;
+    const Vector3 side = { m._11, m._12, m._13 };
+    const Vector3 up = { m._21, m._22, m._23 };
+    const Vector3 look = { m._31, m._32, m._33 };
+    const Vector3 pos = { m._41, m._42, m._43 };
 
-		v0 = {
-			radius * sin(rot0),
-			0.0f,
-			radius * cos(rot0)
-		};
-
-		v1 = {
-			radius * sin(rot1),
-			0.0f,
-			radius * cos(rot1)
-		};
-		AddLine(v0, v1, color);
-	}
-}
-
-void SimpleDraw::AddTransform(const Matrix4& matrix)
-{
-	const Vector3 side = { matrix._11, matrix._12, matrix._13 };
-	const Vector3 up = { matrix._21, matrix._22, matrix._23 };
-	const Vector3 fwd = { matrix._31, matrix._32, matrix._33 };
-	const Vector3 pos = { matrix._41, matrix._42, matrix._43 };
-
-	AddLine(pos, pos + side, Colors::Red);
-	AddLine(pos, pos + up, Colors::Green);
-	AddLine(pos, pos + fwd, Colors::Blue);
+    AddLine(pos, pos + side, Colors::Red);
+    AddLine(pos, pos + up, Colors::Green);
+    AddLine(pos, pos + look, Colors::Blue);
 }
 
 void SimpleDraw::Render(const Camera& camera)
 {
-	sInstance->Render(camera);
+    sInstance->Render(camera);
 }

@@ -52,36 +52,36 @@ email: projectileman@yahoo.com
 
 ///Functions for manip packed arrays of numbers
 #define GIM_COPY_ARRAYS(dest_array, source_array, element_count) \
-	{                                                            \
-		for (GUINT _i_ = 0; _i_ < element_count; ++_i_)          \
-		{                                                        \
-			dest_array[_i_] = source_array[_i_];                 \
-		}                                                        \
-	}
+    {                                                            \
+        for (GUINT _i_ = 0; _i_ < element_count; ++_i_)          \
+        {                                                        \
+            dest_array[_i_] = source_array[_i_];                 \
+        }                                                        \
+    }
 
 #define GIM_COPY_ARRAYS_1(dest_array, source_array, element_count, copy_macro) \
-	{                                                                          \
-		for (GUINT _i_ = 0; _i_ < element_count; ++_i_)                        \
-		{                                                                      \
-			copy_macro(dest_array[_i_], source_array[_i_]);                    \
-		}                                                                      \
-	}
+    {                                                                          \
+        for (GUINT _i_ = 0; _i_ < element_count; ++_i_)                        \
+        {                                                                      \
+            copy_macro(dest_array[_i_], source_array[_i_]);                    \
+        }                                                                      \
+    }
 
 #define GIM_ZERO_ARRAY(array, element_count)            \
-	{                                                   \
-		for (GUINT _i_ = 0; _i_ < element_count; ++_i_) \
-		{                                               \
-			array[_i_] = 0;                             \
-		}                                               \
-	}
+    {                                                   \
+        for (GUINT _i_ = 0; _i_ < element_count; ++_i_) \
+        {                                               \
+            array[_i_] = 0;                             \
+        }                                               \
+    }
 
 #define GIM_CONSTANT_ARRAY(array, element_count, constant) \
-	{                                                      \
-		for (GUINT _i_ = 0; _i_ < element_count; ++_i_)    \
-		{                                                  \
-			array[_i_] = constant;                         \
-		}                                                  \
-	}
+    {                                                      \
+        for (GUINT _i_ = 0; _i_ < element_count; ++_i_)    \
+        {                                                  \
+            array[_i_] = constant;                         \
+        }                                                  \
+    }
 
 ///Function prototypes to allocate and free memory.
 typedef void *gim_alloc_function(size_t size);
@@ -120,7 +120,7 @@ void gim_free(void *ptr);
 inline void gim_simd_memcpy(void *dst, const void *src, size_t copysize)
 {
 #ifdef GIM_SIMD_MEMORY
-	/*
+    /*
 //'long long int' is incompatible with visual studio 6...
     //copy words
     SIMD_T * ui_src_ptr = (SIMD_T *)src;
@@ -133,45 +133,45 @@ inline void gim_simd_memcpy(void *dst, const void *src, size_t copysize)
     if(copysize==0) return;
 */
 
-	char *c_src_ptr = (char *)src;
-	char *c_dst_ptr = (char *)dst;
-	while (copysize > 0)
-	{
-		*(c_dst_ptr++) = *(c_src_ptr++);
-		copysize--;
-	}
-	return;
+    char *c_src_ptr = (char *)src;
+    char *c_dst_ptr = (char *)dst;
+    while (copysize > 0)
+    {
+        *(c_dst_ptr++) = *(c_src_ptr++);
+        copysize--;
+    }
+    return;
 #else
-	memcpy(dst, src, copysize);
+    memcpy(dst, src, copysize);
 #endif
 }
 
 template <class T>
 inline void gim_swap_elements(T *_array, size_t _i, size_t _j)
 {
-	T _e_tmp_ = _array[_i];
-	_array[_i] = _array[_j];
-	_array[_j] = _e_tmp_;
+    T _e_tmp_ = _array[_i];
+    _array[_i] = _array[_j];
+    _array[_j] = _e_tmp_;
 }
 
 template <class T>
 inline void gim_swap_elements_memcpy(T *_array, size_t _i, size_t _j)
 {
-	char _e_tmp_[sizeof(T)];
-	gim_simd_memcpy(_e_tmp_, &_array[_i], sizeof(T));
-	gim_simd_memcpy(&_array[_i], &_array[_j], sizeof(T));
-	gim_simd_memcpy(&_array[_j], _e_tmp_, sizeof(T));
+    char _e_tmp_[sizeof(T)];
+    gim_simd_memcpy(_e_tmp_, &_array[_i], sizeof(T));
+    gim_simd_memcpy(&_array[_i], &_array[_j], sizeof(T));
+    gim_simd_memcpy(&_array[_j], _e_tmp_, sizeof(T));
 }
 
 template <int SIZE>
 inline void gim_swap_elements_ptr(char *_array, size_t _i, size_t _j)
 {
-	char _e_tmp_[SIZE];
-	_i *= SIZE;
-	_j *= SIZE;
-	gim_simd_memcpy(_e_tmp_, _array + _i, SIZE);
-	gim_simd_memcpy(_array + _i, _array + _j, SIZE);
-	gim_simd_memcpy(_array + _j, _e_tmp_, SIZE);
+    char _e_tmp_[SIZE];
+    _i *= SIZE;
+    _j *= SIZE;
+    gim_simd_memcpy(_e_tmp_, _array + _i, SIZE);
+    gim_simd_memcpy(_array + _i, _array + _j, SIZE);
+    gim_simd_memcpy(_array + _j, _e_tmp_, SIZE);
 }
 
 #endif  // GIM_MEMORY_H_INCLUDED

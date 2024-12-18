@@ -1,0 +1,8 @@
+{
+    "Components": {
+        "UISpriteComponent": {
+            "Texture": "../../Assets/Textures/Images/miku.png",
+            "Position": [ 500, 500 ]
+        }
+    }
+}

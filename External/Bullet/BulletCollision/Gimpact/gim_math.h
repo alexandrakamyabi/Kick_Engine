@@ -57,14 +57,14 @@ email: projectileman@yahoo.com
 
 enum GIM_SCALAR_TYPES
 {
-	G_STYPE_REAL = 0,
-	G_STYPE_REAL2,
-	G_STYPE_SHORT,
-	G_STYPE_USHORT,
-	G_STYPE_INT,
-	G_STYPE_UINT,
-	G_STYPE_INT64,
-	G_STYPE_UINT64
+    G_STYPE_REAL = 0,
+    G_STYPE_REAL2,
+    G_STYPE_SHORT,
+    G_STYPE_USHORT,
+    G_STYPE_INT,
+    G_STYPE_UINT,
+    G_STYPE_INT64,
+    G_STYPE_UINT64
 };
 
 #define G_DEGTORAD(X) ((X)*3.1415926f / 180.0f)
@@ -103,46 +103,46 @@ enum GIM_SCALAR_TYPES
 
 ///Swap numbers
 #define GIM_SWAP_NUMBERS(a, b) \
-	{                          \
-		a = a + b;             \
-		b = a - b;             \
-		a = a - b;             \
-	}
+    {                          \
+        a = a + b;             \
+        b = a - b;             \
+        a = a - b;             \
+    }
 
 #define GIM_INV_SQRT(va, isva)                         \
-	{                                                  \
-		if (va <= 0.0000001f)                          \
-		{                                              \
-			isva = G_REAL_INFINITY;                    \
-		}                                              \
-		else                                           \
-		{                                              \
-			GREAL _x = va * 0.5f;                      \
-			GUINT _y = 0x5f3759df - (GIM_IR(va) >> 1); \
-			isva = GIM_FR(_y);                         \
-			isva = isva * (1.5f - (_x * isva * isva)); \
-		}                                              \
-	}
+    {                                                  \
+        if (va <= 0.0000001f)                          \
+        {                                              \
+            isva = G_REAL_INFINITY;                    \
+        }                                              \
+        else                                           \
+        {                                              \
+            GREAL _x = va * 0.5f;                      \
+            GUINT _y = 0x5f3759df - (GIM_IR(va) >> 1); \
+            isva = GIM_FR(_y);                         \
+            isva = isva * (1.5f - (_x * isva * isva)); \
+        }                                              \
+    }
 
 #define GIM_SQRT(va, sva)      \
-	{                          \
-		GIM_INV_SQRT(va, sva); \
-		sva = 1.0f / sva;      \
-	}
+    {                          \
+        GIM_INV_SQRT(va, sva); \
+        sva = 1.0f / sva;      \
+    }
 
 //! Computes 1.0f / sqrtf(x). Comes from Quake3. See http://www.magic-software.com/3DGEDInvSqrt.html
 inline GREAL gim_inv_sqrt(GREAL f)
 {
-	GREAL r;
-	GIM_INV_SQRT(f, r);
-	return r;
+    GREAL r;
+    GIM_INV_SQRT(f, r);
+    return r;
 }
 
 inline GREAL gim_sqrt(GREAL f)
 {
-	GREAL r;
-	GIM_SQRT(f, r);
-	return r;
+    GREAL r;
+    GIM_SQRT(f, r);
+    return r;
 }
 
 #endif  // GIM_MATH_H_INCLUDED

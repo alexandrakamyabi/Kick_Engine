@@ -25,12 +25,12 @@ subject to the following restrictions:
 
 void btMultiBodyDynamicsWorld::addMultiBody(btMultiBody* body, int group, int mask)
 {
-	m_multiBodies.push_back(body);
+    m_multiBodies.push_back(body);
 }
 
 void btMultiBodyDynamicsWorld::removeMultiBody(btMultiBody* body)
 {
-	m_multiBodies.remove(body);
+    m_multiBodies.remove(body);
 }
 
 void btMultiBodyDynamicsWorld::predictUnconstraintMotion(btScalar timeStep)
@@ -41,184 +41,184 @@ void btMultiBodyDynamicsWorld::predictUnconstraintMotion(btScalar timeStep)
 }
 void btMultiBodyDynamicsWorld::calculateSimulationIslands()
 {
-	BT_PROFILE("calculateSimulationIslands");
+    BT_PROFILE("calculateSimulationIslands");
 
-	getSimulationIslandManager()->updateActivationState(getCollisionWorld(), getCollisionWorld()->getDispatcher());
+    getSimulationIslandManager()->updateActivationState(getCollisionWorld(), getCollisionWorld()->getDispatcher());
 
-	{
-		//merge islands based on speculative contact manifolds too
-		for (int i = 0; i < this->m_predictiveManifolds.size(); i++)
-		{
-			btPersistentManifold* manifold = m_predictiveManifolds[i];
+    {
+        //merge islands based on speculative contact manifolds too
+        for (int i = 0; i < this->m_predictiveManifolds.size(); i++)
+        {
+            btPersistentManifold* manifold = m_predictiveManifolds[i];
 
-			const btCollisionObject* colObj0 = manifold->getBody0();
-			const btCollisionObject* colObj1 = manifold->getBody1();
+            const btCollisionObject* colObj0 = manifold->getBody0();
+            const btCollisionObject* colObj1 = manifold->getBody1();
 
-			if (((colObj0) && (!(colObj0)->isStaticOrKinematicObject())) &&
-				((colObj1) && (!(colObj1)->isStaticOrKinematicObject())))
-			{
-				getSimulationIslandManager()->getUnionFind().unite((colObj0)->getIslandTag(), (colObj1)->getIslandTag());
-			}
-		}
-	}
+            if (((colObj0) && (!(colObj0)->isStaticOrKinematicObject())) &&
+                ((colObj1) && (!(colObj1)->isStaticOrKinematicObject())))
+            {
+                getSimulationIslandManager()->getUnionFind().unite((colObj0)->getIslandTag(), (colObj1)->getIslandTag());
+            }
+        }
+    }
 
-	{
-		int i;
-		int numConstraints = int(m_constraints.size());
-		for (i = 0; i < numConstraints; i++)
-		{
-			btTypedConstraint* constraint = m_constraints[i];
-			if (constraint->isEnabled())
-			{
-				const btRigidBody* colObj0 = &constraint->getRigidBodyA();
-				const btRigidBody* colObj1 = &constraint->getRigidBodyB();
+    {
+        int i;
+        int numConstraints = int(m_constraints.size());
+        for (i = 0; i < numConstraints; i++)
+        {
+            btTypedConstraint* constraint = m_constraints[i];
+            if (constraint->isEnabled())
+            {
+                const btRigidBody* colObj0 = &constraint->getRigidBodyA();
+                const btRigidBody* colObj1 = &constraint->getRigidBodyB();
 
-				if (((colObj0) && (!(colObj0)->isStaticOrKinematicObject())) &&
-					((colObj1) && (!(colObj1)->isStaticOrKinematicObject())))
-				{
-					getSimulationIslandManager()->getUnionFind().unite((colObj0)->getIslandTag(), (colObj1)->getIslandTag());
-				}
-			}
-		}
-	}
+                if (((colObj0) && (!(colObj0)->isStaticOrKinematicObject())) &&
+                    ((colObj1) && (!(colObj1)->isStaticOrKinematicObject())))
+                {
+                    getSimulationIslandManager()->getUnionFind().unite((colObj0)->getIslandTag(), (colObj1)->getIslandTag());
+                }
+            }
+        }
+    }
 
-	//merge islands linked by Featherstone link colliders
-	for (int i = 0; i < m_multiBodies.size(); i++)
-	{
-		btMultiBody* body = m_multiBodies[i];
-		{
-			btMultiBodyLinkCollider* prev = body->getBaseCollider();
+    //merge islands linked by Featherstone link colliders
+    for (int i = 0; i < m_multiBodies.size(); i++)
+    {
+        btMultiBody* body = m_multiBodies[i];
+        {
+            btMultiBodyLinkCollider* prev = body->getBaseCollider();
 
-			for (int b = 0; b < body->getNumLinks(); b++)
-			{
-				btMultiBodyLinkCollider* cur = body->getLink(b).m_collider;
+            for (int b = 0; b < body->getNumLinks(); b++)
+            {
+                btMultiBodyLinkCollider* cur = body->getLink(b).m_collider;
 
-				if (((cur) && (!(cur)->isStaticOrKinematicObject())) &&
-					((prev) && (!(prev)->isStaticOrKinematicObject())))
-				{
-					int tagPrev = prev->getIslandTag();
-					int tagCur = cur->getIslandTag();
-					getSimulationIslandManager()->getUnionFind().unite(tagPrev, tagCur);
-				}
-				if (cur && !cur->isStaticOrKinematicObject())
-					prev = cur;
-			}
-		}
-	}
+                if (((cur) && (!(cur)->isStaticOrKinematicObject())) &&
+                    ((prev) && (!(prev)->isStaticOrKinematicObject())))
+                {
+                    int tagPrev = prev->getIslandTag();
+                    int tagCur = cur->getIslandTag();
+                    getSimulationIslandManager()->getUnionFind().unite(tagPrev, tagCur);
+                }
+                if (cur && !cur->isStaticOrKinematicObject())
+                    prev = cur;
+            }
+        }
+    }
 
-	//merge islands linked by multibody constraints
-	{
-		for (int i = 0; i < this->m_multiBodyConstraints.size(); i++)
-		{
-			btMultiBodyConstraint* c = m_multiBodyConstraints[i];
-			int tagA = c->getIslandIdA();
-			int tagB = c->getIslandIdB();
-			if (tagA >= 0 && tagB >= 0)
-				getSimulationIslandManager()->getUnionFind().unite(tagA, tagB);
-		}
-	}
+    //merge islands linked by multibody constraints
+    {
+        for (int i = 0; i < this->m_multiBodyConstraints.size(); i++)
+        {
+            btMultiBodyConstraint* c = m_multiBodyConstraints[i];
+            int tagA = c->getIslandIdA();
+            int tagB = c->getIslandIdB();
+            if (tagA >= 0 && tagB >= 0)
+                getSimulationIslandManager()->getUnionFind().unite(tagA, tagB);
+        }
+    }
 
-	//Store the island id in each body
-	getSimulationIslandManager()->storeIslandActivationState(getCollisionWorld());
+    //Store the island id in each body
+    getSimulationIslandManager()->storeIslandActivationState(getCollisionWorld());
 }
 
 void btMultiBodyDynamicsWorld::updateActivationState(btScalar timeStep)
 {
-	BT_PROFILE("btMultiBodyDynamicsWorld::updateActivationState");
+    BT_PROFILE("btMultiBodyDynamicsWorld::updateActivationState");
 
-	for (int i = 0; i < m_multiBodies.size(); i++)
-	{
-		btMultiBody* body = m_multiBodies[i];
-		if (body)
-		{
-			body->checkMotionAndSleepIfRequired(timeStep);
-			if (!body->isAwake())
-			{
-				btMultiBodyLinkCollider* col = body->getBaseCollider();
-				if (col && col->getActivationState() == ACTIVE_TAG)
-				{
+    for (int i = 0; i < m_multiBodies.size(); i++)
+    {
+        btMultiBody* body = m_multiBodies[i];
+        if (body)
+        {
+            body->checkMotionAndSleepIfRequired(timeStep);
+            if (!body->isAwake())
+            {
+                btMultiBodyLinkCollider* col = body->getBaseCollider();
+                if (col && col->getActivationState() == ACTIVE_TAG)
+                {
                     if (body->hasFixedBase())
-					{
+                    {
                         col->setActivationState(FIXED_BASE_MULTI_BODY);
                     } else
-					{
+                    {
                         col->setActivationState(WANTS_DEACTIVATION);
                     }
-					
-					col->setDeactivationTime(0.f);
-				}
-				for (int b = 0; b < body->getNumLinks(); b++)
-				{
-					btMultiBodyLinkCollider* col = body->getLink(b).m_collider;
-					if (col && col->getActivationState() == ACTIVE_TAG)
-					{
-						col->setActivationState(WANTS_DEACTIVATION);
-						col->setDeactivationTime(0.f);
-					}
-				}
-			}
-			else
-			{
-				btMultiBodyLinkCollider* col = body->getBaseCollider();
-				if (col && col->getActivationState() != DISABLE_DEACTIVATION)
-					col->setActivationState(ACTIVE_TAG);
+                    
+                    col->setDeactivationTime(0.f);
+                }
+                for (int b = 0; b < body->getNumLinks(); b++)
+                {
+                    btMultiBodyLinkCollider* col = body->getLink(b).m_collider;
+                    if (col && col->getActivationState() == ACTIVE_TAG)
+                    {
+                        col->setActivationState(WANTS_DEACTIVATION);
+                        col->setDeactivationTime(0.f);
+                    }
+                }
+            }
+            else
+            {
+                btMultiBodyLinkCollider* col = body->getBaseCollider();
+                if (col && col->getActivationState() != DISABLE_DEACTIVATION)
+                    col->setActivationState(ACTIVE_TAG);
 
-				for (int b = 0; b < body->getNumLinks(); b++)
-				{
-					btMultiBodyLinkCollider* col = body->getLink(b).m_collider;
-					if (col && col->getActivationState() != DISABLE_DEACTIVATION)
-						col->setActivationState(ACTIVE_TAG);
-				}
-			}
-		}
-	}
+                for (int b = 0; b < body->getNumLinks(); b++)
+                {
+                    btMultiBodyLinkCollider* col = body->getLink(b).m_collider;
+                    if (col && col->getActivationState() != DISABLE_DEACTIVATION)
+                        col->setActivationState(ACTIVE_TAG);
+                }
+            }
+        }
+    }
 
-	btDiscreteDynamicsWorld::updateActivationState(timeStep);
+    btDiscreteDynamicsWorld::updateActivationState(timeStep);
 }
 
 void btMultiBodyDynamicsWorld::getAnalyticsData(btAlignedObjectArray<btSolverAnalyticsData>& islandAnalyticsData) const
 {
-	islandAnalyticsData = m_solverMultiBodyIslandCallback->m_islandAnalyticsData;
+    islandAnalyticsData = m_solverMultiBodyIslandCallback->m_islandAnalyticsData;
 }
 
 btMultiBodyDynamicsWorld::btMultiBodyDynamicsWorld(btDispatcher* dispatcher, btBroadphaseInterface* pairCache, btMultiBodyConstraintSolver* constraintSolver, btCollisionConfiguration* collisionConfiguration)
-	: btDiscreteDynamicsWorld(dispatcher, pairCache, constraintSolver, collisionConfiguration),
-	  m_multiBodyConstraintSolver(constraintSolver)
+    : btDiscreteDynamicsWorld(dispatcher, pairCache, constraintSolver, collisionConfiguration),
+      m_multiBodyConstraintSolver(constraintSolver)
 {
-	//split impulse is not yet supported for Featherstone hierarchies
-	//	getSolverInfo().m_splitImpulse = false;
-	getSolverInfo().m_solverMode |= SOLVER_USE_2_FRICTION_DIRECTIONS;
-	m_solverMultiBodyIslandCallback = new MultiBodyInplaceSolverIslandCallback(constraintSolver, dispatcher);
+    //split impulse is not yet supported for Featherstone hierarchies
+    //    getSolverInfo().m_splitImpulse = false;
+    getSolverInfo().m_solverMode |= SOLVER_USE_2_FRICTION_DIRECTIONS;
+    m_solverMultiBodyIslandCallback = new MultiBodyInplaceSolverIslandCallback(constraintSolver, dispatcher);
 }
 
 btMultiBodyDynamicsWorld::~btMultiBodyDynamicsWorld()
 {
-	delete m_solverMultiBodyIslandCallback;
+    delete m_solverMultiBodyIslandCallback;
 }
 
 void btMultiBodyDynamicsWorld::setMultiBodyConstraintSolver(btMultiBodyConstraintSolver* solver)
 {
-	m_multiBodyConstraintSolver = solver;
-	m_solverMultiBodyIslandCallback->setMultiBodyConstraintSolver(solver);
-	btDiscreteDynamicsWorld::setConstraintSolver(solver);
+    m_multiBodyConstraintSolver = solver;
+    m_solverMultiBodyIslandCallback->setMultiBodyConstraintSolver(solver);
+    btDiscreteDynamicsWorld::setConstraintSolver(solver);
 }
 
 void btMultiBodyDynamicsWorld::setConstraintSolver(btConstraintSolver* solver)
 {
-	if (solver->getSolverType() == BT_MULTIBODY_SOLVER)
-	{
-		m_multiBodyConstraintSolver = (btMultiBodyConstraintSolver*)solver;
-	}
-	btDiscreteDynamicsWorld::setConstraintSolver(solver);
+    if (solver->getSolverType() == BT_MULTIBODY_SOLVER)
+    {
+        m_multiBodyConstraintSolver = (btMultiBodyConstraintSolver*)solver;
+    }
+    btDiscreteDynamicsWorld::setConstraintSolver(solver);
 }
 
 void btMultiBodyDynamicsWorld::forwardKinematics()
 {
-	for (int b = 0; b < m_multiBodies.size(); b++)
-	{
-		btMultiBody* bod = m_multiBodies[b];
-		bod->forwardKinematics(m_scratch_world_to_local, m_scratch_local_origin);
-	}
+    for (int b = 0; b < m_multiBodies.size(); b++)
+    {
+        btMultiBody* bod = m_multiBodies[b];
+        bod->forwardKinematics(m_scratch_world_to_local, m_scratch_local_origin);
+    }
 }
 void btMultiBodyDynamicsWorld::solveConstraints(btContactSolverInfo& solverInfo)
 {
@@ -234,9 +234,9 @@ void btMultiBodyDynamicsWorld::buildIslands()
 
 void btMultiBodyDynamicsWorld::solveInternalConstraints(btContactSolverInfo& solverInfo)
 {
-	/// solve all the constraints for this island
-	m_solverMultiBodyIslandCallback->processConstraints();
-	m_constraintSolver->allSolved(solverInfo, m_debugDrawer);
+    /// solve all the constraints for this island
+    m_solverMultiBodyIslandCallback->processConstraints();
+    m_constraintSolver->allSolved(solverInfo, m_debugDrawer);
     {
         BT_PROFILE("btMultiBody stepVelocities");
         for (int i = 0; i < this->m_multiBodies.size(); i++)
@@ -574,35 +574,35 @@ void btMultiBodyDynamicsWorld::solveExternalForces(btContactSolverInfo& solverIn
 
 void btMultiBodyDynamicsWorld::integrateTransforms(btScalar timeStep)
 {
-	btDiscreteDynamicsWorld::integrateTransforms(timeStep);
+    btDiscreteDynamicsWorld::integrateTransforms(timeStep);
     integrateMultiBodyTransforms(timeStep);
 }
 
 void btMultiBodyDynamicsWorld::integrateMultiBodyTransforms(btScalar timeStep)
 {
-		BT_PROFILE("btMultiBody stepPositions");
-		//integrate and update the Featherstone hierarchies
+        BT_PROFILE("btMultiBody stepPositions");
+        //integrate and update the Featherstone hierarchies
 
-		for (int b = 0; b < m_multiBodies.size(); b++)
-		{
-			btMultiBody* bod = m_multiBodies[b];
-			bool isSleeping = false;
-			if (bod->getBaseCollider() && bod->getBaseCollider()->getActivationState() == ISLAND_SLEEPING)
-			{
-				isSleeping = true;
-			}
-			for (int b = 0; b < bod->getNumLinks(); b++)
-			{
-				if (bod->getLink(b).m_collider && bod->getLink(b).m_collider->getActivationState() == ISLAND_SLEEPING)
-					isSleeping = true;
-			}
+        for (int b = 0; b < m_multiBodies.size(); b++)
+        {
+            btMultiBody* bod = m_multiBodies[b];
+            bool isSleeping = false;
+            if (bod->getBaseCollider() && bod->getBaseCollider()->getActivationState() == ISLAND_SLEEPING)
+            {
+                isSleeping = true;
+            }
+            for (int b = 0; b < bod->getNumLinks(); b++)
+            {
+                if (bod->getLink(b).m_collider && bod->getLink(b).m_collider->getActivationState() == ISLAND_SLEEPING)
+                    isSleeping = true;
+            }
 
-			if (!isSleeping)
-			{
-				bod->addSplitV();
-				int nLinks = bod->getNumLinks();
+            if (!isSleeping)
+            {
+                bod->addSplitV();
+                int nLinks = bod->getNumLinks();
 
-				///base + num m_links
+                ///base + num m_links
                 if (!bod->isPosUpdated())
                     bod->stepPositionsMultiDof(timeStep);
                 else
@@ -615,16 +615,16 @@ void btMultiBodyDynamicsWorld::integrateMultiBodyTransforms(btScalar timeStep)
                 }
 
 
-				m_scratch_world_to_local.resize(nLinks + 1);
-				m_scratch_local_origin.resize(nLinks + 1);
+                m_scratch_world_to_local.resize(nLinks + 1);
+                m_scratch_local_origin.resize(nLinks + 1);
                 bod->updateCollisionObjectWorldTransforms(m_scratch_world_to_local, m_scratch_local_origin);
-				bod->substractSplitV();
-			}
-			else
-			{
-				bod->clearVelocities();
-			}
-		}
+                bod->substractSplitV();
+            }
+            else
+            {
+                bod->clearVelocities();
+            }
+        }
 }
 
 void btMultiBodyDynamicsWorld::predictMultiBodyTransforms(btScalar timeStep)
@@ -663,229 +663,229 @@ void btMultiBodyDynamicsWorld::predictMultiBodyTransforms(btScalar timeStep)
 
 void btMultiBodyDynamicsWorld::addMultiBodyConstraint(btMultiBodyConstraint* constraint)
 {
-	m_multiBodyConstraints.push_back(constraint);
+    m_multiBodyConstraints.push_back(constraint);
 }
 
 void btMultiBodyDynamicsWorld::removeMultiBodyConstraint(btMultiBodyConstraint* constraint)
 {
-	m_multiBodyConstraints.remove(constraint);
+    m_multiBodyConstraints.remove(constraint);
 }
 
 void btMultiBodyDynamicsWorld::debugDrawMultiBodyConstraint(btMultiBodyConstraint* constraint)
 {
-	constraint->debugDraw(getDebugDrawer());
+    constraint->debugDraw(getDebugDrawer());
 }
 
 void btMultiBodyDynamicsWorld::debugDrawWorld()
 {
-	BT_PROFILE("btMultiBodyDynamicsWorld debugDrawWorld");
+    BT_PROFILE("btMultiBodyDynamicsWorld debugDrawWorld");
 
-	btDiscreteDynamicsWorld::debugDrawWorld();
+    btDiscreteDynamicsWorld::debugDrawWorld();
 
-	bool drawConstraints = false;
-	if (getDebugDrawer())
-	{
-		int mode = getDebugDrawer()->getDebugMode();
-		if (mode & (btIDebugDraw::DBG_DrawConstraints | btIDebugDraw::DBG_DrawConstraintLimits))
-		{
-			drawConstraints = true;
-		}
+    bool drawConstraints = false;
+    if (getDebugDrawer())
+    {
+        int mode = getDebugDrawer()->getDebugMode();
+        if (mode & (btIDebugDraw::DBG_DrawConstraints | btIDebugDraw::DBG_DrawConstraintLimits))
+        {
+            drawConstraints = true;
+        }
 
-		if (drawConstraints)
-		{
-			BT_PROFILE("btMultiBody debugDrawWorld");
+        if (drawConstraints)
+        {
+            BT_PROFILE("btMultiBody debugDrawWorld");
 
-			for (int c = 0; c < m_multiBodyConstraints.size(); c++)
-			{
-				btMultiBodyConstraint* constraint = m_multiBodyConstraints[c];
-				debugDrawMultiBodyConstraint(constraint);
-			}
+            for (int c = 0; c < m_multiBodyConstraints.size(); c++)
+            {
+                btMultiBodyConstraint* constraint = m_multiBodyConstraints[c];
+                debugDrawMultiBodyConstraint(constraint);
+            }
 
-			for (int b = 0; b < m_multiBodies.size(); b++)
-			{
-				btMultiBody* bod = m_multiBodies[b];
-				bod->forwardKinematics(m_scratch_world_to_local1, m_scratch_local_origin1);
+            for (int b = 0; b < m_multiBodies.size(); b++)
+            {
+                btMultiBody* bod = m_multiBodies[b];
+                bod->forwardKinematics(m_scratch_world_to_local1, m_scratch_local_origin1);
 
-				if (mode & btIDebugDraw::DBG_DrawFrames)
-				{
-					getDebugDrawer()->drawTransform(bod->getBaseWorldTransform(), 0.1);
-				}
+                if (mode & btIDebugDraw::DBG_DrawFrames)
+                {
+                    getDebugDrawer()->drawTransform(bod->getBaseWorldTransform(), 0.1);
+                }
 
-				for (int m = 0; m < bod->getNumLinks(); m++)
-				{
-					const btTransform& tr = bod->getLink(m).m_cachedWorldTransform;
-					if (mode & btIDebugDraw::DBG_DrawFrames)
-					{
-						getDebugDrawer()->drawTransform(tr, 0.1);
-					}
-					//draw the joint axis
-					if (bod->getLink(m).m_jointType == btMultibodyLink::eRevolute)
-					{
-						btVector3 vec = quatRotate(tr.getRotation(), bod->getLink(m).m_axes[0].m_topVec) * 0.1;
+                for (int m = 0; m < bod->getNumLinks(); m++)
+                {
+                    const btTransform& tr = bod->getLink(m).m_cachedWorldTransform;
+                    if (mode & btIDebugDraw::DBG_DrawFrames)
+                    {
+                        getDebugDrawer()->drawTransform(tr, 0.1);
+                    }
+                    //draw the joint axis
+                    if (bod->getLink(m).m_jointType == btMultibodyLink::eRevolute)
+                    {
+                        btVector3 vec = quatRotate(tr.getRotation(), bod->getLink(m).m_axes[0].m_topVec) * 0.1;
 
-						btVector4 color(0, 0, 0, 1);  //1,1,1);
-						btVector3 from = vec + tr.getOrigin() - quatRotate(tr.getRotation(), bod->getLink(m).m_dVector);
-						btVector3 to = tr.getOrigin() - quatRotate(tr.getRotation(), bod->getLink(m).m_dVector);
-						getDebugDrawer()->drawLine(from, to, color);
-					}
-					if (bod->getLink(m).m_jointType == btMultibodyLink::eFixed)
-					{
-						btVector3 vec = quatRotate(tr.getRotation(), bod->getLink(m).m_axes[0].m_bottomVec) * 0.1;
+                        btVector4 color(0, 0, 0, 1);  //1,1,1);
+                        btVector3 from = vec + tr.getOrigin() - quatRotate(tr.getRotation(), bod->getLink(m).m_dVector);
+                        btVector3 to = tr.getOrigin() - quatRotate(tr.getRotation(), bod->getLink(m).m_dVector);
+                        getDebugDrawer()->drawLine(from, to, color);
+                    }
+                    if (bod->getLink(m).m_jointType == btMultibodyLink::eFixed)
+                    {
+                        btVector3 vec = quatRotate(tr.getRotation(), bod->getLink(m).m_axes[0].m_bottomVec) * 0.1;
 
-						btVector4 color(0, 0, 0, 1);  //1,1,1);
-						btVector3 from = vec + tr.getOrigin() - quatRotate(tr.getRotation(), bod->getLink(m).m_dVector);
-						btVector3 to = tr.getOrigin() - quatRotate(tr.getRotation(), bod->getLink(m).m_dVector);
-						getDebugDrawer()->drawLine(from, to, color);
-					}
-					if (bod->getLink(m).m_jointType == btMultibodyLink::ePrismatic)
-					{
-						btVector3 vec = quatRotate(tr.getRotation(), bod->getLink(m).m_axes[0].m_bottomVec) * 0.1;
+                        btVector4 color(0, 0, 0, 1);  //1,1,1);
+                        btVector3 from = vec + tr.getOrigin() - quatRotate(tr.getRotation(), bod->getLink(m).m_dVector);
+                        btVector3 to = tr.getOrigin() - quatRotate(tr.getRotation(), bod->getLink(m).m_dVector);
+                        getDebugDrawer()->drawLine(from, to, color);
+                    }
+                    if (bod->getLink(m).m_jointType == btMultibodyLink::ePrismatic)
+                    {
+                        btVector3 vec = quatRotate(tr.getRotation(), bod->getLink(m).m_axes[0].m_bottomVec) * 0.1;
 
-						btVector4 color(0, 0, 0, 1);  //1,1,1);
-						btVector3 from = vec + tr.getOrigin() - quatRotate(tr.getRotation(), bod->getLink(m).m_dVector);
-						btVector3 to = tr.getOrigin() - quatRotate(tr.getRotation(), bod->getLink(m).m_dVector);
-						getDebugDrawer()->drawLine(from, to, color);
-					}
-				}
-			}
-		}
-	}
+                        btVector4 color(0, 0, 0, 1);  //1,1,1);
+                        btVector3 from = vec + tr.getOrigin() - quatRotate(tr.getRotation(), bod->getLink(m).m_dVector);
+                        btVector3 to = tr.getOrigin() - quatRotate(tr.getRotation(), bod->getLink(m).m_dVector);
+                        getDebugDrawer()->drawLine(from, to, color);
+                    }
+                }
+            }
+        }
+    }
 }
 
 void btMultiBodyDynamicsWorld::applyGravity()
 {
-	btDiscreteDynamicsWorld::applyGravity();
+    btDiscreteDynamicsWorld::applyGravity();
 #ifdef BT_USE_VIRTUAL_CLEARFORCES_AND_GRAVITY
-	BT_PROFILE("btMultiBody addGravity");
-	for (int i = 0; i < this->m_multiBodies.size(); i++)
-	{
-		btMultiBody* bod = m_multiBodies[i];
+    BT_PROFILE("btMultiBody addGravity");
+    for (int i = 0; i < this->m_multiBodies.size(); i++)
+    {
+        btMultiBody* bod = m_multiBodies[i];
 
-		bool isSleeping = false;
+        bool isSleeping = false;
 
-		if (bod->getBaseCollider() && bod->getBaseCollider()->getActivationState() == ISLAND_SLEEPING)
-		{
-			isSleeping = true;
-		}
-		for (int b = 0; b < bod->getNumLinks(); b++)
-		{
-			if (bod->getLink(b).m_collider && bod->getLink(b).m_collider->getActivationState() == ISLAND_SLEEPING)
-				isSleeping = true;
-		}
+        if (bod->getBaseCollider() && bod->getBaseCollider()->getActivationState() == ISLAND_SLEEPING)
+        {
+            isSleeping = true;
+        }
+        for (int b = 0; b < bod->getNumLinks(); b++)
+        {
+            if (bod->getLink(b).m_collider && bod->getLink(b).m_collider->getActivationState() == ISLAND_SLEEPING)
+                isSleeping = true;
+        }
 
-		if (!isSleeping)
-		{
-			bod->addBaseForce(m_gravity * bod->getBaseMass());
+        if (!isSleeping)
+        {
+            bod->addBaseForce(m_gravity * bod->getBaseMass());
 
-			for (int j = 0; j < bod->getNumLinks(); ++j)
-			{
-				bod->addLinkForce(j, m_gravity * bod->getLinkMass(j));
-			}
-		}  //if (!isSleeping)
-	}
+            for (int j = 0; j < bod->getNumLinks(); ++j)
+            {
+                bod->addLinkForce(j, m_gravity * bod->getLinkMass(j));
+            }
+        }  //if (!isSleeping)
+    }
 #endif  //BT_USE_VIRTUAL_CLEARFORCES_AND_GRAVITY
 }
 
 void btMultiBodyDynamicsWorld::clearMultiBodyConstraintForces()
 {
-	for (int i = 0; i < this->m_multiBodies.size(); i++)
-	{
-		btMultiBody* bod = m_multiBodies[i];
-		bod->clearConstraintForces();
-	}
+    for (int i = 0; i < this->m_multiBodies.size(); i++)
+    {
+        btMultiBody* bod = m_multiBodies[i];
+        bod->clearConstraintForces();
+    }
 }
 void btMultiBodyDynamicsWorld::clearMultiBodyForces()
 {
-	{
-		// BT_PROFILE("clearMultiBodyForces");
-		for (int i = 0; i < this->m_multiBodies.size(); i++)
-		{
-			btMultiBody* bod = m_multiBodies[i];
+    {
+        // BT_PROFILE("clearMultiBodyForces");
+        for (int i = 0; i < this->m_multiBodies.size(); i++)
+        {
+            btMultiBody* bod = m_multiBodies[i];
 
-			bool isSleeping = false;
+            bool isSleeping = false;
 
-			if (bod->getBaseCollider() && bod->getBaseCollider()->getActivationState() == ISLAND_SLEEPING)
-			{
-				isSleeping = true;
-			}
-			for (int b = 0; b < bod->getNumLinks(); b++)
-			{
-				if (bod->getLink(b).m_collider && bod->getLink(b).m_collider->getActivationState() == ISLAND_SLEEPING)
-					isSleeping = true;
-			}
+            if (bod->getBaseCollider() && bod->getBaseCollider()->getActivationState() == ISLAND_SLEEPING)
+            {
+                isSleeping = true;
+            }
+            for (int b = 0; b < bod->getNumLinks(); b++)
+            {
+                if (bod->getLink(b).m_collider && bod->getLink(b).m_collider->getActivationState() == ISLAND_SLEEPING)
+                    isSleeping = true;
+            }
 
-			if (!isSleeping)
-			{
-				btMultiBody* bod = m_multiBodies[i];
-				bod->clearForcesAndTorques();
-			}
-		}
-	}
+            if (!isSleeping)
+            {
+                btMultiBody* bod = m_multiBodies[i];
+                bod->clearForcesAndTorques();
+            }
+        }
+    }
 }
 void btMultiBodyDynamicsWorld::clearForces()
 {
-	btDiscreteDynamicsWorld::clearForces();
+    btDiscreteDynamicsWorld::clearForces();
 
 #ifdef BT_USE_VIRTUAL_CLEARFORCES_AND_GRAVITY
-	clearMultiBodyForces();
+    clearMultiBodyForces();
 #endif
 }
 
 void btMultiBodyDynamicsWorld::serialize(btSerializer* serializer)
 {
-	serializer->startSerialization();
+    serializer->startSerialization();
 
-	serializeDynamicsWorldInfo(serializer);
+    serializeDynamicsWorldInfo(serializer);
 
-	serializeMultiBodies(serializer);
+    serializeMultiBodies(serializer);
 
-	serializeRigidBodies(serializer);
+    serializeRigidBodies(serializer);
 
-	serializeCollisionObjects(serializer);
+    serializeCollisionObjects(serializer);
 
-	serializeContactManifolds(serializer);
+    serializeContactManifolds(serializer);
 
-	serializer->finishSerialization();
+    serializer->finishSerialization();
 }
 
 void btMultiBodyDynamicsWorld::serializeMultiBodies(btSerializer* serializer)
 {
-	int i;
-	//serialize all collision objects
-	for (i = 0; i < m_multiBodies.size(); i++)
-	{
-		btMultiBody* mb = m_multiBodies[i];
-		{
-			int len = mb->calculateSerializeBufferSize();
-			btChunk* chunk = serializer->allocate(len, 1);
-			const char* structType = mb->serialize(chunk->m_oldPtr, serializer);
-			serializer->finalizeChunk(chunk, structType, BT_MULTIBODY_CODE, mb);
-		}
-	}
+    int i;
+    //serialize all collision objects
+    for (i = 0; i < m_multiBodies.size(); i++)
+    {
+        btMultiBody* mb = m_multiBodies[i];
+        {
+            int len = mb->calculateSerializeBufferSize();
+            btChunk* chunk = serializer->allocate(len, 1);
+            const char* structType = mb->serialize(chunk->m_oldPtr, serializer);
+            serializer->finalizeChunk(chunk, structType, BT_MULTIBODY_CODE, mb);
+        }
+    }
 
-	//serialize all multibody links (collision objects)
-	for (i = 0; i < m_collisionObjects.size(); i++)
-	{
-		btCollisionObject* colObj = m_collisionObjects[i];
-		if (colObj->getInternalType() == btCollisionObject::CO_FEATHERSTONE_LINK)
-		{
-			int len = colObj->calculateSerializeBufferSize();
-			btChunk* chunk = serializer->allocate(len, 1);
-			const char* structType = colObj->serialize(chunk->m_oldPtr, serializer);
-			serializer->finalizeChunk(chunk, structType, BT_MB_LINKCOLLIDER_CODE, colObj);
-		}
-	}
+    //serialize all multibody links (collision objects)
+    for (i = 0; i < m_collisionObjects.size(); i++)
+    {
+        btCollisionObject* colObj = m_collisionObjects[i];
+        if (colObj->getInternalType() == btCollisionObject::CO_FEATHERSTONE_LINK)
+        {
+            int len = colObj->calculateSerializeBufferSize();
+            btChunk* chunk = serializer->allocate(len, 1);
+            const char* structType = colObj->serialize(chunk->m_oldPtr, serializer);
+            serializer->finalizeChunk(chunk, structType, BT_MB_LINKCOLLIDER_CODE, colObj);
+        }
+    }
 }
 
 void btMultiBodyDynamicsWorld::saveKinematicState(btScalar timeStep)
 {
-	btDiscreteDynamicsWorld::saveKinematicState(timeStep);
-	for(int i = 0; i < m_multiBodies.size(); i++)
-	{
-		btMultiBody* body = m_multiBodies[i];
-		if(body->isBaseKinematic())
-			body->saveKinematicState(timeStep);
-	}
+    btDiscreteDynamicsWorld::saveKinematicState(timeStep);
+    for(int i = 0; i < m_multiBodies.size(); i++)
+    {
+        btMultiBody* body = m_multiBodies[i];
+        if(body->isBaseKinematic())
+            body->saveKinematicState(timeStep);
+    }
 }
 
 //

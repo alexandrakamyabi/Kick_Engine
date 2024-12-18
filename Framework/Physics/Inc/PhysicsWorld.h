@@ -1,60 +1,60 @@
 #pragma once
 
-#include "PhysicsDebugDrawer.h"
+#include "PhysicsDebugDraw.h"
 
 namespace Kick_Engine::Physics
 {
-	class PhysicsObject;
+    class PhysicsObject;
 
-	class PhysicsWorld final
-	{
-	public:
-		struct Settings
-		{
-			Kick_Engine::Math::Vector3 gravity{ 0.0f, -9.81f, 0.0f };
-			uint32_t simulationSteps = 10;
-			float fixedTimeStep = 1.0f / 60.0f;
-		};
+    class PhysicsWorld final
+    {
+    public:
+        struct Settings
+        {
+            Kick_Engine::Kick_Math::Vector3 gravity{ 0.0f, -9.81f, 0.0f };
+            uint32_t simulationSteps = 10;
+            float fixedTimeStep = 1.0f / 60.0f;
+        };
 
-		static void StaticInitialize(const Settings& settings);
-		static void StaticTerminate();
-		static PhysicsWorld* Get();
+        static void StaticInitialize(const Settings& settings);
+        static void StaticTerminate();
+        static PhysicsWorld* Get();
 
-		PhysicsWorld() = default;
-		~PhysicsWorld();
+        PhysicsWorld() = default;
+        ~PhysicsWorld();
 
-		void Initialize(const Settings& settings);
-		void Terminate();
+        void Initialize(const Settings& settings);
+        void Terminate();
 
-		void Update(float deltaTime);
-		void DebugUI();
+        void Update(float deltaTime);
+        void DebugUI();
 
-		const Settings& GetSettings() const { return mSettings; }
-		void UpdateSettings(const Settings& settings) { mSettings = settings; }
+        void Register(PhysicsObject* physicsObject);
+        void Unregister(PhysicsObject* physicsObject);
 
-		void Register(PhysicsObject* physicsObject);
-		void Unregister(PhysicsObject* physicsObject);
+        void SetGravity(const Kick_Math::Vector3& gravity);
+        void SetSimSteps(uint32_t steps);
+        void SetFixedTimeStep(float timeStep);
 
-	private:
-		using PhysicsObjects = std::vector<PhysicsObject*>;
-		PhysicsObjects mPhysicsObjects;
+    private:
+        Settings mSettings;
 
-		Settings mSettings;
-		PhysicsDebugDrawer mDebugDrawer;
+        //bullet objects
+        btBroadphaseInterface* mInterface = nullptr;
+        btCollisionDispatcher* mDispatcher = nullptr;
+        btDefaultCollisionConfiguration* mCollisionConfiguration = nullptr;
+        btDiscreteDynamicsWorld* mDynamicsWorld = nullptr;
+        btSequentialImpulseConstraintSolver* mSolver = nullptr;
 
-		//Bullet Objects
-		btBroadphaseInterface* mInterface = nullptr;
-		btCollisionDispatcher* mDispatcher = nullptr;
-		btDefaultCollisionConfiguration* mCollisionConfiguration = nullptr;
-		btSequentialImpulseConstraintSolver* mSolver = nullptr;
+        using PhysicsObjects = std::vector<PhysicsObject*>;
+        PhysicsObjects mPhysicsObjects;
 
-		friend class SoftBody;
-#ifdef USE_SOFT_BODY
-		btSoftRigidDynamicsWorld* mDynamicsWorld = nullptr;
-		btSoftBodyWorldInfo& GetSoftBodyWorldInfo() { return mDynamicsWorld->getWorldInfo(); }
-#else
-		btDiscreteDynamicsWorld* mDynamicsWorld = nullptr;
-		btSoftBodyWorldInfo& GetSoftBodyWorldInfo() { return btSoftBodyWorldInfo(); }
-#endif
-	};
+        PhysicsDebugDraw mPhysicsDebugDraw;
+        bool mDebugDraw = false;
+
+        // soft body physics
+        btSoftRigidDynamicsWorld* mSoftBodyWorld = nullptr;
+        friend class SoftBody;
+        btSoftBody* CreateSoftBody(int nodeCount);
+    };
 }

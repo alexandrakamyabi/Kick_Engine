@@ -39,52 +39,52 @@ class btMinkowskiSumShape;
 class btConvexCast
 {
 public:
-	virtual ~btConvexCast();
+    virtual ~btConvexCast();
 
-	///RayResult stores the closest result
-	/// alternatively, add a callback method to decide about closest/all results
-	struct CastResult
-	{
-		//virtual bool	addRayResult(const btVector3& normal,btScalar	fraction) = 0;
+    ///RayResult stores the closest result
+    /// alternatively, add a callback method to decide about closest/all results
+    struct CastResult
+    {
+        //virtual bool    addRayResult(const btVector3& normal,btScalar    fraction) = 0;
 
-		virtual void DebugDraw(btScalar fraction) { (void)fraction; }
-		virtual void drawCoordSystem(const btTransform& trans) { (void)trans; }
-		virtual void reportFailure(int errNo, int numIterations)
-		{
-			(void)errNo;
-			(void)numIterations;
-		}
-		CastResult()
-			: m_fraction(btScalar(BT_LARGE_FLOAT)),
-			  m_debugDrawer(0),
-			  m_allowedPenetration(btScalar(0)),
-			  m_subSimplexCastMaxIterations(MAX_CONVEX_CAST_ITERATIONS),
-			  m_subSimplexCastEpsilon(MAX_CONVEX_CAST_EPSILON)
-		{
-		}
+        virtual void DebugDraw(btScalar fraction) { (void)fraction; }
+        virtual void drawCoordSystem(const btTransform& trans) { (void)trans; }
+        virtual void reportFailure(int errNo, int numIterations)
+        {
+            (void)errNo;
+            (void)numIterations;
+        }
+        CastResult()
+            : m_fraction(btScalar(BT_LARGE_FLOAT)),
+              m_debugDrawer(0),
+              m_allowedPenetration(btScalar(0)),
+              m_subSimplexCastMaxIterations(MAX_CONVEX_CAST_ITERATIONS),
+              m_subSimplexCastEpsilon(MAX_CONVEX_CAST_EPSILON)
+        {
+        }
 
-		virtual ~CastResult(){};
+        virtual ~CastResult(){};
 
-		btTransform m_hitTransformA;
-		btTransform m_hitTransformB;
-		btVector3 m_normal;
-		btVector3 m_hitPoint;
-		btScalar m_fraction;  //input and output
-		btIDebugDraw* m_debugDrawer;
-		btScalar m_allowedPenetration;
-		
-		int m_subSimplexCastMaxIterations;
-		btScalar m_subSimplexCastEpsilon;
+        btTransform m_hitTransformA;
+        btTransform m_hitTransformB;
+        btVector3 m_normal;
+        btVector3 m_hitPoint;
+        btScalar m_fraction;  //input and output
+        btIDebugDraw* m_debugDrawer;
+        btScalar m_allowedPenetration;
+        
+        int m_subSimplexCastMaxIterations;
+        btScalar m_subSimplexCastEpsilon;
 
-	};
+    };
 
-	/// cast a convex against another convex object
-	virtual bool calcTimeOfImpact(
-		const btTransform& fromA,
-		const btTransform& toA,
-		const btTransform& fromB,
-		const btTransform& toB,
-		CastResult& result) = 0;
+    /// cast a convex against another convex object
+    virtual bool calcTimeOfImpact(
+        const btTransform& fromA,
+        const btTransform& toA,
+        const btTransform& fromB,
+        const btTransform& toB,
+        CastResult& result) = 0;
 };
 
 #endif  //BT_CONVEX_CAST_H

@@ -83,24 +83,24 @@ subject to the following restrictions:
 
 bool btSpinMutex::tryLock()
 {
-	std::atomic<int>* aDest = reinterpret_cast<std::atomic<int>*>(&mLock);
-	int expected = 0;
-	return std::atomic_compare_exchange_weak_explicit(aDest, &expected, int(1), std::memory_order_acq_rel, std::memory_order_acquire);
+    std::atomic<int>* aDest = reinterpret_cast<std::atomic<int>*>(&mLock);
+    int expected = 0;
+    return std::atomic_compare_exchange_weak_explicit(aDest, &expected, int(1), std::memory_order_acq_rel, std::memory_order_acquire);
 }
 
 void btSpinMutex::lock()
 {
-	// note: this lock does not sleep the thread.
-	while (!tryLock())
-	{
-		// spin
-	}
+    // note: this lock does not sleep the thread.
+    while (!tryLock())
+    {
+        // spin
+    }
 }
 
 void btSpinMutex::unlock()
 {
-	std::atomic<int>* aDest = reinterpret_cast<std::atomic<int>*>(&mLock);
-	std::atomic_store_explicit(aDest, int(0), std::memory_order_release);
+    std::atomic<int>* aDest = reinterpret_cast<std::atomic<int>*>(&mLock);
+    std::atomic_store_explicit(aDest, int(0), std::memory_order_release);
 }
 
 #elif USE_MSVC_INTRINSICS
@@ -114,23 +114,23 @@ void btSpinMutex::unlock()
 
 bool btSpinMutex::tryLock()
 {
-	volatile long* aDest = reinterpret_cast<long*>(&mLock);
-	return (0 == _InterlockedCompareExchange(aDest, 1, 0));
+    volatile long* aDest = reinterpret_cast<long*>(&mLock);
+    return (0 == _InterlockedCompareExchange(aDest, 1, 0));
 }
 
 void btSpinMutex::lock()
 {
-	// note: this lock does not sleep the thread
-	while (!tryLock())
-	{
-		// spin
-	}
+    // note: this lock does not sleep the thread
+    while (!tryLock())
+    {
+        // spin
+    }
 }
 
 void btSpinMutex::unlock()
 {
-	volatile long* aDest = reinterpret_cast<long*>(&mLock);
-	_InterlockedExchange(aDest, 0);
+    volatile long* aDest = reinterpret_cast<long*>(&mLock);
+    _InterlockedExchange(aDest, 0);
 }
 
 #elif USE_GCC_BUILTIN_ATOMICS
@@ -139,25 +139,25 @@ void btSpinMutex::unlock()
 
 bool btSpinMutex::tryLock()
 {
-	int expected = 0;
-	bool weak = false;
-	const int memOrderSuccess = __ATOMIC_ACQ_REL;
-	const int memOrderFail = __ATOMIC_ACQUIRE;
-	return __atomic_compare_exchange_n(&mLock, &expected, int(1), weak, memOrderSuccess, memOrderFail);
+    int expected = 0;
+    bool weak = false;
+    const int memOrderSuccess = __ATOMIC_ACQ_REL;
+    const int memOrderFail = __ATOMIC_ACQUIRE;
+    return __atomic_compare_exchange_n(&mLock, &expected, int(1), weak, memOrderSuccess, memOrderFail);
 }
 
 void btSpinMutex::lock()
 {
-	// note: this lock does not sleep the thread
-	while (!tryLock())
-	{
-		// spin
-	}
+    // note: this lock does not sleep the thread
+    while (!tryLock())
+    {
+        // spin
+    }
 }
 
 void btSpinMutex::unlock()
 {
-	__atomic_store_n(&mLock, int(0), __ATOMIC_RELEASE);
+    __atomic_store_n(&mLock, int(0), __ATOMIC_RELEASE);
 }
 
 #elif USE_GCC_BUILTIN_ATOMICS_OLD
@@ -166,22 +166,22 @@ void btSpinMutex::unlock()
 
 bool btSpinMutex::tryLock()
 {
-	return __sync_bool_compare_and_swap(&mLock, int(0), int(1));
+    return __sync_bool_compare_and_swap(&mLock, int(0), int(1));
 }
 
 void btSpinMutex::lock()
 {
-	// note: this lock does not sleep the thread
-	while (!tryLock())
-	{
-		// spin
-	}
+    // note: this lock does not sleep the thread
+    while (!tryLock())
+    {
+        // spin
+    }
 }
 
 void btSpinMutex::unlock()
 {
-	// write 0
-	__sync_fetch_and_and(&mLock, int(0));
+    // write 0
+    __sync_fetch_and_and(&mLock, int(0));
 }
 
 #else  //#elif USE_MSVC_INTRINSICS
@@ -195,18 +195,18 @@ void btSpinMutex::unlock()
 // These should not be called ever
 void btSpinMutex::lock()
 {
-	btAssert(!"unimplemented btSpinMutex::lock() called");
+    btAssert(!"unimplemented btSpinMutex::lock() called");
 }
 
 void btSpinMutex::unlock()
 {
-	btAssert(!"unimplemented btSpinMutex::unlock() called");
+    btAssert(!"unimplemented btSpinMutex::unlock() called");
 }
 
 bool btSpinMutex::tryLock()
 {
-	btAssert(!"unimplemented btSpinMutex::tryLock() called");
-	return true;
+    btAssert(!"unimplemented btSpinMutex::tryLock() called");
+    return true;
 }
 
 #define THREAD_LOCAL_STATIC static
@@ -215,30 +215,30 @@ bool btSpinMutex::tryLock()
 
 struct ThreadsafeCounter
 {
-	unsigned int mCounter;
-	btSpinMutex mMutex;
+    unsigned int mCounter;
+    btSpinMutex mMutex;
 
-	ThreadsafeCounter()
-	{
-		mCounter = 0;
-		--mCounter;  // first count should come back 0
-	}
+    ThreadsafeCounter()
+    {
+        mCounter = 0;
+        --mCounter;  // first count should come back 0
+    }
 
-	unsigned int getNext()
-	{
-		// no need to optimize this with atomics, it is only called ONCE per thread!
-		mMutex.lock();
-		mCounter++;
-		if (mCounter >= BT_MAX_THREAD_COUNT)
-		{
-			btAssert(!"thread counter exceeded");
-			// wrap back to the first worker index
-			mCounter = 1;
-		}
-		unsigned int val = mCounter;
-		mMutex.unlock();
-		return val;
-	}
+    unsigned int getNext()
+    {
+        // no need to optimize this with atomics, it is only called ONCE per thread!
+        mMutex.lock();
+        mCounter++;
+        if (mCounter >= BT_MAX_THREAD_COUNT)
+        {
+            btAssert(!"thread counter exceeded");
+            // wrap back to the first worker index
+            mCounter = 1;
+        }
+        unsigned int val = mCounter;
+        mMutex.unlock();
+        return val;
+    }
 };
 
 static btITaskScheduler* gBtTaskScheduler=0;
@@ -281,7 +281,7 @@ ThreadId_t gDebugThreadIds[BT_MAX_THREAD_COUNT];
 
 static ThreadId_t getDebugThreadId()
 {
-	return GetCurrentThreadId();
+    return GetCurrentThreadId();
 }
 
 #endif  // #if BT_DETECT_BAD_THREAD_INDEX
@@ -289,124 +289,124 @@ static ThreadId_t getDebugThreadId()
 // return a unique index per thread, main thread is 0, worker threads are in [1, BT_MAX_THREAD_COUNT)
 unsigned int btGetCurrentThreadIndex()
 {
-	const unsigned int kNullIndex = ~0U;
-	THREAD_LOCAL_STATIC unsigned int sThreadIndex = kNullIndex;
-	if (sThreadIndex == kNullIndex)
-	{
-		sThreadIndex = gThreadCounter.getNext();
-		btAssert(sThreadIndex < BT_MAX_THREAD_COUNT);
-	}
+    const unsigned int kNullIndex = ~0U;
+    THREAD_LOCAL_STATIC unsigned int sThreadIndex = kNullIndex;
+    if (sThreadIndex == kNullIndex)
+    {
+        sThreadIndex = gThreadCounter.getNext();
+        btAssert(sThreadIndex < BT_MAX_THREAD_COUNT);
+    }
 #if BT_DETECT_BAD_THREAD_INDEX
-	if (gBtTaskScheduler && sThreadIndex > 0)
-	{
-		ThreadId_t tid = getDebugThreadId();
-		// if not set
-		if (gDebugThreadIds[sThreadIndex] == kInvalidThreadId)
-		{
-			// set it
-			gDebugThreadIds[sThreadIndex] = tid;
-		}
-		else
-		{
-			if (gDebugThreadIds[sThreadIndex] != tid)
-			{
-				// this could indicate the task scheduler is breaking our assumptions about
-				// how threads are managed when threadpool is resized
-				btAssert(!"there are 2 or more threads with the same thread-index!");
-				__debugbreak();
-			}
-		}
-	}
+    if (gBtTaskScheduler && sThreadIndex > 0)
+    {
+        ThreadId_t tid = getDebugThreadId();
+        // if not set
+        if (gDebugThreadIds[sThreadIndex] == kInvalidThreadId)
+        {
+            // set it
+            gDebugThreadIds[sThreadIndex] = tid;
+        }
+        else
+        {
+            if (gDebugThreadIds[sThreadIndex] != tid)
+            {
+                // this could indicate the task scheduler is breaking our assumptions about
+                // how threads are managed when threadpool is resized
+                btAssert(!"there are 2 or more threads with the same thread-index!");
+                __debugbreak();
+            }
+        }
+    }
 #endif  // #if BT_DETECT_BAD_THREAD_INDEX
-	return sThreadIndex;
+    return sThreadIndex;
 }
 
 bool btIsMainThread()
 {
-	return btGetCurrentThreadIndex() == 0;
+    return btGetCurrentThreadIndex() == 0;
 }
 
 void btResetThreadIndexCounter()
 {
-	// for when all current worker threads are destroyed
-	btAssert(btIsMainThread());
-	gThreadCounter.mCounter = 0;
+    // for when all current worker threads are destroyed
+    btAssert(btIsMainThread());
+    gThreadCounter.mCounter = 0;
 }
 
 btITaskScheduler::btITaskScheduler(const char* name)
 {
-	m_name = name;
-	m_savedThreadCounter = 0;
-	m_isActive = false;
+    m_name = name;
+    m_savedThreadCounter = 0;
+    m_isActive = false;
 }
 
 void btITaskScheduler::activate()
 {
-	// gThreadCounter is used to assign a thread-index to each worker thread in a task scheduler.
-	// The main thread is always thread-index 0, and worker threads are numbered from 1 to 63 (BT_MAX_THREAD_COUNT-1)
-	// The thread-indexes need to be unique amongst the threads that can be running simultaneously.
-	// Since only one task scheduler can be used at a time, it is OK for a pair of threads that belong to different
-	// task schedulers to share the same thread index because they can't be running at the same time.
-	// So each task scheduler needs to keep its own thread counter value
-	if (!m_isActive)
-	{
-		gThreadCounter.mCounter = m_savedThreadCounter;  // restore saved thread counter
-		m_isActive = true;
-	}
+    // gThreadCounter is used to assign a thread-index to each worker thread in a task scheduler.
+    // The main thread is always thread-index 0, and worker threads are numbered from 1 to 63 (BT_MAX_THREAD_COUNT-1)
+    // The thread-indexes need to be unique amongst the threads that can be running simultaneously.
+    // Since only one task scheduler can be used at a time, it is OK for a pair of threads that belong to different
+    // task schedulers to share the same thread index because they can't be running at the same time.
+    // So each task scheduler needs to keep its own thread counter value
+    if (!m_isActive)
+    {
+        gThreadCounter.mCounter = m_savedThreadCounter;  // restore saved thread counter
+        m_isActive = true;
+    }
 }
 
 void btITaskScheduler::deactivate()
 {
-	if (m_isActive)
-	{
-		m_savedThreadCounter = gThreadCounter.mCounter;  // save thread counter
-		m_isActive = false;
-	}
+    if (m_isActive)
+    {
+        m_savedThreadCounter = gThreadCounter.mCounter;  // save thread counter
+        m_isActive = false;
+    }
 }
 
 void btPushThreadsAreRunning()
 {
-	gThreadsRunningCounterMutex.lock();
-	gThreadsRunningCounter++;
-	gThreadsRunningCounterMutex.unlock();
+    gThreadsRunningCounterMutex.lock();
+    gThreadsRunningCounter++;
+    gThreadsRunningCounterMutex.unlock();
 }
 
 void btPopThreadsAreRunning()
 {
-	gThreadsRunningCounterMutex.lock();
-	gThreadsRunningCounter--;
-	gThreadsRunningCounterMutex.unlock();
+    gThreadsRunningCounterMutex.lock();
+    gThreadsRunningCounter--;
+    gThreadsRunningCounterMutex.unlock();
 }
 
 bool btThreadsAreRunning()
 {
-	return gThreadsRunningCounter != 0;
+    return gThreadsRunningCounter != 0;
 }
 
 void btSetTaskScheduler(btITaskScheduler* ts)
 {
-	int threadId = btGetCurrentThreadIndex();  // make sure we call this on main thread at least once before any workers run
-	if (threadId != 0)
-	{
-		btAssert(!"btSetTaskScheduler must be called from the main thread!");
-		return;
-	}
-	if (gBtTaskScheduler)
-	{
-		// deactivate old task scheduler
-		gBtTaskScheduler->deactivate();
-	}
-	gBtTaskScheduler = ts;
-	if (ts)
-	{
-		// activate new task scheduler
-		ts->activate();
-	}
+    int threadId = btGetCurrentThreadIndex();  // make sure we call this on main thread at least once before any workers run
+    if (threadId != 0)
+    {
+        btAssert(!"btSetTaskScheduler must be called from the main thread!");
+        return;
+    }
+    if (gBtTaskScheduler)
+    {
+        // deactivate old task scheduler
+        gBtTaskScheduler->deactivate();
+    }
+    gBtTaskScheduler = ts;
+    if (ts)
+    {
+        // activate new task scheduler
+        ts->activate();
+    }
 }
 
 btITaskScheduler* btGetTaskScheduler()
 {
-	return gBtTaskScheduler;
+    return gBtTaskScheduler;
 }
 
 void btParallelFor(int iBegin, int iEnd, int grainSize, const btIParallelForBody& body)
@@ -414,24 +414,24 @@ void btParallelFor(int iBegin, int iEnd, int grainSize, const btIParallelForBody
 #if BT_THREADSAFE
 
 #if BT_DETECT_BAD_THREAD_INDEX
-	if (!btThreadsAreRunning())
-	{
-		// clear out thread ids
-		for (int i = 0; i < BT_MAX_THREAD_COUNT; ++i)
-		{
-			gDebugThreadIds[i] = kInvalidThreadId;
-		}
-	}
+    if (!btThreadsAreRunning())
+    {
+        // clear out thread ids
+        for (int i = 0; i < BT_MAX_THREAD_COUNT; ++i)
+        {
+            gDebugThreadIds[i] = kInvalidThreadId;
+        }
+    }
 #endif  // #if BT_DETECT_BAD_THREAD_INDEX
 
-	btAssert(gBtTaskScheduler != NULL);  // call btSetTaskScheduler() with a valid task scheduler first!
-	gBtTaskScheduler->parallelFor(iBegin, iEnd, grainSize, body);
+    btAssert(gBtTaskScheduler != NULL);  // call btSetTaskScheduler() with a valid task scheduler first!
+    gBtTaskScheduler->parallelFor(iBegin, iEnd, grainSize, body);
 
 #else  // #if BT_THREADSAFE
 
-	// non-parallel version of btParallelFor
-	btAssert(!"called btParallelFor in non-threadsafe build. enable BT_THREADSAFE");
-	body.forLoop(iBegin, iEnd);
+    // non-parallel version of btParallelFor
+    btAssert(!"called btParallelFor in non-threadsafe build. enable BT_THREADSAFE");
+    body.forLoop(iBegin, iEnd);
 
 #endif  // #if BT_THREADSAFE
 }
@@ -441,24 +441,24 @@ btScalar btParallelSum(int iBegin, int iEnd, int grainSize, const btIParallelSum
 #if BT_THREADSAFE
 
 #if BT_DETECT_BAD_THREAD_INDEX
-	if (!btThreadsAreRunning())
-	{
-		// clear out thread ids
-		for (int i = 0; i < BT_MAX_THREAD_COUNT; ++i)
-		{
-			gDebugThreadIds[i] = kInvalidThreadId;
-		}
-	}
+    if (!btThreadsAreRunning())
+    {
+        // clear out thread ids
+        for (int i = 0; i < BT_MAX_THREAD_COUNT; ++i)
+        {
+            gDebugThreadIds[i] = kInvalidThreadId;
+        }
+    }
 #endif  // #if BT_DETECT_BAD_THREAD_INDEX
 
-	btAssert(gBtTaskScheduler != NULL);  // call btSetTaskScheduler() with a valid task scheduler first!
-	return gBtTaskScheduler->parallelSum(iBegin, iEnd, grainSize, body);
+    btAssert(gBtTaskScheduler != NULL);  // call btSetTaskScheduler() with a valid task scheduler first!
+    return gBtTaskScheduler->parallelSum(iBegin, iEnd, grainSize, body);
 
 #else  // #if BT_THREADSAFE
 
-	// non-parallel version of btParallelSum
-	btAssert(!"called btParallelFor in non-threadsafe build. enable BT_THREADSAFE");
-	return body.sumLoop(iBegin, iEnd);
+    // non-parallel version of btParallelSum
+    btAssert(!"called btParallelFor in non-threadsafe build. enable BT_THREADSAFE");
+    return body.sumLoop(iBegin, iEnd);
 
 #endif  //#else // #if BT_THREADSAFE
 }
@@ -470,20 +470,20 @@ btScalar btParallelSum(int iBegin, int iEnd, int grainSize, const btIParallelSum
 class btTaskSchedulerSequential : public btITaskScheduler
 {
 public:
-	btTaskSchedulerSequential() : btITaskScheduler("Sequential") {}
-	virtual int getMaxNumThreads() const BT_OVERRIDE { return 1; }
-	virtual int getNumThreads() const BT_OVERRIDE { return 1; }
-	virtual void setNumThreads(int numThreads) BT_OVERRIDE {}
-	virtual void parallelFor(int iBegin, int iEnd, int grainSize, const btIParallelForBody& body) BT_OVERRIDE
-	{
-		BT_PROFILE("parallelFor_sequential");
-		body.forLoop(iBegin, iEnd);
-	}
-	virtual btScalar parallelSum(int iBegin, int iEnd, int grainSize, const btIParallelSumBody& body) BT_OVERRIDE
-	{
-		BT_PROFILE("parallelSum_sequential");
-		return body.sumLoop(iBegin, iEnd);
-	}
+    btTaskSchedulerSequential() : btITaskScheduler("Sequential") {}
+    virtual int getMaxNumThreads() const BT_OVERRIDE { return 1; }
+    virtual int getNumThreads() const BT_OVERRIDE { return 1; }
+    virtual void setNumThreads(int numThreads) BT_OVERRIDE {}
+    virtual void parallelFor(int iBegin, int iEnd, int grainSize, const btIParallelForBody& body) BT_OVERRIDE
+    {
+        BT_PROFILE("parallelFor_sequential");
+        body.forLoop(iBegin, iEnd);
+    }
+    virtual btScalar parallelSum(int iBegin, int iEnd, int grainSize, const btIParallelSumBody& body) BT_OVERRIDE
+    {
+        BT_PROFILE("parallelSum_sequential");
+        return body.sumLoop(iBegin, iEnd);
+    }
 };
 
 #if BT_USE_OPENMP && BT_THREADSAFE
@@ -492,62 +492,62 @@ public:
 ///
 class btTaskSchedulerOpenMP : public btITaskScheduler
 {
-	int m_numThreads;
+    int m_numThreads;
 
 public:
-	btTaskSchedulerOpenMP() : btITaskScheduler("OpenMP")
-	{
-		m_numThreads = 0;
-	}
-	virtual int getMaxNumThreads() const BT_OVERRIDE
-	{
-		return omp_get_max_threads();
-	}
-	virtual int getNumThreads() const BT_OVERRIDE
-	{
-		return m_numThreads;
-	}
-	virtual void setNumThreads(int numThreads) BT_OVERRIDE
-	{
-		// With OpenMP, because it is a standard with various implementations, we can't
-		// know for sure if every implementation has the same behavior of destroying all
-		// previous threads when resizing the threadpool
-		m_numThreads = (std::max)(1, (std::min)(int(BT_MAX_THREAD_COUNT), numThreads));
-		omp_set_num_threads(1);  // hopefully, all previous threads get destroyed here
-		omp_set_num_threads(m_numThreads);
-		m_savedThreadCounter = 0;
-		if (m_isActive)
-		{
-			btResetThreadIndexCounter();
-		}
-	}
-	virtual void parallelFor(int iBegin, int iEnd, int grainSize, const btIParallelForBody& body) BT_OVERRIDE
-	{
-		BT_PROFILE("parallelFor_OpenMP");
-		btPushThreadsAreRunning();
+    btTaskSchedulerOpenMP() : btITaskScheduler("OpenMP")
+    {
+        m_numThreads = 0;
+    }
+    virtual int getMaxNumThreads() const BT_OVERRIDE
+    {
+        return omp_get_max_threads();
+    }
+    virtual int getNumThreads() const BT_OVERRIDE
+    {
+        return m_numThreads;
+    }
+    virtual void setNumThreads(int numThreads) BT_OVERRIDE
+    {
+        // With OpenMP, because it is a standard with various implementations, we can't
+        // know for sure if every implementation has the same behavior of destroying all
+        // previous threads when resizing the threadpool
+        m_numThreads = (std::max)(1, (std::min)(int(BT_MAX_THREAD_COUNT), numThreads));
+        omp_set_num_threads(1);  // hopefully, all previous threads get destroyed here
+        omp_set_num_threads(m_numThreads);
+        m_savedThreadCounter = 0;
+        if (m_isActive)
+        {
+            btResetThreadIndexCounter();
+        }
+    }
+    virtual void parallelFor(int iBegin, int iEnd, int grainSize, const btIParallelForBody& body) BT_OVERRIDE
+    {
+        BT_PROFILE("parallelFor_OpenMP");
+        btPushThreadsAreRunning();
 #pragma omp parallel for schedule(static, 1)
-		for (int i = iBegin; i < iEnd; i += grainSize)
-		{
-			BT_PROFILE("OpenMP_forJob");
-			body.forLoop(i, (std::min)(i + grainSize, iEnd));
-		}
-		btPopThreadsAreRunning();
-	}
-	virtual btScalar parallelSum(int iBegin, int iEnd, int grainSize, const btIParallelSumBody& body) BT_OVERRIDE
-	{
-		BT_PROFILE("parallelFor_OpenMP");
-		btPushThreadsAreRunning();
-		btScalar sum = btScalar(0);
+        for (int i = iBegin; i < iEnd; i += grainSize)
+        {
+            BT_PROFILE("OpenMP_forJob");
+            body.forLoop(i, (std::min)(i + grainSize, iEnd));
+        }
+        btPopThreadsAreRunning();
+    }
+    virtual btScalar parallelSum(int iBegin, int iEnd, int grainSize, const btIParallelSumBody& body) BT_OVERRIDE
+    {
+        BT_PROFILE("parallelFor_OpenMP");
+        btPushThreadsAreRunning();
+        btScalar sum = btScalar(0);
 #pragma omp parallel for schedule(static, 1) reduction(+ \
-													   : sum)
-		for (int i = iBegin; i < iEnd; i += grainSize)
-		{
-			BT_PROFILE("OpenMP_sumJob");
-			sum += body.sumLoop(i, (std::min)(i + grainSize, iEnd));
-		}
-		btPopThreadsAreRunning();
-		return sum;
-	}
+                                                       : sum)
+        for (int i = iBegin; i < iEnd; i += grainSize)
+        {
+            BT_PROFILE("OpenMP_sumJob");
+            sum += body.sumLoop(i, (std::min)(i + grainSize, iEnd));
+        }
+        btPopThreadsAreRunning();
+        return sum;
+    }
 };
 #endif  // #if BT_USE_OPENMP && BT_THREADSAFE
 
@@ -557,92 +557,92 @@ public:
 ///
 class btTaskSchedulerTBB : public btITaskScheduler
 {
-	int m_numThreads;
-	tbb::task_scheduler_init* m_tbbSchedulerInit;
+    int m_numThreads;
+    tbb::task_scheduler_init* m_tbbSchedulerInit;
 
 public:
-	btTaskSchedulerTBB() : btITaskScheduler("IntelTBB")
-	{
-		m_numThreads = 0;
-		m_tbbSchedulerInit = NULL;
-	}
-	~btTaskSchedulerTBB()
-	{
-		if (m_tbbSchedulerInit)
-		{
-			delete m_tbbSchedulerInit;
-			m_tbbSchedulerInit = NULL;
-		}
-	}
+    btTaskSchedulerTBB() : btITaskScheduler("IntelTBB")
+    {
+        m_numThreads = 0;
+        m_tbbSchedulerInit = NULL;
+    }
+    ~btTaskSchedulerTBB()
+    {
+        if (m_tbbSchedulerInit)
+        {
+            delete m_tbbSchedulerInit;
+            m_tbbSchedulerInit = NULL;
+        }
+    }
 
-	virtual int getMaxNumThreads() const BT_OVERRIDE
-	{
-		return tbb::task_scheduler_init::default_num_threads();
-	}
-	virtual int getNumThreads() const BT_OVERRIDE
-	{
-		return m_numThreads;
-	}
-	virtual void setNumThreads(int numThreads) BT_OVERRIDE
-	{
-		m_numThreads = (std::max)(1, (std::min)(int(BT_MAX_THREAD_COUNT), numThreads));
-		if (m_tbbSchedulerInit)
-		{
-			// destroys all previous threads
-			delete m_tbbSchedulerInit;
-			m_tbbSchedulerInit = NULL;
-		}
-		m_tbbSchedulerInit = new tbb::task_scheduler_init(m_numThreads);
-		m_savedThreadCounter = 0;
-		if (m_isActive)
-		{
-			btResetThreadIndexCounter();
-		}
-	}
-	struct ForBodyAdapter
-	{
-		const btIParallelForBody* mBody;
+    virtual int getMaxNumThreads() const BT_OVERRIDE
+    {
+        return tbb::task_scheduler_init::default_num_threads();
+    }
+    virtual int getNumThreads() const BT_OVERRIDE
+    {
+        return m_numThreads;
+    }
+    virtual void setNumThreads(int numThreads) BT_OVERRIDE
+    {
+        m_numThreads = (std::max)(1, (std::min)(int(BT_MAX_THREAD_COUNT), numThreads));
+        if (m_tbbSchedulerInit)
+        {
+            // destroys all previous threads
+            delete m_tbbSchedulerInit;
+            m_tbbSchedulerInit = NULL;
+        }
+        m_tbbSchedulerInit = new tbb::task_scheduler_init(m_numThreads);
+        m_savedThreadCounter = 0;
+        if (m_isActive)
+        {
+            btResetThreadIndexCounter();
+        }
+    }
+    struct ForBodyAdapter
+    {
+        const btIParallelForBody* mBody;
 
-		ForBodyAdapter(const btIParallelForBody* body) : mBody(body) {}
-		void operator()(const tbb::blocked_range<int>& range) const
-		{
-			BT_PROFILE("TBB_forJob");
-			mBody->forLoop(range.begin(), range.end());
-		}
-	};
-	virtual void parallelFor(int iBegin, int iEnd, int grainSize, const btIParallelForBody& body) BT_OVERRIDE
-	{
-		BT_PROFILE("parallelFor_TBB");
-		ForBodyAdapter tbbBody(&body);
-		btPushThreadsAreRunning();
-		tbb::parallel_for(tbb::blocked_range<int>(iBegin, iEnd, grainSize),
-						  tbbBody,
-						  tbb::simple_partitioner());
-		btPopThreadsAreRunning();
-	}
-	struct SumBodyAdapter
-	{
-		const btIParallelSumBody* mBody;
-		btScalar mSum;
+        ForBodyAdapter(const btIParallelForBody* body) : mBody(body) {}
+        void operator()(const tbb::blocked_range<int>& range) const
+        {
+            BT_PROFILE("TBB_forJob");
+            mBody->forLoop(range.begin(), range.end());
+        }
+    };
+    virtual void parallelFor(int iBegin, int iEnd, int grainSize, const btIParallelForBody& body) BT_OVERRIDE
+    {
+        BT_PROFILE("parallelFor_TBB");
+        ForBodyAdapter tbbBody(&body);
+        btPushThreadsAreRunning();
+        tbb::parallel_for(tbb::blocked_range<int>(iBegin, iEnd, grainSize),
+                          tbbBody,
+                          tbb::simple_partitioner());
+        btPopThreadsAreRunning();
+    }
+    struct SumBodyAdapter
+    {
+        const btIParallelSumBody* mBody;
+        btScalar mSum;
 
-		SumBodyAdapter(const btIParallelSumBody* body) : mBody(body), mSum(btScalar(0)) {}
-		SumBodyAdapter(const SumBodyAdapter& src, tbb::split) : mBody(src.mBody), mSum(btScalar(0)) {}
-		void join(const SumBodyAdapter& src) { mSum += src.mSum; }
-		void operator()(const tbb::blocked_range<int>& range)
-		{
-			BT_PROFILE("TBB_sumJob");
-			mSum += mBody->sumLoop(range.begin(), range.end());
-		}
-	};
-	virtual btScalar parallelSum(int iBegin, int iEnd, int grainSize, const btIParallelSumBody& body) BT_OVERRIDE
-	{
-		BT_PROFILE("parallelSum_TBB");
-		SumBodyAdapter tbbBody(&body);
-		btPushThreadsAreRunning();
-		tbb::parallel_deterministic_reduce(tbb::blocked_range<int>(iBegin, iEnd, grainSize), tbbBody);
-		btPopThreadsAreRunning();
-		return tbbBody.mSum;
-	}
+        SumBodyAdapter(const btIParallelSumBody* body) : mBody(body), mSum(btScalar(0)) {}
+        SumBodyAdapter(const SumBodyAdapter& src, tbb::split) : mBody(src.mBody), mSum(btScalar(0)) {}
+        void join(const SumBodyAdapter& src) { mSum += src.mSum; }
+        void operator()(const tbb::blocked_range<int>& range)
+        {
+            BT_PROFILE("TBB_sumJob");
+            mSum += mBody->sumLoop(range.begin(), range.end());
+        }
+    };
+    virtual btScalar parallelSum(int iBegin, int iEnd, int grainSize, const btIParallelSumBody& body) BT_OVERRIDE
+    {
+        BT_PROFILE("parallelSum_TBB");
+        SumBodyAdapter tbbBody(&body);
+        btPushThreadsAreRunning();
+        tbb::parallel_deterministic_reduce(tbb::blocked_range<int>(iBegin, iEnd, grainSize), tbbBody);
+        btPopThreadsAreRunning();
+        return tbbBody.mSum;
+    }
 };
 #endif  // #if BT_USE_TBB && BT_THREADSAFE
 
@@ -652,120 +652,120 @@ public:
 ///
 class btTaskSchedulerPPL : public btITaskScheduler
 {
-	int m_numThreads;
-	concurrency::combinable<btScalar> m_sum;  // for parallelSum
+    int m_numThreads;
+    concurrency::combinable<btScalar> m_sum;  // for parallelSum
 public:
-	btTaskSchedulerPPL() : btITaskScheduler("PPL")
-	{
-		m_numThreads = 0;
-	}
-	virtual int getMaxNumThreads() const BT_OVERRIDE
-	{
-		return concurrency::GetProcessorCount();
-	}
-	virtual int getNumThreads() const BT_OVERRIDE
-	{
-		return m_numThreads;
-	}
-	virtual void setNumThreads(int numThreads) BT_OVERRIDE
-	{
-		// capping the thread count for PPL due to a thread-index issue
-		const int maxThreadCount = (std::min)(int(BT_MAX_THREAD_COUNT), 31);
-		m_numThreads = (std::max)(1, (std::min)(maxThreadCount, numThreads));
-		using namespace concurrency;
-		if (CurrentScheduler::Id() != -1)
-		{
-			CurrentScheduler::Detach();
-		}
-		SchedulerPolicy policy;
-		{
-			// PPL seems to destroy threads when threadpool is shrunk, but keeps reusing old threads
-			// force it to destroy old threads
-			policy.SetConcurrencyLimits(1, 1);
-			CurrentScheduler::Create(policy);
-			CurrentScheduler::Detach();
-		}
-		policy.SetConcurrencyLimits(m_numThreads, m_numThreads);
-		CurrentScheduler::Create(policy);
-		m_savedThreadCounter = 0;
-		if (m_isActive)
-		{
-			btResetThreadIndexCounter();
-		}
-	}
-	struct ForBodyAdapter
-	{
-		const btIParallelForBody* mBody;
-		int mGrainSize;
-		int mIndexEnd;
+    btTaskSchedulerPPL() : btITaskScheduler("PPL")
+    {
+        m_numThreads = 0;
+    }
+    virtual int getMaxNumThreads() const BT_OVERRIDE
+    {
+        return concurrency::GetProcessorCount();
+    }
+    virtual int getNumThreads() const BT_OVERRIDE
+    {
+        return m_numThreads;
+    }
+    virtual void setNumThreads(int numThreads) BT_OVERRIDE
+    {
+        // capping the thread count for PPL due to a thread-index issue
+        const int maxThreadCount = (std::min)(int(BT_MAX_THREAD_COUNT), 31);
+        m_numThreads = (std::max)(1, (std::min)(maxThreadCount, numThreads));
+        using namespace concurrency;
+        if (CurrentScheduler::Id() != -1)
+        {
+            CurrentScheduler::Detach();
+        }
+        SchedulerPolicy policy;
+        {
+            // PPL seems to destroy threads when threadpool is shrunk, but keeps reusing old threads
+            // force it to destroy old threads
+            policy.SetConcurrencyLimits(1, 1);
+            CurrentScheduler::Create(policy);
+            CurrentScheduler::Detach();
+        }
+        policy.SetConcurrencyLimits(m_numThreads, m_numThreads);
+        CurrentScheduler::Create(policy);
+        m_savedThreadCounter = 0;
+        if (m_isActive)
+        {
+            btResetThreadIndexCounter();
+        }
+    }
+    struct ForBodyAdapter
+    {
+        const btIParallelForBody* mBody;
+        int mGrainSize;
+        int mIndexEnd;
 
-		ForBodyAdapter(const btIParallelForBody* body, int grainSize, int end) : mBody(body), mGrainSize(grainSize), mIndexEnd(end) {}
-		void operator()(int i) const
-		{
-			BT_PROFILE("PPL_forJob");
-			mBody->forLoop(i, (std::min)(i + mGrainSize, mIndexEnd));
-		}
-	};
-	virtual void parallelFor(int iBegin, int iEnd, int grainSize, const btIParallelForBody& body) BT_OVERRIDE
-	{
-		BT_PROFILE("parallelFor_PPL");
-		// PPL dispatch
-		ForBodyAdapter pplBody(&body, grainSize, iEnd);
-		btPushThreadsAreRunning();
-		// note: MSVC 2010 doesn't support partitioner args, so avoid them
-		concurrency::parallel_for(iBegin,
-								  iEnd,
-								  grainSize,
-								  pplBody);
-		btPopThreadsAreRunning();
-	}
-	struct SumBodyAdapter
-	{
-		const btIParallelSumBody* mBody;
-		concurrency::combinable<btScalar>* mSum;
-		int mGrainSize;
-		int mIndexEnd;
+        ForBodyAdapter(const btIParallelForBody* body, int grainSize, int end) : mBody(body), mGrainSize(grainSize), mIndexEnd(end) {}
+        void operator()(int i) const
+        {
+            BT_PROFILE("PPL_forJob");
+            mBody->forLoop(i, (std::min)(i + mGrainSize, mIndexEnd));
+        }
+    };
+    virtual void parallelFor(int iBegin, int iEnd, int grainSize, const btIParallelForBody& body) BT_OVERRIDE
+    {
+        BT_PROFILE("parallelFor_PPL");
+        // PPL dispatch
+        ForBodyAdapter pplBody(&body, grainSize, iEnd);
+        btPushThreadsAreRunning();
+        // note: MSVC 2010 doesn't support partitioner args, so avoid them
+        concurrency::parallel_for(iBegin,
+                                  iEnd,
+                                  grainSize,
+                                  pplBody);
+        btPopThreadsAreRunning();
+    }
+    struct SumBodyAdapter
+    {
+        const btIParallelSumBody* mBody;
+        concurrency::combinable<btScalar>* mSum;
+        int mGrainSize;
+        int mIndexEnd;
 
-		SumBodyAdapter(const btIParallelSumBody* body, concurrency::combinable<btScalar>* sum, int grainSize, int end) : mBody(body), mSum(sum), mGrainSize(grainSize), mIndexEnd(end) {}
-		void operator()(int i) const
-		{
-			BT_PROFILE("PPL_sumJob");
-			mSum->local() += mBody->sumLoop(i, (std::min)(i + mGrainSize, mIndexEnd));
-		}
-	};
-	static btScalar sumFunc(btScalar a, btScalar b) { return a + b; }
-	virtual btScalar parallelSum(int iBegin, int iEnd, int grainSize, const btIParallelSumBody& body) BT_OVERRIDE
-	{
-		BT_PROFILE("parallelSum_PPL");
-		m_sum.clear();
-		SumBodyAdapter pplBody(&body, &m_sum, grainSize, iEnd);
-		btPushThreadsAreRunning();
-		// note: MSVC 2010 doesn't support partitioner args, so avoid them
-		concurrency::parallel_for(iBegin,
-								  iEnd,
-								  grainSize,
-								  pplBody);
-		btPopThreadsAreRunning();
-		return m_sum.combine(sumFunc);
-	}
+        SumBodyAdapter(const btIParallelSumBody* body, concurrency::combinable<btScalar>* sum, int grainSize, int end) : mBody(body), mSum(sum), mGrainSize(grainSize), mIndexEnd(end) {}
+        void operator()(int i) const
+        {
+            BT_PROFILE("PPL_sumJob");
+            mSum->local() += mBody->sumLoop(i, (std::min)(i + mGrainSize, mIndexEnd));
+        }
+    };
+    static btScalar sumFunc(btScalar a, btScalar b) { return a + b; }
+    virtual btScalar parallelSum(int iBegin, int iEnd, int grainSize, const btIParallelSumBody& body) BT_OVERRIDE
+    {
+        BT_PROFILE("parallelSum_PPL");
+        m_sum.clear();
+        SumBodyAdapter pplBody(&body, &m_sum, grainSize, iEnd);
+        btPushThreadsAreRunning();
+        // note: MSVC 2010 doesn't support partitioner args, so avoid them
+        concurrency::parallel_for(iBegin,
+                                  iEnd,
+                                  grainSize,
+                                  pplBody);
+        btPopThreadsAreRunning();
+        return m_sum.combine(sumFunc);
+    }
 };
 #endif  // #if BT_USE_PPL && BT_THREADSAFE
 
 // create a non-threaded task scheduler (always available)
 btITaskScheduler* btGetSequentialTaskScheduler()
 {
-	static btTaskSchedulerSequential sTaskScheduler;
-	return &sTaskScheduler;
+    static btTaskSchedulerSequential sTaskScheduler;
+    return &sTaskScheduler;
 }
 
 // create an OpenMP task scheduler (if available, otherwise returns null)
 btITaskScheduler* btGetOpenMPTaskScheduler()
 {
 #if BT_USE_OPENMP && BT_THREADSAFE
-	static btTaskSchedulerOpenMP sTaskScheduler;
-	return &sTaskScheduler;
+    static btTaskSchedulerOpenMP sTaskScheduler;
+    return &sTaskScheduler;
 #else
-	return NULL;
+    return NULL;
 #endif
 }
 
@@ -773,10 +773,10 @@ btITaskScheduler* btGetOpenMPTaskScheduler()
 btITaskScheduler* btGetTBBTaskScheduler()
 {
 #if BT_USE_TBB && BT_THREADSAFE
-	static btTaskSchedulerTBB sTaskScheduler;
-	return &sTaskScheduler;
+    static btTaskSchedulerTBB sTaskScheduler;
+    return &sTaskScheduler;
 #else
-	return NULL;
+    return NULL;
 #endif
 }
 
@@ -784,9 +784,9 @@ btITaskScheduler* btGetTBBTaskScheduler()
 btITaskScheduler* btGetPPLTaskScheduler()
 {
 #if BT_USE_PPL && BT_THREADSAFE
-	static btTaskSchedulerPPL sTaskScheduler;
-	return &sTaskScheduler;
+    static btTaskSchedulerPPL sTaskScheduler;
+    return &sTaskScheduler;
 #else
-	return NULL;
+    return NULL;
 #endif
 }

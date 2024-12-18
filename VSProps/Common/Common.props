@@ -4,9 +4,9 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup />
   <ItemDefinitionGroup>
-	  <ClCompile>
-		  <LanguageStandard>stdcpp17</LanguageStandard>
-	  </ClCompile>
+	<ClCompile>
+		<LanguageStandard>stdcpp17</LanguageStandard>
+	</ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup />
 </Project>

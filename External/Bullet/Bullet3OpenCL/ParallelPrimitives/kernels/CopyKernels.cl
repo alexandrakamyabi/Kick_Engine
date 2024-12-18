@@ -32,8 +32,8 @@ typedef unsigned int u32;
 
 typedef struct
 {
-	int m_n;
-	int m_padding[3];
+    int m_n;
+    int m_padding[3];
 } ConstBuffer;
 
 
@@ -41,88 +41,88 @@ typedef struct
 __kernel
 __attribute__((reqd_work_group_size(64,1,1)))
 void Copy1F4Kernel(__global float4* dst, __global float4* src, 
-					ConstBuffer cb)
+                    ConstBuffer cb)
 {
-	int gIdx = GET_GLOBAL_IDX;
+    int gIdx = GET_GLOBAL_IDX;
 
-	if( gIdx < cb.m_n )
-	{
-		float4 a0 = src[gIdx];
+    if( gIdx < cb.m_n )
+    {
+        float4 a0 = src[gIdx];
 
-		dst[ gIdx ] = a0;
-	}
+        dst[ gIdx ] = a0;
+    }
 }
 
 __kernel
 __attribute__((reqd_work_group_size(64,1,1)))
 void Copy2F4Kernel(__global float4* dst, __global float4* src, 
-					ConstBuffer cb)
+                    ConstBuffer cb)
 {
-	int gIdx = GET_GLOBAL_IDX;
+    int gIdx = GET_GLOBAL_IDX;
 
-	if( 2*gIdx <= cb.m_n )
-	{
-		float4 a0 = src[gIdx*2+0];
-		float4 a1 = src[gIdx*2+1];
+    if( 2*gIdx <= cb.m_n )
+    {
+        float4 a0 = src[gIdx*2+0];
+        float4 a1 = src[gIdx*2+1];
 
-		dst[ gIdx*2+0 ] = a0;
-		dst[ gIdx*2+1 ] = a1;
-	}
+        dst[ gIdx*2+0 ] = a0;
+        dst[ gIdx*2+1 ] = a1;
+    }
 }
 
 __kernel
 __attribute__((reqd_work_group_size(64,1,1)))
 void Copy4F4Kernel(__global float4* dst, __global float4* src, 
-					ConstBuffer cb)
+                    ConstBuffer cb)
 {
-	int gIdx = GET_GLOBAL_IDX;
+    int gIdx = GET_GLOBAL_IDX;
 
-	if( 4*gIdx <= cb.m_n )
-	{
-		int idx0 = gIdx*4+0;
-		int idx1 = gIdx*4+1;
-		int idx2 = gIdx*4+2;
-		int idx3 = gIdx*4+3;
+    if( 4*gIdx <= cb.m_n )
+    {
+        int idx0 = gIdx*4+0;
+        int idx1 = gIdx*4+1;
+        int idx2 = gIdx*4+2;
+        int idx3 = gIdx*4+3;
 
-		float4 a0 = src[idx0];
-		float4 a1 = src[idx1];
-		float4 a2 = src[idx2];
-		float4 a3 = src[idx3];
+        float4 a0 = src[idx0];
+        float4 a1 = src[idx1];
+        float4 a2 = src[idx2];
+        float4 a3 = src[idx3];
 
-		dst[ idx0 ] = a0;
-		dst[ idx1 ] = a1;
-		dst[ idx2 ] = a2;
-		dst[ idx3 ] = a3;
-	}
+        dst[ idx0 ] = a0;
+        dst[ idx1 ] = a1;
+        dst[ idx2 ] = a2;
+        dst[ idx3 ] = a3;
+    }
 }
 
 __kernel
 __attribute__((reqd_work_group_size(64,1,1)))
 void CopyF1Kernel(__global float* dstF1, __global float* srcF1, 
-					ConstBuffer cb)
+                    ConstBuffer cb)
 {
-	int gIdx = GET_GLOBAL_IDX;
+    int gIdx = GET_GLOBAL_IDX;
 
-	if( gIdx < cb.m_n )
-	{
-		float a0 = srcF1[gIdx];
+    if( gIdx < cb.m_n )
+    {
+        float a0 = srcF1[gIdx];
 
-		dstF1[ gIdx ] = a0;
-	}
+        dstF1[ gIdx ] = a0;
+    }
 }
 
 __kernel
 __attribute__((reqd_work_group_size(64,1,1)))
 void CopyF2Kernel(__global float2* dstF2, __global float2* srcF2, 
-					ConstBuffer cb)
+                    ConstBuffer cb)
 {
-	int gIdx = GET_GLOBAL_IDX;
+    int gIdx = GET_GLOBAL_IDX;
 
-	if( gIdx < cb.m_n )
-	{
-		float2 a0 = srcF2[gIdx];
+    if( gIdx < cb.m_n )
+    {
+        float2 a0 = srcF2[gIdx];
 
-		dstF2[ gIdx ] = a0;
-	}
+        dstF2[ gIdx ] = a0;
+    }
 }
 

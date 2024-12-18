@@ -33,75 +33,75 @@ typedef unsigned int u32;
 
 typedef struct
 {
-	union
-	{
-		int4 m_data;
-		uint4 m_unsignedData;
-		float	m_floatData;
-	};
-	int m_offset;
-	int m_n;
-	int m_padding[2];
+    union
+    {
+        int4 m_data;
+        uint4 m_unsignedData;
+        float    m_floatData;
+    };
+    int m_offset;
+    int m_n;
+    int m_padding[2];
 } ConstBuffer;
 
 
 __kernel
 __attribute__((reqd_work_group_size(64,1,1)))
-void FillIntKernel(__global int* dstInt, 			int num_elements, int value, const int offset)
+void FillIntKernel(__global int* dstInt,             int num_elements, int value, const int offset)
 {
-	int gIdx = GET_GLOBAL_IDX;
+    int gIdx = GET_GLOBAL_IDX;
 
-	if( gIdx < num_elements )
-	{
-		dstInt[ offset+gIdx ] = value;
-	}
+    if( gIdx < num_elements )
+    {
+        dstInt[ offset+gIdx ] = value;
+    }
 }
 
 __kernel
 __attribute__((reqd_work_group_size(64,1,1)))
-void FillFloatKernel(__global float* dstFloat, 	int num_elements, float value, const int offset)
+void FillFloatKernel(__global float* dstFloat,     int num_elements, float value, const int offset)
 {
-	int gIdx = GET_GLOBAL_IDX;
+    int gIdx = GET_GLOBAL_IDX;
 
-	if( gIdx < num_elements )
-	{
-		dstFloat[ offset+gIdx ] = value;
-	}
+    if( gIdx < num_elements )
+    {
+        dstFloat[ offset+gIdx ] = value;
+    }
 }
 
 __kernel
 __attribute__((reqd_work_group_size(64,1,1)))
 void FillUnsignedIntKernel(__global unsigned int* dstInt, const int num, const unsigned int value, const int offset)
 {
-	int gIdx = GET_GLOBAL_IDX;
+    int gIdx = GET_GLOBAL_IDX;
 
-	if( gIdx < num )
-	{
-		dstInt[ offset+gIdx ] = value;
-	}
+    if( gIdx < num )
+    {
+        dstInt[ offset+gIdx ] = value;
+    }
 }
 
 __kernel
 __attribute__((reqd_work_group_size(64,1,1)))
-void FillInt2Kernel(__global int2* dstInt2, 	const int num, const int2 value, const int offset)
+void FillInt2Kernel(__global int2* dstInt2,     const int num, const int2 value, const int offset)
 {
-	int gIdx = GET_GLOBAL_IDX;
+    int gIdx = GET_GLOBAL_IDX;
 
-	if( gIdx < num )
-	{
-		dstInt2[ gIdx + offset] = make_int2( value.x, value.y );
-	}
+    if( gIdx < num )
+    {
+        dstInt2[ gIdx + offset] = make_int2( value.x, value.y );
+    }
 }
 
 __kernel
 __attribute__((reqd_work_group_size(64,1,1)))
-void FillInt4Kernel(__global int4* dstInt4, 		const int num, const int4 value, const int offset)
+void FillInt4Kernel(__global int4* dstInt4,         const int num, const int4 value, const int offset)
 {
-	int gIdx = GET_GLOBAL_IDX;
+    int gIdx = GET_GLOBAL_IDX;
 
-	if( gIdx < num )
-	{
-		dstInt4[ offset+gIdx ] = value;
-	}
+    if( gIdx < num )
+    {
+        dstInt4[ offset+gIdx ] = value;
+    }
 }
 

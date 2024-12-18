@@ -1,16 +1,20 @@
-#include <Kick_Engine/Inc/Kick_Engine.h>
-
+#include <../Kick_Engine/Inc/Kick_Engine.h>
 #include "GameState.h"
 
-int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ PSTR lpCmdLine, _In_ int nCmdShow)
+
+
+int WINAPI WinMain(HINSTANCE instance, HINSTANCE, LPSTR, int)
 {
-	App& myApp = Kick_Engine::MainApp();
-	myApp.AddState<GameState>("GameState");
+    Kick_Engine::App& mainApp = Kick_Engine::MainApp();
+    mainApp.AddState<GameState>("GameState");
 
-	AppConfig config;
-	config.appName = L"Hello Lighting";
+    mainApp.ChangeState("GameState");
 
-	myApp.Run(config);
+    Kick_Engine::AppConfig config;
+    config.appName = L"Hello Lighting";
+    config.winWidth = 1280;
+    config.winHeight = 780;
+    mainApp.Run(config);
 
-	return (0);
+    return(0);
 }

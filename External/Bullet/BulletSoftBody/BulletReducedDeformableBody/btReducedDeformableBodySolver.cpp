@@ -18,43 +18,43 @@ void btReducedDeformableBodySolver::setGravity(const btVector3& gravity)
 void btReducedDeformableBodySolver::reinitialize(const btAlignedObjectArray<btSoftBody*>& bodies, btScalar dt)
 {
   m_softBodies.copyFromArray(bodies);
-	bool nodeUpdated = updateNodes();
+    bool nodeUpdated = updateNodes();
 
-	if (nodeUpdated)
-	{
-		m_dv.resize(m_numNodes, btVector3(0, 0, 0));
-		m_ddv.resize(m_numNodes, btVector3(0, 0, 0));
-		m_residual.resize(m_numNodes, btVector3(0, 0, 0));
-		m_backupVelocity.resize(m_numNodes, btVector3(0, 0, 0));
-	}
+    if (nodeUpdated)
+    {
+        m_dv.resize(m_numNodes, btVector3(0, 0, 0));
+        m_ddv.resize(m_numNodes, btVector3(0, 0, 0));
+        m_residual.resize(m_numNodes, btVector3(0, 0, 0));
+        m_backupVelocity.resize(m_numNodes, btVector3(0, 0, 0));
+    }
 
-	// need to setZero here as resize only set value for newly allocated items
-	for (int i = 0; i < m_numNodes; ++i)
-	{
-		m_dv[i].setZero();
-		m_ddv[i].setZero();
-		m_residual[i].setZero();
-	}
+    // need to setZero here as resize only set value for newly allocated items
+    for (int i = 0; i < m_numNodes; ++i)
+    {
+        m_dv[i].setZero();
+        m_ddv[i].setZero();
+        m_residual[i].setZero();
+    }
 
-	if (dt > 0)
-	{
-		m_dt = dt;
-	}
-	m_objective->reinitialize(nodeUpdated, dt);
+    if (dt > 0)
+    {
+        m_dt = dt;
+    }
+    m_objective->reinitialize(nodeUpdated, dt);
 
   int N = bodies.size();
-	if (nodeUpdated)
-	{
-		m_staticConstraints.resize(N);
-		m_nodeRigidConstraints.resize(N);
-		// m_faceRigidConstraints.resize(N);
-	}
-	for (int i = 0; i < N; ++i)
-	{
-		m_staticConstraints[i].clear();
-		m_nodeRigidConstraints[i].clear();
-		// m_faceRigidConstraints[i].clear();
-	}
+    if (nodeUpdated)
+    {
+        m_staticConstraints.resize(N);
+        m_nodeRigidConstraints.resize(N);
+        // m_faceRigidConstraints.resize(N);
+    }
+    for (int i = 0; i < N; ++i)
+    {
+        m_staticConstraints[i].clear();
+        m_nodeRigidConstraints[i].clear();
+        // m_faceRigidConstraints[i].clear();
+    }
 
   for (int i = 0; i < m_softBodies.size(); ++i)
   {
@@ -71,7 +71,7 @@ void btReducedDeformableBodySolver::reinitialize(const btAlignedObjectArray<btSo
     sum += rsb->m_nodes.size();
   }
 
-	btDeformableBodySolver::updateSoftBodies();
+    btDeformableBodySolver::updateSoftBodies();
 }
 
 void btReducedDeformableBodySolver::predictMotion(btScalar solverdt)
@@ -95,9 +95,9 @@ void btReducedDeformableBodySolver::predictReduceDeformableMotion(btScalar solve
     }
 
     // clear contacts variables
-		rsb->m_nodeRigidContacts.resize(0);
-		rsb->m_faceRigidContacts.resize(0);
-		rsb->m_faceNodeContacts.resize(0);
+        rsb->m_nodeRigidContacts.resize(0);
+        rsb->m_faceRigidContacts.resize(0);
+        rsb->m_faceNodeContacts.resize(0);
     
     // calculate inverse mass matrix for all nodes
     for (int j = 0; j < rsb->m_nodes.size(); ++j)
@@ -199,16 +199,16 @@ void btReducedDeformableBodySolver::setConstraints(const btContactSolverInfo& in
   {
     btReducedDeformableBody* rsb = static_cast<btReducedDeformableBody*>(m_softBodies[i]);
     if (!rsb->isActive())
-		{
-			continue;
-		}
+        {
+            continue;
+        }
 
     // set fixed constraints
     for (int j = 0; j < rsb->m_fixedNodes.size(); ++j)
-		{
+        {
       int i_node = rsb->m_fixedNodes[j];
-			if (rsb->m_nodes[i_node].m_im == 0)
-			{
+            if (rsb->m_nodes[i_node].m_im == 0)
+            {
         for (int k = 0; k < 3; ++k)
         {
           btVector3 dir(0, 0, 0);
@@ -216,23 +216,23 @@ void btReducedDeformableBodySolver::setConstraints(const btContactSolverInfo& in
           btReducedDeformableStaticConstraint static_constraint(rsb, &rsb->m_nodes[i_node], rsb->getRelativePos(i_node), rsb->m_x0[i_node], dir, infoGlobal, m_dt);
           m_staticConstraints[i].push_back(static_constraint);
         }
-			}
-		}
+            }
+        }
     btAssert(rsb->m_fixedNodes.size() * 3 == m_staticConstraints[i].size());
 
     // set Deformable Node vs. Rigid constraint
-		for (int j = 0; j < rsb->m_nodeRigidContacts.size(); ++j)
-		{
-			const btSoftBody::DeformableNodeRigidContact& contact = rsb->m_nodeRigidContacts[j];
-			// skip fixed points
-			if (contact.m_node->m_im == 0)
-			{
-				continue;
-			}
-			btReducedDeformableNodeRigidContactConstraint constraint(rsb, contact, infoGlobal, m_dt);
-			m_nodeRigidConstraints[i].push_back(constraint);
+        for (int j = 0; j < rsb->m_nodeRigidContacts.size(); ++j)
+        {
+            const btSoftBody::DeformableNodeRigidContact& contact = rsb->m_nodeRigidContacts[j];
+            // skip fixed points
+            if (contact.m_node->m_im == 0)
+            {
+                continue;
+            }
+            btReducedDeformableNodeRigidContactConstraint constraint(rsb, contact, infoGlobal, m_dt);
+            m_nodeRigidConstraints[i].push_back(constraint);
       rsb->m_contactNodesList.push_back(contact.m_node->index - rsb->m_nodeIndexOffset);
-		}
+        }
     // std::cout << "contact node list size: " << rsb->m_contactNodesList.size() << "\n";
     // std::cout << "#contact nodes: " << m_nodeRigidConstraints[i].size() << "\n";
 
@@ -303,14 +303,14 @@ btScalar btReducedDeformableBodySolver::solveContactConstraints(btCollisionObjec
     // face vs rigid contact
     // for (int k = 0; k < m_faceRigidConstraints[i].size(); ++k)
     // {
-    // 	btReducedDeformableFaceRigidContactConstraint& constraint = m_faceRigidConstraints[i][k];
-    // 	btScalar localResidualSquare = constraint.solveConstraint(infoGlobal);
-    // 	residualSquare = btMax(residualSquare, localResidualSquare);
+    //     btReducedDeformableFaceRigidContactConstraint& constraint = m_faceRigidConstraints[i][k];
+    //     btScalar localResidualSquare = constraint.solveConstraint(infoGlobal);
+    //     residualSquare = btMax(residualSquare, localResidualSquare);
     // }
   }
 
   
-	return residualSquare;
+    return residualSquare;
 }
 
 void btReducedDeformableBodySolver::deformableBodyInternalWriteBack()

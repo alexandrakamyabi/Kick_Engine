@@ -40,706 +40,706 @@ The algorithm also closely resembles the one in http://physbam.stanford.edu/~fed
 #include "LinearMath/btQuickprof.h"
 #include "btSoftBodyInternals.h"
 btDeformableMultiBodyDynamicsWorld::btDeformableMultiBodyDynamicsWorld(btDispatcher* dispatcher, btBroadphaseInterface* pairCache, btDeformableMultiBodyConstraintSolver* constraintSolver, btCollisionConfiguration* collisionConfiguration, btDeformableBodySolver* deformableBodySolver)
-	: btMultiBodyDynamicsWorld(dispatcher, pairCache, (btMultiBodyConstraintSolver*)constraintSolver, collisionConfiguration),
-	  m_deformableBodySolver(deformableBodySolver),
-	  m_solverCallback(0)
+    : btMultiBodyDynamicsWorld(dispatcher, pairCache, (btMultiBodyConstraintSolver*)constraintSolver, collisionConfiguration),
+      m_deformableBodySolver(deformableBodySolver),
+      m_solverCallback(0)
 {
-	m_drawFlags = fDrawFlags::Std;
-	m_drawNodeTree = true;
-	m_drawFaceTree = false;
-	m_drawClusterTree = false;
-	m_sbi.m_broadphase = pairCache;
-	m_sbi.m_dispatcher = dispatcher;
-	m_sbi.m_sparsesdf.Initialize();
-	m_sbi.m_sparsesdf.setDefaultVoxelsz(0.005);
-	m_sbi.m_sparsesdf.Reset();
+    m_drawFlags = fDrawFlags::Std;
+    m_drawNodeTree = true;
+    m_drawFaceTree = false;
+    m_drawClusterTree = false;
+    m_sbi.m_broadphase = pairCache;
+    m_sbi.m_dispatcher = dispatcher;
+    m_sbi.m_sparsesdf.Initialize();
+    m_sbi.m_sparsesdf.setDefaultVoxelsz(0.005);
+    m_sbi.m_sparsesdf.Reset();
 
-	m_sbi.air_density = (btScalar)1.2;
-	m_sbi.water_density = 0;
-	m_sbi.water_offset = 0;
-	m_sbi.water_normal = btVector3(0, 0, 0);
-	m_sbi.m_gravity.setValue(0, -9.8, 0);
-	m_internalTime = 0.0;
-	m_implicit = false;
-	m_lineSearch = false;
-	m_useProjection = false;
-	m_ccdIterations = 5;
-	m_solverDeformableBodyIslandCallback = new DeformableBodyInplaceSolverIslandCallback(constraintSolver, dispatcher);
+    m_sbi.air_density = (btScalar)1.2;
+    m_sbi.water_density = 0;
+    m_sbi.water_offset = 0;
+    m_sbi.water_normal = btVector3(0, 0, 0);
+    m_sbi.m_gravity.setValue(0, -9.8, 0);
+    m_internalTime = 0.0;
+    m_implicit = false;
+    m_lineSearch = false;
+    m_useProjection = false;
+    m_ccdIterations = 5;
+    m_solverDeformableBodyIslandCallback = new DeformableBodyInplaceSolverIslandCallback(constraintSolver, dispatcher);
 }
 
 btDeformableMultiBodyDynamicsWorld::~btDeformableMultiBodyDynamicsWorld()
 {
-	delete m_solverDeformableBodyIslandCallback;
+    delete m_solverDeformableBodyIslandCallback;
 }
 
 void btDeformableMultiBodyDynamicsWorld::internalSingleStepSimulation(btScalar timeStep)
 {
-	BT_PROFILE("internalSingleStepSimulation");
-	if (0 != m_internalPreTickCallback)
-	{
-		(*m_internalPreTickCallback)(this, timeStep);
-	}
-	reinitialize(timeStep);
+    BT_PROFILE("internalSingleStepSimulation");
+    if (0 != m_internalPreTickCallback)
+    {
+        (*m_internalPreTickCallback)(this, timeStep);
+    }
+    reinitialize(timeStep);
 
-	// add gravity to velocity of rigid and multi bodys
-	applyRigidBodyGravity(timeStep);
+    // add gravity to velocity of rigid and multi bodys
+    applyRigidBodyGravity(timeStep);
 
-	///apply gravity and explicit force to velocity, predict motion
-	predictUnconstraintMotion(timeStep);
+    ///apply gravity and explicit force to velocity, predict motion
+    predictUnconstraintMotion(timeStep);
 
-	///perform collision detection that involves rigid/multi bodies
-	btMultiBodyDynamicsWorld::performDiscreteCollisionDetection();
+    ///perform collision detection that involves rigid/multi bodies
+    btMultiBodyDynamicsWorld::performDiscreteCollisionDetection();
 
-	btMultiBodyDynamicsWorld::calculateSimulationIslands();
+    btMultiBodyDynamicsWorld::calculateSimulationIslands();
 
-	beforeSolverCallbacks(timeStep);
+    beforeSolverCallbacks(timeStep);
 
-	// ///solve contact constraints and then deformable bodies momemtum equation
-	solveConstraints(timeStep);
+    // ///solve contact constraints and then deformable bodies momemtum equation
+    solveConstraints(timeStep);
 
-	afterSolverCallbacks(timeStep);
+    afterSolverCallbacks(timeStep);
 
-	performDeformableCollisionDetection();
+    performDeformableCollisionDetection();
 
-	applyRepulsionForce(timeStep);
+    applyRepulsionForce(timeStep);
 
-	performGeometricCollisions(timeStep);
+    performGeometricCollisions(timeStep);
 
-	integrateTransforms(timeStep);
+    integrateTransforms(timeStep);
 
-	///update vehicle simulation
-	btMultiBodyDynamicsWorld::updateActions(timeStep);
+    ///update vehicle simulation
+    btMultiBodyDynamicsWorld::updateActions(timeStep);
 
-	updateActivationState(timeStep);
-	// End solver-wise simulation step
-	// ///////////////////////////////
+    updateActivationState(timeStep);
+    // End solver-wise simulation step
+    // ///////////////////////////////
 }
 
 void btDeformableMultiBodyDynamicsWorld::performDeformableCollisionDetection()
 {
-	for (int i = 0; i < m_softBodies.size(); ++i)
-	{
-		m_softBodies[i]->m_softSoftCollision = true;
-	}
+    for (int i = 0; i < m_softBodies.size(); ++i)
+    {
+        m_softBodies[i]->m_softSoftCollision = true;
+    }
 
-	for (int i = 0; i < m_softBodies.size(); ++i)
-	{
-		for (int j = i; j < m_softBodies.size(); ++j)
-		{
-			m_softBodies[i]->defaultCollisionHandler(m_softBodies[j]);
-		}
-	}
+    for (int i = 0; i < m_softBodies.size(); ++i)
+    {
+        for (int j = i; j < m_softBodies.size(); ++j)
+        {
+            m_softBodies[i]->defaultCollisionHandler(m_softBodies[j]);
+        }
+    }
 
-	for (int i = 0; i < m_softBodies.size(); ++i)
-	{
-		m_softBodies[i]->m_softSoftCollision = false;
-	}
+    for (int i = 0; i < m_softBodies.size(); ++i)
+    {
+        m_softBodies[i]->m_softSoftCollision = false;
+    }
 }
 
 void btDeformableMultiBodyDynamicsWorld::updateActivationState(btScalar timeStep)
 {
-	for (int i = 0; i < m_softBodies.size(); i++)
-	{
-		btSoftBody* psb = m_softBodies[i];
-		psb->updateDeactivation(timeStep);
-		if (psb->wantsSleeping())
-		{
-			if (psb->getActivationState() == ACTIVE_TAG)
-				psb->setActivationState(WANTS_DEACTIVATION);
-			if (psb->getActivationState() == ISLAND_SLEEPING)
-			{
-				psb->setZeroVelocity();
-			}
-		}
-		else
-		{
-			if (psb->getActivationState() != DISABLE_DEACTIVATION)
-				psb->setActivationState(ACTIVE_TAG);
-		}
-	}
-	btMultiBodyDynamicsWorld::updateActivationState(timeStep);
+    for (int i = 0; i < m_softBodies.size(); i++)
+    {
+        btSoftBody* psb = m_softBodies[i];
+        psb->updateDeactivation(timeStep);
+        if (psb->wantsSleeping())
+        {
+            if (psb->getActivationState() == ACTIVE_TAG)
+                psb->setActivationState(WANTS_DEACTIVATION);
+            if (psb->getActivationState() == ISLAND_SLEEPING)
+            {
+                psb->setZeroVelocity();
+            }
+        }
+        else
+        {
+            if (psb->getActivationState() != DISABLE_DEACTIVATION)
+                psb->setActivationState(ACTIVE_TAG);
+        }
+    }
+    btMultiBodyDynamicsWorld::updateActivationState(timeStep);
 }
 
 void btDeformableMultiBodyDynamicsWorld::applyRepulsionForce(btScalar timeStep)
 {
-	BT_PROFILE("btDeformableMultiBodyDynamicsWorld::applyRepulsionForce");
-	for (int i = 0; i < m_softBodies.size(); i++)
-	{
-		btSoftBody* psb = m_softBodies[i];
-		if (psb->isActive())
-		{
-			psb->applyRepulsionForce(timeStep, true);
-		}
-	}
+    BT_PROFILE("btDeformableMultiBodyDynamicsWorld::applyRepulsionForce");
+    for (int i = 0; i < m_softBodies.size(); i++)
+    {
+        btSoftBody* psb = m_softBodies[i];
+        if (psb->isActive())
+        {
+            psb->applyRepulsionForce(timeStep, true);
+        }
+    }
 }
 
 void btDeformableMultiBodyDynamicsWorld::performGeometricCollisions(btScalar timeStep)
 {
-	BT_PROFILE("btDeformableMultiBodyDynamicsWorld::performGeometricCollisions");
-	// refit the BVH tree for CCD
-	for (int i = 0; i < m_softBodies.size(); ++i)
-	{
-		btSoftBody* psb = m_softBodies[i];
-		if (psb->isActive())
-		{
-			m_softBodies[i]->updateFaceTree(true, false);
-			m_softBodies[i]->updateNodeTree(true, false);
-			for (int j = 0; j < m_softBodies[i]->m_faces.size(); ++j)
-			{
-				btSoftBody::Face& f = m_softBodies[i]->m_faces[j];
-				f.m_n0 = (f.m_n[1]->m_x - f.m_n[0]->m_x).cross(f.m_n[2]->m_x - f.m_n[0]->m_x);
-			}
-		}
-	}
+    BT_PROFILE("btDeformableMultiBodyDynamicsWorld::performGeometricCollisions");
+    // refit the BVH tree for CCD
+    for (int i = 0; i < m_softBodies.size(); ++i)
+    {
+        btSoftBody* psb = m_softBodies[i];
+        if (psb->isActive())
+        {
+            m_softBodies[i]->updateFaceTree(true, false);
+            m_softBodies[i]->updateNodeTree(true, false);
+            for (int j = 0; j < m_softBodies[i]->m_faces.size(); ++j)
+            {
+                btSoftBody::Face& f = m_softBodies[i]->m_faces[j];
+                f.m_n0 = (f.m_n[1]->m_x - f.m_n[0]->m_x).cross(f.m_n[2]->m_x - f.m_n[0]->m_x);
+            }
+        }
+    }
 
-	// clear contact points & update DBVT
-	for (int r = 0; r < m_ccdIterations; ++r)
-	{
-		for (int i = 0; i < m_softBodies.size(); ++i)
-		{
-			btSoftBody* psb = m_softBodies[i];
-			if (psb->isActive())
-			{
-				// clear contact points in the previous iteration
-				psb->m_faceNodeContactsCCD.clear();
+    // clear contact points & update DBVT
+    for (int r = 0; r < m_ccdIterations; ++r)
+    {
+        for (int i = 0; i < m_softBodies.size(); ++i)
+        {
+            btSoftBody* psb = m_softBodies[i];
+            if (psb->isActive())
+            {
+                // clear contact points in the previous iteration
+                psb->m_faceNodeContactsCCD.clear();
 
-				// update m_q and normals for CCD calculation
-				for (int j = 0; j < psb->m_nodes.size(); ++j)
-				{
-					psb->m_nodes[j].m_q = psb->m_nodes[j].m_x + timeStep * psb->m_nodes[j].m_v;
-				}
-				for (int j = 0; j < psb->m_faces.size(); ++j)
-				{
-					btSoftBody::Face& f = psb->m_faces[j];
-					f.m_n1 = (f.m_n[1]->m_q - f.m_n[0]->m_q).cross(f.m_n[2]->m_q - f.m_n[0]->m_q);
-					f.m_vn = (f.m_n[1]->m_v - f.m_n[0]->m_v).cross(f.m_n[2]->m_v - f.m_n[0]->m_v) * timeStep * timeStep;
-				}
-			}
-		}
+                // update m_q and normals for CCD calculation
+                for (int j = 0; j < psb->m_nodes.size(); ++j)
+                {
+                    psb->m_nodes[j].m_q = psb->m_nodes[j].m_x + timeStep * psb->m_nodes[j].m_v;
+                }
+                for (int j = 0; j < psb->m_faces.size(); ++j)
+                {
+                    btSoftBody::Face& f = psb->m_faces[j];
+                    f.m_n1 = (f.m_n[1]->m_q - f.m_n[0]->m_q).cross(f.m_n[2]->m_q - f.m_n[0]->m_q);
+                    f.m_vn = (f.m_n[1]->m_v - f.m_n[0]->m_v).cross(f.m_n[2]->m_v - f.m_n[0]->m_v) * timeStep * timeStep;
+                }
+            }
+        }
 
-		// apply CCD to register new contact points
-		for (int i = 0; i < m_softBodies.size(); ++i)
-		{
-			for (int j = i; j < m_softBodies.size(); ++j)
-			{
-				btSoftBody* psb1 = m_softBodies[i];
-				btSoftBody* psb2 = m_softBodies[j];
-				if (psb1->isActive() && psb2->isActive())
-				{
-					m_softBodies[i]->geometricCollisionHandler(m_softBodies[j]);
-				}
-			}
-		}
+        // apply CCD to register new contact points
+        for (int i = 0; i < m_softBodies.size(); ++i)
+        {
+            for (int j = i; j < m_softBodies.size(); ++j)
+            {
+                btSoftBody* psb1 = m_softBodies[i];
+                btSoftBody* psb2 = m_softBodies[j];
+                if (psb1->isActive() && psb2->isActive())
+                {
+                    m_softBodies[i]->geometricCollisionHandler(m_softBodies[j]);
+                }
+            }
+        }
 
-		int penetration_count = 0;
-		for (int i = 0; i < m_softBodies.size(); ++i)
-		{
-			btSoftBody* psb = m_softBodies[i];
-			if (psb->isActive())
-			{
-				penetration_count += psb->m_faceNodeContactsCCD.size();
-				;
-			}
-		}
-		if (penetration_count == 0)
-		{
-			break;
-		}
+        int penetration_count = 0;
+        for (int i = 0; i < m_softBodies.size(); ++i)
+        {
+            btSoftBody* psb = m_softBodies[i];
+            if (psb->isActive())
+            {
+                penetration_count += psb->m_faceNodeContactsCCD.size();
+                ;
+            }
+        }
+        if (penetration_count == 0)
+        {
+            break;
+        }
 
-		// apply inelastic impulse
-		for (int i = 0; i < m_softBodies.size(); ++i)
-		{
-			btSoftBody* psb = m_softBodies[i];
-			if (psb->isActive())
-			{
-				psb->applyRepulsionForce(timeStep, false);
-			}
-		}
-	}
+        // apply inelastic impulse
+        for (int i = 0; i < m_softBodies.size(); ++i)
+        {
+            btSoftBody* psb = m_softBodies[i];
+            if (psb->isActive())
+            {
+                psb->applyRepulsionForce(timeStep, false);
+            }
+        }
+    }
 }
 
 void btDeformableMultiBodyDynamicsWorld::softBodySelfCollision()
 {
-	BT_PROFILE("btDeformableMultiBodyDynamicsWorld::softBodySelfCollision");
-	for (int i = 0; i < m_softBodies.size(); i++)
-	{
-		btSoftBody* psb = m_softBodies[i];
-		if (psb->isActive())
-		{
-			psb->defaultCollisionHandler(psb);
-		}
-	}
+    BT_PROFILE("btDeformableMultiBodyDynamicsWorld::softBodySelfCollision");
+    for (int i = 0; i < m_softBodies.size(); i++)
+    {
+        btSoftBody* psb = m_softBodies[i];
+        if (psb->isActive())
+        {
+            psb->defaultCollisionHandler(psb);
+        }
+    }
 }
 
 void btDeformableMultiBodyDynamicsWorld::positionCorrection(btScalar timeStep)
 {
-	// correct the position of rigid bodies with temporary velocity generated from split impulse
-	btContactSolverInfo infoGlobal;
-	btVector3 zero(0, 0, 0);
-	for (int i = 0; i < m_nonStaticRigidBodies.size(); ++i)
-	{
-		btRigidBody* rb = m_nonStaticRigidBodies[i];
-		//correct the position/orientation based on push/turn recovery
-		btTransform newTransform;
-		btVector3 pushVelocity = rb->getPushVelocity();
-		btVector3 turnVelocity = rb->getTurnVelocity();
-		if (pushVelocity[0] != 0.f || pushVelocity[1] != 0 || pushVelocity[2] != 0 || turnVelocity[0] != 0.f || turnVelocity[1] != 0 || turnVelocity[2] != 0)
-		{
-			btTransformUtil::integrateTransform(rb->getWorldTransform(), pushVelocity, turnVelocity * infoGlobal.m_splitImpulseTurnErp, timeStep, newTransform);
-			rb->setWorldTransform(newTransform);
-			rb->setPushVelocity(zero);
-			rb->setTurnVelocity(zero);
-		}
-	}
+    // correct the position of rigid bodies with temporary velocity generated from split impulse
+    btContactSolverInfo infoGlobal;
+    btVector3 zero(0, 0, 0);
+    for (int i = 0; i < m_nonStaticRigidBodies.size(); ++i)
+    {
+        btRigidBody* rb = m_nonStaticRigidBodies[i];
+        //correct the position/orientation based on push/turn recovery
+        btTransform newTransform;
+        btVector3 pushVelocity = rb->getPushVelocity();
+        btVector3 turnVelocity = rb->getTurnVelocity();
+        if (pushVelocity[0] != 0.f || pushVelocity[1] != 0 || pushVelocity[2] != 0 || turnVelocity[0] != 0.f || turnVelocity[1] != 0 || turnVelocity[2] != 0)
+        {
+            btTransformUtil::integrateTransform(rb->getWorldTransform(), pushVelocity, turnVelocity * infoGlobal.m_splitImpulseTurnErp, timeStep, newTransform);
+            rb->setWorldTransform(newTransform);
+            rb->setPushVelocity(zero);
+            rb->setTurnVelocity(zero);
+        }
+    }
 }
 
 void btDeformableMultiBodyDynamicsWorld::integrateTransforms(btScalar timeStep)
 {
-	BT_PROFILE("integrateTransforms");
-	positionCorrection(timeStep);
-	btMultiBodyDynamicsWorld::integrateTransforms(timeStep);
-	m_deformableBodySolver->applyTransforms(timeStep);
+    BT_PROFILE("integrateTransforms");
+    positionCorrection(timeStep);
+    btMultiBodyDynamicsWorld::integrateTransforms(timeStep);
+    m_deformableBodySolver->applyTransforms(timeStep);
 }
 
 void btDeformableMultiBodyDynamicsWorld::solveConstraints(btScalar timeStep)
 {
-	BT_PROFILE("btDeformableMultiBodyDynamicsWorld::solveConstraints");
-	// save v_{n+1}^* velocity after explicit forces
-	m_deformableBodySolver->backupVelocity();
+    BT_PROFILE("btDeformableMultiBodyDynamicsWorld::solveConstraints");
+    // save v_{n+1}^* velocity after explicit forces
+    m_deformableBodySolver->backupVelocity();
 
-	// set up constraints among multibodies and between multibodies and deformable bodies
-	setupConstraints();
+    // set up constraints among multibodies and between multibodies and deformable bodies
+    setupConstraints();
 
-	// solve contact constraints
-	solveContactConstraints();
+    // solve contact constraints
+    solveContactConstraints();
 
-	// set up the directions in which the velocity does not change in the momentum solve
-	if (m_useProjection)
-		m_deformableBodySolver->setProjection();
-	else
-		m_deformableBodySolver->setLagrangeMultiplier();
+    // set up the directions in which the velocity does not change in the momentum solve
+    if (m_useProjection)
+        m_deformableBodySolver->setProjection();
+    else
+        m_deformableBodySolver->setLagrangeMultiplier();
 
-	// for explicit scheme, m_backupVelocity = v_{n+1}^*
-	// for implicit scheme, m_backupVelocity = v_n
-	// Here, set dv = v_{n+1} - v_n for nodes in contact
-	m_deformableBodySolver->setupDeformableSolve(m_implicit);
+    // for explicit scheme, m_backupVelocity = v_{n+1}^*
+    // for implicit scheme, m_backupVelocity = v_n
+    // Here, set dv = v_{n+1} - v_n for nodes in contact
+    m_deformableBodySolver->setupDeformableSolve(m_implicit);
 
-	// At this point, dv should be golden for nodes in contact
-	// proceed to solve deformable momentum equation
-	m_deformableBodySolver->solveDeformableConstraints(timeStep);
+    // At this point, dv should be golden for nodes in contact
+    // proceed to solve deformable momentum equation
+    m_deformableBodySolver->solveDeformableConstraints(timeStep);
 }
 
 void btDeformableMultiBodyDynamicsWorld::setupConstraints()
 {
-	// set up constraints between multibody and deformable bodies
-	m_deformableBodySolver->setConstraints(m_solverInfo);
+    // set up constraints between multibody and deformable bodies
+    m_deformableBodySolver->setConstraints(m_solverInfo);
 
-	// set up constraints among multibodies
-	{
-		sortConstraints();
-		// setup the solver callback
-		btMultiBodyConstraint** sortedMultiBodyConstraints = m_sortedMultiBodyConstraints.size() ? &m_sortedMultiBodyConstraints[0] : 0;
-		btTypedConstraint** constraintsPtr = getNumConstraints() ? &m_sortedConstraints[0] : 0;
-		m_solverDeformableBodyIslandCallback->setup(&m_solverInfo, constraintsPtr, m_sortedConstraints.size(), sortedMultiBodyConstraints, m_sortedMultiBodyConstraints.size(), getDebugDrawer());
+    // set up constraints among multibodies
+    {
+        sortConstraints();
+        // setup the solver callback
+        btMultiBodyConstraint** sortedMultiBodyConstraints = m_sortedMultiBodyConstraints.size() ? &m_sortedMultiBodyConstraints[0] : 0;
+        btTypedConstraint** constraintsPtr = getNumConstraints() ? &m_sortedConstraints[0] : 0;
+        m_solverDeformableBodyIslandCallback->setup(&m_solverInfo, constraintsPtr, m_sortedConstraints.size(), sortedMultiBodyConstraints, m_sortedMultiBodyConstraints.size(), getDebugDrawer());
 
-		// build islands
-		m_islandManager->buildIslands(getCollisionWorld()->getDispatcher(), getCollisionWorld());
-	}
+        // build islands
+        m_islandManager->buildIslands(getCollisionWorld()->getDispatcher(), getCollisionWorld());
+    }
 }
 
 void btDeformableMultiBodyDynamicsWorld::sortConstraints()
 {
-	m_sortedConstraints.resize(m_constraints.size());
-	int i;
-	for (i = 0; i < getNumConstraints(); i++)
-	{
-		m_sortedConstraints[i] = m_constraints[i];
-	}
-	m_sortedConstraints.quickSort(btSortConstraintOnIslandPredicate2());
+    m_sortedConstraints.resize(m_constraints.size());
+    int i;
+    for (i = 0; i < getNumConstraints(); i++)
+    {
+        m_sortedConstraints[i] = m_constraints[i];
+    }
+    m_sortedConstraints.quickSort(btSortConstraintOnIslandPredicate2());
 
-	m_sortedMultiBodyConstraints.resize(m_multiBodyConstraints.size());
-	for (i = 0; i < m_multiBodyConstraints.size(); i++)
-	{
-		m_sortedMultiBodyConstraints[i] = m_multiBodyConstraints[i];
-	}
-	m_sortedMultiBodyConstraints.quickSort(btSortMultiBodyConstraintOnIslandPredicate());
+    m_sortedMultiBodyConstraints.resize(m_multiBodyConstraints.size());
+    for (i = 0; i < m_multiBodyConstraints.size(); i++)
+    {
+        m_sortedMultiBodyConstraints[i] = m_multiBodyConstraints[i];
+    }
+    m_sortedMultiBodyConstraints.quickSort(btSortMultiBodyConstraintOnIslandPredicate());
 }
 
 void btDeformableMultiBodyDynamicsWorld::solveContactConstraints()
 {
-	// process constraints on each island
-	m_islandManager->processIslands(getCollisionWorld()->getDispatcher(), getCollisionWorld(), m_solverDeformableBodyIslandCallback);
+    // process constraints on each island
+    m_islandManager->processIslands(getCollisionWorld()->getDispatcher(), getCollisionWorld(), m_solverDeformableBodyIslandCallback);
 
-	// process deferred
-	m_solverDeformableBodyIslandCallback->processConstraints();
-	m_constraintSolver->allSolved(m_solverInfo, m_debugDrawer);
+    // process deferred
+    m_solverDeformableBodyIslandCallback->processConstraints();
+    m_constraintSolver->allSolved(m_solverInfo, m_debugDrawer);
 
-	// write joint feedback
-	{
-		for (int i = 0; i < this->m_multiBodies.size(); i++)
-		{
-			btMultiBody* bod = m_multiBodies[i];
+    // write joint feedback
+    {
+        for (int i = 0; i < this->m_multiBodies.size(); i++)
+        {
+            btMultiBody* bod = m_multiBodies[i];
 
-			bool isSleeping = false;
+            bool isSleeping = false;
 
-			if (bod->getBaseCollider() && bod->getBaseCollider()->getActivationState() == ISLAND_SLEEPING)
-			{
-				isSleeping = true;
-			}
-			for (int b = 0; b < bod->getNumLinks(); b++)
-			{
-				if (bod->getLink(b).m_collider && bod->getLink(b).m_collider->getActivationState() == ISLAND_SLEEPING)
-					isSleeping = true;
-			}
+            if (bod->getBaseCollider() && bod->getBaseCollider()->getActivationState() == ISLAND_SLEEPING)
+            {
+                isSleeping = true;
+            }
+            for (int b = 0; b < bod->getNumLinks(); b++)
+            {
+                if (bod->getLink(b).m_collider && bod->getLink(b).m_collider->getActivationState() == ISLAND_SLEEPING)
+                    isSleeping = true;
+            }
 
-			if (!isSleeping)
-			{
-				//useless? they get resized in stepVelocities once again (AND DIFFERENTLY)
-				m_scratch_r.resize(bod->getNumLinks() + 1);  //multidof? ("Y"s use it and it is used to store qdd)
-				m_scratch_v.resize(bod->getNumLinks() + 1);
-				m_scratch_m.resize(bod->getNumLinks() + 1);
+            if (!isSleeping)
+            {
+                //useless? they get resized in stepVelocities once again (AND DIFFERENTLY)
+                m_scratch_r.resize(bod->getNumLinks() + 1);  //multidof? ("Y"s use it and it is used to store qdd)
+                m_scratch_v.resize(bod->getNumLinks() + 1);
+                m_scratch_m.resize(bod->getNumLinks() + 1);
 
-				if (bod->internalNeedsJointFeedback())
-				{
-					if (!bod->isUsingRK4Integration())
-					{
-						if (bod->internalNeedsJointFeedback())
-						{
-							bool isConstraintPass = true;
-							bod->computeAccelerationsArticulatedBodyAlgorithmMultiDof(m_solverInfo.m_timeStep, m_scratch_r, m_scratch_v, m_scratch_m, isConstraintPass,
-																					  getSolverInfo().m_jointFeedbackInWorldSpace,
-																					  getSolverInfo().m_jointFeedbackInJointFrame);
-						}
-					}
-				}
-			}
-		}
-	}
+                if (bod->internalNeedsJointFeedback())
+                {
+                    if (!bod->isUsingRK4Integration())
+                    {
+                        if (bod->internalNeedsJointFeedback())
+                        {
+                            bool isConstraintPass = true;
+                            bod->computeAccelerationsArticulatedBodyAlgorithmMultiDof(m_solverInfo.m_timeStep, m_scratch_r, m_scratch_v, m_scratch_m, isConstraintPass,
+                                                                                      getSolverInfo().m_jointFeedbackInWorldSpace,
+                                                                                      getSolverInfo().m_jointFeedbackInJointFrame);
+                        }
+                    }
+                }
+            }
+        }
+    }
 
-	for (int i = 0; i < this->m_multiBodies.size(); i++)
-	{
-		btMultiBody* bod = m_multiBodies[i];
-		bod->processDeltaVeeMultiDof2();
-	}
+    for (int i = 0; i < this->m_multiBodies.size(); i++)
+    {
+        btMultiBody* bod = m_multiBodies[i];
+        bod->processDeltaVeeMultiDof2();
+    }
 }
 
 void btDeformableMultiBodyDynamicsWorld::addSoftBody(btSoftBody* body, int collisionFilterGroup, int collisionFilterMask)
 {
-	m_softBodies.push_back(body);
+    m_softBodies.push_back(body);
 
-	// Set the soft body solver that will deal with this body
-	// to be the world's solver
-	body->setSoftBodySolver(m_deformableBodySolver);
+    // Set the soft body solver that will deal with this body
+    // to be the world's solver
+    body->setSoftBodySolver(m_deformableBodySolver);
 
-	btCollisionWorld::addCollisionObject(body,
-										 collisionFilterGroup,
-										 collisionFilterMask);
+    btCollisionWorld::addCollisionObject(body,
+                                         collisionFilterGroup,
+                                         collisionFilterMask);
 }
 
 void btDeformableMultiBodyDynamicsWorld::predictUnconstraintMotion(btScalar timeStep)
 {
-	BT_PROFILE("predictUnconstraintMotion");
-	btMultiBodyDynamicsWorld::predictUnconstraintMotion(timeStep);
-	m_deformableBodySolver->predictMotion(timeStep);
+    BT_PROFILE("predictUnconstraintMotion");
+    btMultiBodyDynamicsWorld::predictUnconstraintMotion(timeStep);
+    m_deformableBodySolver->predictMotion(timeStep);
 }
 
 void btDeformableMultiBodyDynamicsWorld::setGravity(const btVector3& gravity)
 {
-	btDiscreteDynamicsWorld::setGravity(gravity);
-	m_deformableBodySolver->setGravity(gravity);
+    btDiscreteDynamicsWorld::setGravity(gravity);
+    m_deformableBodySolver->setGravity(gravity);
 }
 
 void btDeformableMultiBodyDynamicsWorld::reinitialize(btScalar timeStep)
 {
-	m_internalTime += timeStep;
-	m_deformableBodySolver->setImplicit(m_implicit);
-	m_deformableBodySolver->setLineSearch(m_lineSearch);
-	m_deformableBodySolver->reinitialize(m_softBodies, timeStep);
-	btDispatcherInfo& dispatchInfo = btMultiBodyDynamicsWorld::getDispatchInfo();
-	dispatchInfo.m_timeStep = timeStep;
-	dispatchInfo.m_stepCount = 0;
-	dispatchInfo.m_debugDraw = btMultiBodyDynamicsWorld::getDebugDrawer();
-	btMultiBodyDynamicsWorld::getSolverInfo().m_timeStep = timeStep;
-	if (m_useProjection)
-	{
-		m_deformableBodySolver->m_useProjection = true;
-		m_deformableBodySolver->setStrainLimiting(true);
-		m_deformableBodySolver->setPreconditioner(btDeformableBackwardEulerObjective::Mass_preconditioner);
-	}
-	else
-	{
-		m_deformableBodySolver->m_useProjection = false;
-		m_deformableBodySolver->setStrainLimiting(false);
-		m_deformableBodySolver->setPreconditioner(btDeformableBackwardEulerObjective::KKT_preconditioner);
-	}
+    m_internalTime += timeStep;
+    m_deformableBodySolver->setImplicit(m_implicit);
+    m_deformableBodySolver->setLineSearch(m_lineSearch);
+    m_deformableBodySolver->reinitialize(m_softBodies, timeStep);
+    btDispatcherInfo& dispatchInfo = btMultiBodyDynamicsWorld::getDispatchInfo();
+    dispatchInfo.m_timeStep = timeStep;
+    dispatchInfo.m_stepCount = 0;
+    dispatchInfo.m_debugDraw = btMultiBodyDynamicsWorld::getDebugDrawer();
+    btMultiBodyDynamicsWorld::getSolverInfo().m_timeStep = timeStep;
+    if (m_useProjection)
+    {
+        m_deformableBodySolver->m_useProjection = true;
+        m_deformableBodySolver->setStrainLimiting(true);
+        m_deformableBodySolver->setPreconditioner(btDeformableBackwardEulerObjective::Mass_preconditioner);
+    }
+    else
+    {
+        m_deformableBodySolver->m_useProjection = false;
+        m_deformableBodySolver->setStrainLimiting(false);
+        m_deformableBodySolver->setPreconditioner(btDeformableBackwardEulerObjective::KKT_preconditioner);
+    }
 }
 
 void btDeformableMultiBodyDynamicsWorld::debugDrawWorld()
 {
-	btMultiBodyDynamicsWorld::debugDrawWorld();
+    btMultiBodyDynamicsWorld::debugDrawWorld();
 
-	for (int i = 0; i < getSoftBodyArray().size(); i++)
-	{
-		btSoftBody* psb = (btSoftBody*)getSoftBodyArray()[i];
-		{
-			btSoftBodyHelpers::DrawFrame(psb, getDebugDrawer());
-			btSoftBodyHelpers::Draw(psb, getDebugDrawer(), getDrawFlags());
-		}
-	}
+    for (int i = 0; i < getSoftBodyArray().size(); i++)
+    {
+        btSoftBody* psb = (btSoftBody*)getSoftBodyArray()[i];
+        {
+            btSoftBodyHelpers::DrawFrame(psb, getDebugDrawer());
+            btSoftBodyHelpers::Draw(psb, getDebugDrawer(), getDrawFlags());
+        }
+    }
 }
 
 void btDeformableMultiBodyDynamicsWorld::applyRigidBodyGravity(btScalar timeStep)
 {
-	// Gravity is applied in stepSimulation and then cleared here and then applied here and then cleared here again
-	// so that 1) gravity is applied to velocity before constraint solve and 2) gravity is applied in each substep
-	// when there are multiple substeps
-	btMultiBodyDynamicsWorld::applyGravity();
-	// integrate rigid body gravity
-	for (int i = 0; i < m_nonStaticRigidBodies.size(); ++i)
-	{
-		btRigidBody* rb = m_nonStaticRigidBodies[i];
-		rb->integrateVelocities(timeStep);
-	}
+    // Gravity is applied in stepSimulation and then cleared here and then applied here and then cleared here again
+    // so that 1) gravity is applied to velocity before constraint solve and 2) gravity is applied in each substep
+    // when there are multiple substeps
+    btMultiBodyDynamicsWorld::applyGravity();
+    // integrate rigid body gravity
+    for (int i = 0; i < m_nonStaticRigidBodies.size(); ++i)
+    {
+        btRigidBody* rb = m_nonStaticRigidBodies[i];
+        rb->integrateVelocities(timeStep);
+    }
 
-	// integrate multibody gravity
-	{
-		forwardKinematics();
-		clearMultiBodyConstraintForces();
-		{
-			for (int i = 0; i < this->m_multiBodies.size(); i++)
-			{
-				btMultiBody* bod = m_multiBodies[i];
+    // integrate multibody gravity
+    {
+        forwardKinematics();
+        clearMultiBodyConstraintForces();
+        {
+            for (int i = 0; i < this->m_multiBodies.size(); i++)
+            {
+                btMultiBody* bod = m_multiBodies[i];
 
-				bool isSleeping = false;
+                bool isSleeping = false;
 
-				if (bod->getBaseCollider() && bod->getBaseCollider()->getActivationState() == ISLAND_SLEEPING)
-				{
-					isSleeping = true;
-				}
-				for (int b = 0; b < bod->getNumLinks(); b++)
-				{
-					if (bod->getLink(b).m_collider && bod->getLink(b).m_collider->getActivationState() == ISLAND_SLEEPING)
-						isSleeping = true;
-				}
+                if (bod->getBaseCollider() && bod->getBaseCollider()->getActivationState() == ISLAND_SLEEPING)
+                {
+                    isSleeping = true;
+                }
+                for (int b = 0; b < bod->getNumLinks(); b++)
+                {
+                    if (bod->getLink(b).m_collider && bod->getLink(b).m_collider->getActivationState() == ISLAND_SLEEPING)
+                        isSleeping = true;
+                }
 
-				if (!isSleeping)
-				{
-					m_scratch_r.resize(bod->getNumLinks() + 1);
-					m_scratch_v.resize(bod->getNumLinks() + 1);
-					m_scratch_m.resize(bod->getNumLinks() + 1);
-					bool isConstraintPass = false;
-					{
-						if (!bod->isUsingRK4Integration())
-						{
-							bod->computeAccelerationsArticulatedBodyAlgorithmMultiDof(m_solverInfo.m_timeStep,
-																					  m_scratch_r, m_scratch_v, m_scratch_m, isConstraintPass,
-																					  getSolverInfo().m_jointFeedbackInWorldSpace,
-																					  getSolverInfo().m_jointFeedbackInJointFrame);
-						}
-						else
-						{
-							btAssert(" RK4Integration is not supported");
-						}
-					}
-				}
-			}
-		}
-	}
-	clearGravity();
+                if (!isSleeping)
+                {
+                    m_scratch_r.resize(bod->getNumLinks() + 1);
+                    m_scratch_v.resize(bod->getNumLinks() + 1);
+                    m_scratch_m.resize(bod->getNumLinks() + 1);
+                    bool isConstraintPass = false;
+                    {
+                        if (!bod->isUsingRK4Integration())
+                        {
+                            bod->computeAccelerationsArticulatedBodyAlgorithmMultiDof(m_solverInfo.m_timeStep,
+                                                                                      m_scratch_r, m_scratch_v, m_scratch_m, isConstraintPass,
+                                                                                      getSolverInfo().m_jointFeedbackInWorldSpace,
+                                                                                      getSolverInfo().m_jointFeedbackInJointFrame);
+                        }
+                        else
+                        {
+                            btAssert(" RK4Integration is not supported");
+                        }
+                    }
+                }
+            }
+        }
+    }
+    clearGravity();
 }
 
 void btDeformableMultiBodyDynamicsWorld::clearGravity()
 {
-	BT_PROFILE("btMultiBody clearGravity");
-	// clear rigid body gravity
-	for (int i = 0; i < m_nonStaticRigidBodies.size(); i++)
-	{
-		btRigidBody* body = m_nonStaticRigidBodies[i];
-		if (body->isActive())
-		{
-			body->clearGravity();
-		}
-	}
-	// clear multibody gravity
-	for (int i = 0; i < this->m_multiBodies.size(); i++)
-	{
-		btMultiBody* bod = m_multiBodies[i];
+    BT_PROFILE("btMultiBody clearGravity");
+    // clear rigid body gravity
+    for (int i = 0; i < m_nonStaticRigidBodies.size(); i++)
+    {
+        btRigidBody* body = m_nonStaticRigidBodies[i];
+        if (body->isActive())
+        {
+            body->clearGravity();
+        }
+    }
+    // clear multibody gravity
+    for (int i = 0; i < this->m_multiBodies.size(); i++)
+    {
+        btMultiBody* bod = m_multiBodies[i];
 
-		bool isSleeping = false;
+        bool isSleeping = false;
 
-		if (bod->getBaseCollider() && bod->getBaseCollider()->getActivationState() == ISLAND_SLEEPING)
-		{
-			isSleeping = true;
-		}
-		for (int b = 0; b < bod->getNumLinks(); b++)
-		{
-			if (bod->getLink(b).m_collider && bod->getLink(b).m_collider->getActivationState() == ISLAND_SLEEPING)
-				isSleeping = true;
-		}
+        if (bod->getBaseCollider() && bod->getBaseCollider()->getActivationState() == ISLAND_SLEEPING)
+        {
+            isSleeping = true;
+        }
+        for (int b = 0; b < bod->getNumLinks(); b++)
+        {
+            if (bod->getLink(b).m_collider && bod->getLink(b).m_collider->getActivationState() == ISLAND_SLEEPING)
+                isSleeping = true;
+        }
 
-		if (!isSleeping)
-		{
-			bod->addBaseForce(-m_gravity * bod->getBaseMass());
+        if (!isSleeping)
+        {
+            bod->addBaseForce(-m_gravity * bod->getBaseMass());
 
-			for (int j = 0; j < bod->getNumLinks(); ++j)
-			{
-				bod->addLinkForce(j, -m_gravity * bod->getLinkMass(j));
-			}
-		}
-	}
+            for (int j = 0; j < bod->getNumLinks(); ++j)
+            {
+                bod->addLinkForce(j, -m_gravity * bod->getLinkMass(j));
+            }
+        }
+    }
 }
 
 void btDeformableMultiBodyDynamicsWorld::beforeSolverCallbacks(btScalar timeStep)
 {
-	if (0 != m_internalTickCallback)
-	{
-		(*m_internalTickCallback)(this, timeStep);
-	}
+    if (0 != m_internalTickCallback)
+    {
+        (*m_internalTickCallback)(this, timeStep);
+    }
 
-	if (0 != m_solverCallback)
-	{
-		(*m_solverCallback)(m_internalTime, this);
-	}
+    if (0 != m_solverCallback)
+    {
+        (*m_solverCallback)(m_internalTime, this);
+    }
 }
 
 void btDeformableMultiBodyDynamicsWorld::afterSolverCallbacks(btScalar timeStep)
 {
-	if (0 != m_solverCallback)
-	{
-		(*m_solverCallback)(m_internalTime, this);
-	}
+    if (0 != m_solverCallback)
+    {
+        (*m_solverCallback)(m_internalTime, this);
+    }
 }
 
 void btDeformableMultiBodyDynamicsWorld::addForce(btSoftBody* psb, btDeformableLagrangianForce* force)
 {
-	btAlignedObjectArray<btDeformableLagrangianForce*>& forces = *m_deformableBodySolver->getLagrangianForceArray();
-	bool added = false;
-	for (int i = 0; i < forces.size(); ++i)
-	{
-		if (forces[i]->getForceType() == force->getForceType())
-		{
-			forces[i]->addSoftBody(psb);
-			added = true;
-			break;
-		}
-	}
-	if (!added)
-	{
-		force->addSoftBody(psb);
-		force->setIndices(m_deformableBodySolver->getIndices());
-		forces.push_back(force);
-	}
+    btAlignedObjectArray<btDeformableLagrangianForce*>& forces = *m_deformableBodySolver->getLagrangianForceArray();
+    bool added = false;
+    for (int i = 0; i < forces.size(); ++i)
+    {
+        if (forces[i]->getForceType() == force->getForceType())
+        {
+            forces[i]->addSoftBody(psb);
+            added = true;
+            break;
+        }
+    }
+    if (!added)
+    {
+        force->addSoftBody(psb);
+        force->setIndices(m_deformableBodySolver->getIndices());
+        forces.push_back(force);
+    }
 }
 
 void btDeformableMultiBodyDynamicsWorld::removeForce(btSoftBody* psb, btDeformableLagrangianForce* force)
 {
-	btAlignedObjectArray<btDeformableLagrangianForce*>& forces = *m_deformableBodySolver->getLagrangianForceArray();
-	int removed_index = -1;
-	for (int i = 0; i < forces.size(); ++i)
-	{
-		if (forces[i]->getForceType() == force->getForceType())
-		{
-			forces[i]->removeSoftBody(psb);
-			if (forces[i]->m_softBodies.size() == 0)
-				removed_index = i;
-			break;
-		}
-	}
-	if (removed_index >= 0)
-		forces.removeAtIndex(removed_index);
+    btAlignedObjectArray<btDeformableLagrangianForce*>& forces = *m_deformableBodySolver->getLagrangianForceArray();
+    int removed_index = -1;
+    for (int i = 0; i < forces.size(); ++i)
+    {
+        if (forces[i]->getForceType() == force->getForceType())
+        {
+            forces[i]->removeSoftBody(psb);
+            if (forces[i]->m_softBodies.size() == 0)
+                removed_index = i;
+            break;
+        }
+    }
+    if (removed_index >= 0)
+        forces.removeAtIndex(removed_index);
 }
 
 void btDeformableMultiBodyDynamicsWorld::removeSoftBodyForce(btSoftBody* psb)
 {
-	btAlignedObjectArray<btDeformableLagrangianForce*>& forces = *m_deformableBodySolver->getLagrangianForceArray();
-	for (int i = 0; i < forces.size(); ++i)
-	{
-		forces[i]->removeSoftBody(psb);
-	}
+    btAlignedObjectArray<btDeformableLagrangianForce*>& forces = *m_deformableBodySolver->getLagrangianForceArray();
+    for (int i = 0; i < forces.size(); ++i)
+    {
+        forces[i]->removeSoftBody(psb);
+    }
 }
 
 void btDeformableMultiBodyDynamicsWorld::removeSoftBody(btSoftBody* body)
 {
-	removeSoftBodyForce(body);
-	m_softBodies.remove(body);
-	btCollisionWorld::removeCollisionObject(body);
-	// force a reinitialize so that node indices get updated.
-	m_deformableBodySolver->reinitialize(m_softBodies, btScalar(-1));
+    removeSoftBodyForce(body);
+    m_softBodies.remove(body);
+    btCollisionWorld::removeCollisionObject(body);
+    // force a reinitialize so that node indices get updated.
+    m_deformableBodySolver->reinitialize(m_softBodies, btScalar(-1));
 }
 
 void btDeformableMultiBodyDynamicsWorld::removeCollisionObject(btCollisionObject* collisionObject)
 {
-	btSoftBody* body = btSoftBody::upcast(collisionObject);
-	if (body)
-		removeSoftBody(body);
-	else
-		btDiscreteDynamicsWorld::removeCollisionObject(collisionObject);
+    btSoftBody* body = btSoftBody::upcast(collisionObject);
+    if (body)
+        removeSoftBody(body);
+    else
+        btDiscreteDynamicsWorld::removeCollisionObject(collisionObject);
 }
 
 int btDeformableMultiBodyDynamicsWorld::stepSimulation(btScalar timeStep, int maxSubSteps, btScalar fixedTimeStep)
 {
-	startProfiling(timeStep);
+    startProfiling(timeStep);
 
-	int numSimulationSubSteps = 0;
+    int numSimulationSubSteps = 0;
 
-	if (maxSubSteps)
-	{
-		//fixed timestep with interpolation
-		m_fixedTimeStep = fixedTimeStep;
-		m_localTime += timeStep;
-		if (m_localTime >= fixedTimeStep)
-		{
-			numSimulationSubSteps = int(m_localTime / fixedTimeStep);
-			m_localTime -= numSimulationSubSteps * fixedTimeStep;
-		}
-	}
-	else
-	{
-		//variable timestep
-		fixedTimeStep = timeStep;
-		m_localTime = m_latencyMotionStateInterpolation ? 0 : timeStep;
-		m_fixedTimeStep = 0;
-		if (btFuzzyZero(timeStep))
-		{
-			numSimulationSubSteps = 0;
-			maxSubSteps = 0;
-		}
-		else
-		{
-			numSimulationSubSteps = 1;
-			maxSubSteps = 1;
-		}
-	}
+    if (maxSubSteps)
+    {
+        //fixed timestep with interpolation
+        m_fixedTimeStep = fixedTimeStep;
+        m_localTime += timeStep;
+        if (m_localTime >= fixedTimeStep)
+        {
+            numSimulationSubSteps = int(m_localTime / fixedTimeStep);
+            m_localTime -= numSimulationSubSteps * fixedTimeStep;
+        }
+    }
+    else
+    {
+        //variable timestep
+        fixedTimeStep = timeStep;
+        m_localTime = m_latencyMotionStateInterpolation ? 0 : timeStep;
+        m_fixedTimeStep = 0;
+        if (btFuzzyZero(timeStep))
+        {
+            numSimulationSubSteps = 0;
+            maxSubSteps = 0;
+        }
+        else
+        {
+            numSimulationSubSteps = 1;
+            maxSubSteps = 1;
+        }
+    }
 
-	//process some debugging flags
-	if (getDebugDrawer())
-	{
-		btIDebugDraw* debugDrawer = getDebugDrawer();
-		gDisableDeactivation = (debugDrawer->getDebugMode() & btIDebugDraw::DBG_NoDeactivation) != 0;
-	}
-	if (numSimulationSubSteps)
-	{
-		//clamp the number of substeps, to prevent simulation grinding spiralling down to a halt
-		int clampedSimulationSteps = (numSimulationSubSteps > maxSubSteps) ? maxSubSteps : numSimulationSubSteps;
+    //process some debugging flags
+    if (getDebugDrawer())
+    {
+        btIDebugDraw* debugDrawer = getDebugDrawer();
+        gDisableDeactivation = (debugDrawer->getDebugMode() & btIDebugDraw::DBG_NoDeactivation) != 0;
+    }
+    if (numSimulationSubSteps)
+    {
+        //clamp the number of substeps, to prevent simulation grinding spiralling down to a halt
+        int clampedSimulationSteps = (numSimulationSubSteps > maxSubSteps) ? maxSubSteps : numSimulationSubSteps;
 
-		saveKinematicState(fixedTimeStep * clampedSimulationSteps);
+        saveKinematicState(fixedTimeStep * clampedSimulationSteps);
 
-		for (int i = 0; i < clampedSimulationSteps; i++)
-		{
-			internalSingleStepSimulation(fixedTimeStep);
-			synchronizeMotionStates();
-		}
-	}
-	else
-	{
-		synchronizeMotionStates();
-	}
+        for (int i = 0; i < clampedSimulationSteps; i++)
+        {
+            internalSingleStepSimulation(fixedTimeStep);
+            synchronizeMotionStates();
+        }
+    }
+    else
+    {
+        synchronizeMotionStates();
+    }
 
-	clearForces();
+    clearForces();
 
 #ifndef BT_NO_PROFILE
-	CProfileManager::Increment_Frame_Counter();
+    CProfileManager::Increment_Frame_Counter();
 #endif  //BT_NO_PROFILE
 
-	return numSimulationSubSteps;
+    return numSimulationSubSteps;
 }

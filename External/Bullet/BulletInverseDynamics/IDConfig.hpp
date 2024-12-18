@@ -1,5 +1,5 @@
 ///@file Configuration for Inverse Dynamics Library,
-///	  such as choice of linear algebra library and underlying scalar type
+///      such as choice of linear algebra library and underlying scalar type
 #ifndef IDCONFIG_HPP_
 #define IDCONFIG_HPP_
 
@@ -79,7 +79,7 @@ typedef btScalar idScalar;
 template <typename T>
 struct idArray
 {
-	typedef b3AlignedObjectArray<T> type;
+    typedef b3AlignedObjectArray<T> type;
 };
 typedef int idArrayIdx;
 #define ID_DECLARE_ALIGNED_ALLOCATOR() B3_DECLARE_ALIGNED_ALLOCATOR()
@@ -90,7 +90,7 @@ typedef int idArrayIdx;
 template <typename T>
 struct idArray
 {
-	typedef btAlignedObjectArray<T> type;
+    typedef btAlignedObjectArray<T> type;
 };
 typedef int idArrayIdx;
 #define ID_DECLARE_ALIGNED_ALLOCATOR() BT_DECLARE_ALIGNED_ALLOCATOR()

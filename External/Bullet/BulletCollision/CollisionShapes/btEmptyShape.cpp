@@ -19,7 +19,7 @@ subject to the following restrictions:
 
 btEmptyShape::btEmptyShape() : btConcaveShape()
 {
-	m_shapeType = EMPTY_SHAPE_PROXYTYPE;
+    m_shapeType = EMPTY_SHAPE_PROXYTYPE;
 }
 
 btEmptyShape::~btEmptyShape()
@@ -29,14 +29,14 @@ btEmptyShape::~btEmptyShape()
 ///getAabb's default implementation is brute force, expected derived classes to implement a fast dedicated version
 void btEmptyShape::getAabb(const btTransform& t, btVector3& aabbMin, btVector3& aabbMax) const
 {
-	btVector3 margin(getMargin(), getMargin(), getMargin());
+    btVector3 margin(getMargin(), getMargin(), getMargin());
 
-	aabbMin = t.getOrigin() - margin;
+    aabbMin = t.getOrigin() - margin;
 
-	aabbMax = t.getOrigin() + margin;
+    aabbMax = t.getOrigin() + margin;
 }
 
 void btEmptyShape::calculateLocalInertia(btScalar, btVector3&) const
 {
-	btAssert(0);
+    btAssert(0);
 }

@@ -1,4 +1,4 @@
-//this will create a gaussian blur effect
+// this will create a guassian blur effect
 
 cbuffer SettingsBuffer : register(b0)
 {
@@ -22,7 +22,7 @@ struct VS_OUTPUT
     float2 texCoord : TEXCOORD;
 };
 
-static const float gaussianWeight[5] =
+static const float gaussianWeights[5] =
 {
     0.227027f,
     0.1945946f,
@@ -42,25 +42,25 @@ VS_OUTPUT VS(VS_INPUT input)
 float4 HorizontalBlurPS(VS_OUTPUT input) : SV_Target
 {
     float2 offset = float2(2.0f / screenWidth, 0.0f);
-    float4 finalColor = textureMap.Sample(textureSampler, input.texCoord) * gaussianWeight[0];
-    for (int i = 0; i < 5; ++i)
+    float4 finalColor = textureMap.Sample(textureSampler, input.texCoord) * gaussianWeights[0];
+    for (int i = 1; i < 5; ++i)
     {
-        finalColor += textureMap.Sample(textureSampler, input.texCoord + (offset * i)) * gaussianWeight[i];
-        finalColor += textureMap.Sample(textureSampler, input.texCoord - (offset * i)) * gaussianWeight[i];
+        finalColor += textureMap.Sample(textureSampler, input.texCoord + (offset * i)) * gaussianWeights[i];
+        finalColor += textureMap.Sample(textureSampler, input.texCoord - (offset * i)) * gaussianWeights[i];
     }
-    
+
     return finalColor * multiplier;
 }
 
 float4 VerticalBlurPS(VS_OUTPUT input) : SV_Target
 {
-    float2 offset = float2(0.0f, 2.0f / screenHeight);
-    float4 finalColor = textureMap.Sample(textureSampler, input.texCoord) * gaussianWeight[0];
-    for (int i = 0; i < 5; ++i)
+    float2 offset = float2(0.0f ,2.0f / screenHeight);
+    float4 finalColor = textureMap.Sample(textureSampler, input.texCoord) * gaussianWeights[0];
+    for (int i = 1; i < 5; ++i)
     {
-        finalColor += textureMap.Sample(textureSampler, input.texCoord + (offset * i)) * gaussianWeight[i];
-        finalColor += textureMap.Sample(textureSampler, input.texCoord - (offset * i)) * gaussianWeight[i];
+        finalColor += textureMap.Sample(textureSampler, input.texCoord + (offset * i)) * gaussianWeights[i];
+        finalColor += textureMap.Sample(textureSampler, input.texCoord - (offset * i)) * gaussianWeights[i];
     }
-    
+
     return finalColor * multiplier;
 }

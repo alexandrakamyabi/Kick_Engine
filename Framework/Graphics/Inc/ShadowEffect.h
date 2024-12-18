@@ -3,54 +3,53 @@
 #include "Camera.h"
 #include "ConstantBuffer.h"
 #include "LightTypes.h"
-#include "PixelShader_D3D11.h"
-#include "VertexShader_D3D11.h"
+#include "PixelShader.h"
+#include "VertexShader.h"
 #include "RenderTarget.h"
 
 namespace Kick_Engine::Graphics
 {
-	struct RenderObject;
+    class RenderObject;
 
-	class ShadowEffect
-	{
-	public:
-		void Initialize();
-		void Terminate();
-		
-		void Begin();
-		void End();
+    class ShadowEffect
+    {
+    public:
+        void Initialize();
+        void Terminate();
 
-		void Render(const RenderObject& renderObject);
+        void Begin();
+        void End();
 
-		void DebugUI();
+        void Render(const RenderObject& renderObject);
 
-		void SetDirectionalLight(const DirectionalLight& directionalLight);
-		void SetFocus(const Math::Vector3& focusPosition);
-		void SetSize(float size);
+        void DebugUI();
 
-		const Camera& GetLightCamera() const;
-		const Texture& GetDepthMap() const;
+        void SetDirectionalLight(const DirectionalLight& directionalLight);
+        void SetFocus(const Kick_Math::Vector3& focusPosition);
+        void SetSize(float size);
+        const Camera& GetLightCamera() const;
+        const Texture& GetDepthMap() const;
+        void UpdateLightCamera();
 
-	private:
-		void UpdateLightCamera();
+    private:
+        struct TransformData
+        {
+            Kick_Math::Matrix4 wvp;
+        };
 
-		struct TransformData
-		{
-			Math::Matrix4 wvp;
-		};
+        using TransformBuffer = TypedConstantBuffer<TransformData>;
+        TransformBuffer mTransformBuffer;
 
-		using TransformBuffer = TypedConstantBuffer<TransformData>;
-		TransformBuffer mTransformBuffer;
+        VertexShader mVertexShader;
+        PixelShader mPixelShader;
 
-		VertexShader_D3D11 mVertexShader;
-		PixelShader_D3D11 mPixelShader;
+        Camera mLightCamera;
+        RenderTarget mDepthMapRenderTarget;
 
-		Camera mLightCamera;
-		RenderTarget mDepthMapRenderTarget;
+        const DirectionalLight* mDirectionalLight = nullptr;
 
-		const DirectionalLight* mDirectionalLight = nullptr;
 
-		Math::Vector3 mFocusPosition = Math::Vector3::Zero;
-		float mSize = 7.0f;
-	};
+        Kick_Math::Vector3 mFocusPosition = Kick_Math::Vector3::Zero;
+        float mSize = 100.0f;
+    };
 }

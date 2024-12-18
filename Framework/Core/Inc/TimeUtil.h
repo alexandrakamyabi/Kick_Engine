@@ -2,6 +2,6 @@
 
 namespace Kick_Engine::Core::TimeUtil
 {
-	float GetTime();
-	float GetDeltaTime();
+    float GetTime();
+    float GetDeltaTime();
 }

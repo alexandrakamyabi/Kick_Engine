@@ -2,74 +2,56 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Inc">
-      <UniqueIdentifier>{4c356e82-8ca0-4471-a1f8-56dee3edec3a}</UniqueIdentifier>
+      <UniqueIdentifier>{706ceeff-5508-4923-97dc-6504881c5aed}</UniqueIdentifier>
     </Filter>
     <Filter Include="Src">
-      <UniqueIdentifier>{ce3a4a84-95d7-443c-a5eb-026927752301}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Inc\Particles">
-      <UniqueIdentifier>{5beefbe0-f704-4c13-b002-7246cf834dc0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Src\Particles">
-      <UniqueIdentifier>{fcb8eef1-2386-4474-b7a9-42d781783c6a}</UniqueIdentifier>
+      <UniqueIdentifier>{95a81481-fe92-47f6-b011-0d92e992370d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Inc\Common.h">
-      <Filter>Inc</Filter>
-    </ClInclude>
     <ClInclude Include="Inc\Physics.h">
       <Filter>Inc</Filter>
     </ClInclude>
-    <ClInclude Include="Inc\PhysicsObject.h">
-      <Filter>Inc</Filter>
-    </ClInclude>
-    <ClInclude Include="Inc\PhysicsWorld.h">
+    <ClInclude Include="Inc\Common.h">
       <Filter>Inc</Filter>
     </ClInclude>
     <ClInclude Include="Src\Precompiled.h">
       <Filter>Src</Filter>
     </ClInclude>
-    <ClInclude Include="Inc\CollisionShape.h">
+    <ClInclude Include="Inc\PhysicsWorld.h">
+      <Filter>Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\PhysicsObject.h">
       <Filter>Inc</Filter>
     </ClInclude>
     <ClInclude Include="Inc\RigidBody.h">
       <Filter>Inc</Filter>
     </ClInclude>
-    <ClInclude Include="Inc\PhysicsDebugDrawer.h">
+    <ClInclude Include="Inc\CollisionShape.h">
       <Filter>Inc</Filter>
     </ClInclude>
-    <ClInclude Include="Inc\Particle.h">
-      <Filter>Inc\Particles</Filter>
-    </ClInclude>
-    <ClInclude Include="Inc\ParticleSystem.h">
-      <Filter>Inc\Particles</Filter>
+    <ClInclude Include="Inc\PhysicsDebugDraw.h">
+      <Filter>Inc</Filter>
     </ClInclude>
     <ClInclude Include="Inc\SoftBody.h">
       <Filter>Inc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Src\PhysicsWorld.cpp">
-      <Filter>Src</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Precompiled.cpp">
       <Filter>Src</Filter>
     </ClCompile>
-    <ClCompile Include="Src\CollisionShape.cpp">
+    <ClCompile Include="Src\PhysicsWorld.cpp">
       <Filter>Src</Filter>
     </ClCompile>
     <ClCompile Include="Src\RigidBody.cpp">
       <Filter>Src</Filter>
     </ClCompile>
-    <ClCompile Include="Src\PhysicsDebugDrawer.cpp">
+    <ClCompile Include="Src\CollisionShape.cpp">
       <Filter>Src</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Particle.cpp">
-      <Filter>Src\Particles</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\ParticleSystem.cpp">
-      <Filter>Src\Particles</Filter>
+    <ClCompile Include="Src\PhysicsDebugDraw.cpp">
+      <Filter>Src</Filter>
     </ClCompile>
     <ClCompile Include="Src\SoftBody.cpp">
       <Filter>Src</Filter>

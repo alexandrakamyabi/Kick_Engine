@@ -24,18 +24,18 @@ struct btBroadphasePair;
 class btOverlappingPairCallback
 {
 protected:
-	btOverlappingPairCallback() {}
+    btOverlappingPairCallback() {}
 
 public:
-	virtual ~btOverlappingPairCallback()
-	{
-	}
+    virtual ~btOverlappingPairCallback()
+    {
+    }
 
-	virtual btBroadphasePair* addOverlappingPair(btBroadphaseProxy* proxy0, btBroadphaseProxy* proxy1) = 0;
+    virtual btBroadphasePair* addOverlappingPair(btBroadphaseProxy* proxy0, btBroadphaseProxy* proxy1) = 0;
 
-	virtual void* removeOverlappingPair(btBroadphaseProxy* proxy0, btBroadphaseProxy* proxy1, btDispatcher* dispatcher) = 0;
+    virtual void* removeOverlappingPair(btBroadphaseProxy* proxy0, btBroadphaseProxy* proxy1, btDispatcher* dispatcher) = 0;
 
-	virtual void removeOverlappingPairsContainingProxy(btBroadphaseProxy* proxy0, btDispatcher* dispatcher) = 0;
+    virtual void removeOverlappingPairsContainingProxy(btBroadphaseProxy* proxy0, btDispatcher* dispatcher) = 0;
 };
 
 #endif  //OVERLAPPING_PAIR_CALLBACK_H

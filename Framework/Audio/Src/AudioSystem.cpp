@@ -7,73 +7,75 @@ using namespace Kick_Engine::Audio;
 
 namespace
 {
-	std::unique_ptr<AudioSystem> sAudioSystem;
+    std::unique_ptr<AudioSystem> sAudioSystem;
 }
 
 void AudioSystem::StaticInitialize()
 {
-	ASSERT(sAudioSystem == nullptr, "AudioSystem: is already initialized");
-	sAudioSystem = std::make_unique<AudioSystem>();
-	sAudioSystem->Initialize();
+    ASSERT(sAudioSystem == nullptr, "AudioSystem: is already initialized");
+    sAudioSystem = std::make_unique<AudioSystem>();
+    sAudioSystem->Initialize();
 }
 
 void AudioSystem::StaticTerminate()
 {
-	if (sAudioSystem != nullptr)
-	{
-		sAudioSystem->Terminate();
-		sAudioSystem.reset();
-	}
+    if (sAudioSystem != nullptr)
+    {
+        sAudioSystem->Terminate();
+        sAudioSystem.reset();
+    }
 }
 
 AudioSystem* AudioSystem::Get()
 {
-	ASSERT(sAudioSystem != nullptr, "AudioSystem: is not initialized");
-	return sAudioSystem.get();
+    ASSERT(sAudioSystem != nullptr, "AudioSystem: is not initialized");
+    return sAudioSystem.get();
 }
 
 AudioSystem::AudioSystem()
+    :mAudioEngine(nullptr)
 {
 }
 
 AudioSystem::~AudioSystem()
 {
-	ASSERT(sAudioSystem == nullptr, "AudioSystem: terminate must be called");
+    ASSERT(sAudioSystem == nullptr, "AudioSystem: terminate must be called");
 }
 
 void AudioSystem::Initialize()
 {
-	AUDIO_ENGINE_FLAGS flags = AudioEngine_Default;
+    AUDIO_ENGINE_FLAGS flags = AudioEngine_Default;
 #if defined(_DEBUG)
-	flags |= AudioEngine_Debug;
+    flags |= AudioEngine_Debug;
 #endif
 
-		mAudioEngine = new AudioEngine(flags);
+    mAudioEngine = new AudioEngine(flags);
 }
 
 void AudioSystem::Terminate()
 {
-	if (mAudioEngine != nullptr)
-	{
-		delete mAudioEngine;
-		mAudioEngine = nullptr;
-	}
+    if (mAudioEngine != nullptr)
+    {
+        delete mAudioEngine;
+        mAudioEngine = nullptr;
+    }
 }
 
 void AudioSystem::Update()
 {
-	if (mAudioEngine != nullptr && mAudioEngine->Update())
-	{
-		if (mAudioEngine->IsCriticalError())
-		{
-			LOG("AudioSystem: critical error, shutting down");
-			Terminate();
-		}
-	}
+    if (mAudioEngine != nullptr && mAudioEngine->Update())
+    {
+        // if no audio device active
+        if (mAudioEngine->IsCriticalError())
+        {
+            LOG("AudioSystem: critical error, shutting down");
+            Terminate();
+        }
+    }
 }
 
 void AudioSystem::Suspend()
 {
-	ASSERT(mAudioEngine != nullptr, "AudioSystem: audio engine is not available");
-	mAudioEngine->Suspend();
+    ASSERT(sAudioSystem != nullptr, "AudioSystem: is not availble");
+    mAudioEngine->Suspend();
 }

@@ -4,18 +4,18 @@
 
 namespace Kick_Engine::Graphics
 {
-	struct Bone
-	{
-		std::string name;
-		int index = -1;
+    struct Bone
+    {
+        std::string name;
+        int index = -1;
 
-		Bone* parent = nullptr;
-		int parentIndex = -1;
+        Bone* parent = nullptr;
+        int parentIndex = -1;
 
-		std::vector<Bone*> children;
-		std::vector<int> childrenIndices;
+        std::vector<Bone*> children;
+        std::vector<int> childrenIndices;
 
-		Math::Matrix4 toParentTransform;
-		Math::Matrix4 offsetTransform;
-	};
+        Kick_Math::Matrix4 toParentTransform;
+        Kick_Math::Matrix4 offsetTransform;
+    };
 }

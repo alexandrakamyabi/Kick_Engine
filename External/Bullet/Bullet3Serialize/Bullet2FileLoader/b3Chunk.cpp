@@ -27,43 +27,43 @@ using namespace bParse;
 // ----------------------------------------------------- //
 short ChunkUtils::swapShort(short sht)
 {
-	B3_SWITCH_SHORT(sht);
-	return sht;
+    B3_SWITCH_SHORT(sht);
+    return sht;
 }
 
 // ----------------------------------------------------- //
 int ChunkUtils::swapInt(int inte)
 {
-	B3_SWITCH_INT(inte);
-	return inte;
+    B3_SWITCH_INT(inte);
+    return inte;
 }
 
 // ----------------------------------------------------- //
 b3Long64 ChunkUtils::swapLong64(b3Long64 lng)
 {
-	B3_SWITCH_LONGINT(lng);
-	return lng;
+    B3_SWITCH_LONGINT(lng);
+    return lng;
 }
 
 // ----------------------------------------------------- //
 int ChunkUtils::getOffset(int flags)
 {
-	// if the file is saved in a
-	// different format, get the
-	// file's chunk size
-	int res = CHUNK_HEADER_LEN;
+    // if the file is saved in a
+    // different format, get the
+    // file's chunk size
+    int res = CHUNK_HEADER_LEN;
 
-	if (VOID_IS_8)
-	{
-		if (flags & FD_BITS_VARIES)
-			res = sizeof(bChunkPtr4);
-	}
-	else
-	{
-		if (flags & FD_BITS_VARIES)
-			res = sizeof(bChunkPtr8);
-	}
-	return res;
+    if (VOID_IS_8)
+    {
+        if (flags & FD_BITS_VARIES)
+            res = sizeof(bChunkPtr4);
+    }
+    else
+    {
+        if (flags & FD_BITS_VARIES)
+            res = sizeof(bChunkPtr8);
+    }
+    return res;
 }
 
 //eof

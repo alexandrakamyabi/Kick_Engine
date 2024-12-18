@@ -1,123 +1,126 @@
 #include "Precompiled.h"
 #include "GaussianBlurEffect.h"
-#include "GraphicsSystem.h"
-#include "Camera.h"
-#include "RenderObject.h"
-#include "VertexTypes.h"
 
 using namespace Kick_Engine;
 using namespace Kick_Engine::Graphics;
 
-void GaussianBlurEffect::Initialize(const std::filesystem::path& filename)
+#include "Camera.h"
+#include "GraphicsSystem.h"
+#include "RenderObject.h"
+#include "VertexTypes.h"
+
+void GaussianBlurEffect::Initialize()
 {
-	Graphics_D3D11* gs = GraphicsSystem::Get();
-	const float screenWidth = gs->GetBackBufferWidth();
-	const float screenHeight = gs->GetBackBufferHeight();
-	mHorizontalBlurRenderTexture.Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U8);
-	mVerticalBlurRenderTexture.Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U8);
+    GraphicsSystem* gs = GraphicsSystem::Get();
+    const float screenWidth = gs->GetBackBufferWidth();
+    const float screenHeight = gs->GetBackBufferHeight();
+    mHorizontalBlurRenderTarget.Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U8);
+    mVerticalBlurRenderTarget.Initialize(screenWidth, screenHeight, RenderTarget::Format::RGBA_U8);
 
-	mSettingsBuffer.Initialize();
-	mSampler.Initialize(Sampler::Filter::Linear, Sampler::AddressMode::Wrap);
+    std::filesystem::path shaderFile = "../../Assets/Shaders/GaussianBlur.fx";
+    mVertexShader.Initialize<VertexPX>(shaderFile);
+    mHorizontalBlurPixelShader.Initialize(shaderFile, "HorizontalBlurPS");
+    mVerticalBlurPixelShader.Initialize(shaderFile, "VerticalBlurPS");
 
-	mVertexShader.Initialize<VertexPX>(filename);
-	mHorizontalBlurPS.Initialize(filename, "HorizontalBlurPS");
-	mVerticalBlurPS.Initialize(filename, "VerticalBlurPS");
+    mSettingsBuffer.Initialize();
+    mSampler.Initialize(Sampler::Filter::Linear, Sampler::AddressMode::Wrap);
 }
 
 void GaussianBlurEffect::Terminate()
 {
-	mVerticalBlurPS.Terminate();
-	mHorizontalBlurPS.Terminate();
-	mVertexShader.Terminate();
-	mSampler.Terminate();
-	mSettingsBuffer.Terminate();
-	mVerticalBlurRenderTexture.Terminate();
-	mHorizontalBlurRenderTexture.Terminate();
+    mSampler.Terminate();
+    mSettingsBuffer.Terminate();
+    mVerticalBlurPixelShader.Terminate();
+    mHorizontalBlurPixelShader.Terminate();
+    mVertexShader.Terminate();
+    mVerticalBlurRenderTarget.Terminate();
+    mHorizontalBlurRenderTarget.Terminate();
 }
 
 void GaussianBlurEffect::Begin()
 {
-	mVertexShader.Bind();
+    mVertexShader.Bind();
 
-	Graphics_D3D11* gs = GraphicsSystem::Get(); 
-	SettingsData data;
-	data.screenWidth = gs->GetBackBufferWidth();
-	data.screenHeight = gs->GetBackBufferHeight();
-	data.multiplier = mBlurSaturation;
-	mSettingsBuffer.Update(data);
-	mSettingsBuffer.BindPS(0);
+    GraphicsSystem* gs = GraphicsSystem::Get();
 
-	mSampler.BindPS(0);
+
+    SettingsData data;
+    data.screenWidth = gs->GetBackBufferWidth();
+    data.screenHeight = gs->GetBackBufferHeight();
+    data.multiplier = mBlurSaturation;
+    mSettingsBuffer.Update(data);
+    mSettingsBuffer.BindPS(0);
+
+    mSampler.BindPS(0);
 }
 
 void GaussianBlurEffect::End()
 {
-	Graphics_D3D11* gs = GraphicsSystem::Get();
-	gs->ResetRenderTarget();
-	gs->ResetViewport();
+    GraphicsSystem* gs = GraphicsSystem::Get();
+    gs->ResetRenderTarget();
+    gs->ResetViewport();
 }
 
 void GaussianBlurEffect::Render(const RenderObject& renderObject)
 {
-	Graphics_D3D11* gs = GraphicsSystem::Get();
+    GraphicsSystem* gs = GraphicsSystem::Get();
+    mHorizontalBlurRenderTarget.BeginRender();
+        mSourceTexture->BindPS(0);
+        mHorizontalBlurPixelShader.Bind();
+        renderObject.meshBuffer.Render();
+        Texture::UnbindPS(0);
+    mHorizontalBlurRenderTarget.EndRender();
 
-	mHorizontalBlurRenderTexture.BeginRender();
-		mSourceTexture->BindPS(0);
-		mHorizontalBlurPS.Bind();
-		renderObject.meshBuffer.Render();
-		Texture::UnbindPS(0);
-	mHorizontalBlurRenderTexture.EndRender();
+    for (uint32_t i = 1; i < mBlurIterrations; ++i)
+    {
+        mVerticalBlurRenderTarget.BeginRender();
+            mHorizontalBlurRenderTarget.BindPS(0);
+            mVerticalBlurPixelShader.Bind();
+            renderObject.meshBuffer.Render();
+            Texture::UnbindPS(0);
+        mVerticalBlurRenderTarget.EndRender();
 
-	for (uint32_t i = 1; i < mBlurIterations; i++)
-	{
-		mVerticalBlurRenderTexture.BeginRender();
-			mHorizontalBlurRenderTexture.BindPS(0);
-			mVerticalBlurPS.Bind();
-			renderObject.meshBuffer.Render();
-			Texture::UnbindPS(0);
-		mVerticalBlurRenderTexture.EndRender();
+        mHorizontalBlurRenderTarget.BeginRender();
+            mVerticalBlurRenderTarget.BindPS(0);
+            mHorizontalBlurPixelShader.Bind();
+            renderObject.meshBuffer.Render();
+            Texture::UnbindPS(0);
+        mVerticalBlurRenderTarget.EndRender();
+    }
 
-		mHorizontalBlurRenderTexture.BeginRender();
-			mVerticalBlurRenderTexture.BindPS(0);
-			mHorizontalBlurPS.Bind();
-			renderObject.meshBuffer.Render();
-			Texture::UnbindPS(0);
-		mHorizontalBlurRenderTexture.EndRender();
-	}
-
-	mHorizontalBlurRenderTexture.BeginRender();
-		mVerticalBlurRenderTexture.BindPS(0);
-		mHorizontalBlurPS.Bind();
-		renderObject.meshBuffer.Render();
-		Texture::UnbindPS(0);
-	mHorizontalBlurRenderTexture.EndRender();
+    mVerticalBlurRenderTarget.BeginRender();
+        mHorizontalBlurRenderTarget.BindPS(0);
+        mVerticalBlurPixelShader.Bind();
+        renderObject.meshBuffer.Render();
+        Texture::UnbindPS(0);
+    mVerticalBlurRenderTarget.EndRender();
 }
 
 void GaussianBlurEffect::DebugUI()
 {
-	if (ImGui::CollapsingHeader("GaussianBlurEffect", ImGuiTreeNodeFlags_DefaultOpen))
-	{
-		ImGui::DragInt("BlurIterations", &mBlurIterations, 1, 1, 100);
-		ImGui::DragFloat("BlurSaturation", &mBlurSaturation, 0.001f, 0.01f, 10.0f);
-	}
+    if (ImGui::CollapsingHeader("GaussianBlurEffect", ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        ImGui::DragInt("BlurIterations", &mBlurIterrations, 1, 1, 100);
+        ImGui::DragFloat("BlurSaturation", &mBlurSaturation, 0.001f, 1.0f, 10.0f);
+    }
 }
 
 void GaussianBlurEffect::SetSourceTexture(const Texture& texture)
 {
-	mSourceTexture = &texture;
+    mSourceTexture = &texture;
 }
 
 const Texture& GaussianBlurEffect::GetHorizontalBlurTexture() const
 {
-	return mHorizontalBlurRenderTexture;
+    return mHorizontalBlurRenderTarget;
 }
 
 const Texture& GaussianBlurEffect::GetVerticalBlurTexture() const
 {
-	return mVerticalBlurRenderTexture;
+    return mVerticalBlurRenderTarget;
 }
 
 const Texture& GaussianBlurEffect::GetResultTexture() const
 {
-	return mVerticalBlurRenderTexture;
+    return mVerticalBlurRenderTarget;
 }

@@ -1,11 +1,12 @@
 #pragma once
 
-//Framework Headers
+// framework headers
 #include <Math/Inc/Kick_Math.h>
 #include <Core/Inc/Core.h>
-#include <Graphics/Inc/Graphics.h>
+#include <Graphics/Inc/Transform.h>
+#include <Graphics/Inc/Colors.h>
 
-//Bullet Files
+// bullet files
 #include <Bullet/btBulletCollisionCommon.h>
 #include <Bullet/btBulletDynamicsCommon.h>
 #include <Bullet/BulletSoftBody/btSoftRigidDynamicsWorld.h>
@@ -13,48 +14,57 @@
 #include <Bullet/BulletSoftBody/btSoftBodyRigidBodyCollisionConfiguration.h>
 #include <Bullet/BulletSoftBody/btSoftBodySolvers.h>
 
-#define USE_SOFT_BODY
-#define USE_PHYSICS_SERVICE
-
-//Helper Functions
+// functions
 template<class T>
 inline void SafeDelete(T*& ptr)
 {
-	if (ptr)
-	{
-		delete ptr;
-		ptr = nullptr;
-	}
+    if (ptr != nullptr)
+    {
+        delete ptr;
+        ptr = nullptr;
+    }
 }
 
-//Math Helper Functions
-inline btVector3 ConvertTobtVector3(const Kick_Engine::Math::Vector3& v)
+inline btVector3 ConvertTobtVector3(const Kick_Engine::Kick_Math::Vector3& v)
 {
-	return btVector3(v.x, v.y, v.z);
+    return btVector3(v.x, v.y, v.z);
 }
 
-inline btQuaternion ConvertTobtQuaternion(const Kick_Engine::Math::Quaternion& q)
+inline Kick_Engine::Kick_Math::Vector3 ConvertToVector3(const btVector3& v)
 {
-	return btQuaternion(q.x, q.y, q.z, q.w);
+    return {
+        static_cast<float>(v.getX()),
+        static_cast<float>(v.getY()),
+        static_cast<float>(v.getZ())
+    };
 }
 
-inline btTransform ConvertTobtTransform(const Kick_Engine::Graphics::Transform& transform)
+inline Kick_Engine::Color ConvertToColor(const btVector3& v)
 {
-	return btTransform(ConvertTobtQuaternion(transform.rotation), ConvertTobtVector3(transform.position));
+    return {
+        static_cast<float>(v.getX()),
+        static_cast<float>(v.getY()),
+        static_cast<float>(v.getZ()),
+        1.0f
+    };
 }
 
-inline Kick_Engine::Math::Vector3 ConvertToVector3(const btVector3& v)
+inline btQuaternion ConvertTobtQuaternion(const Kick_Engine::Kick_Math::Quaternion& q)
 {
-	return { v.getX(), v.getY(), v.getZ() };
+    return btQuaternion(q.x, q.y, q.z, q.w);
 }
 
-inline Kick_Engine::Math::Quaternion ConvertToQuaternion(const btQuaternion& q)
+inline Kick_Engine::Kick_Math::Quaternion ConvertToQuaternion(const btQuaternion& q)
 {
-	return { q.getX(), q.getY(), q.getZ(), q.getW()};
+    return {
+        static_cast<float>(q.getX()),
+        static_cast<float>(q.getY()),
+        static_cast<float>(q.getZ()),
+        static_cast<float>(q.getW())
+    };
 }
 
-inline void ApplybtTransform(Kick_Engine::Graphics::Transform& transform, const btTransform& t)
+inline btTransform ConvertTobtTransform(const Kick_Engine::Graphics::Transform& trans)
 {
-	transform.position = ConvertToVector3(t.getOrigin());
-	transform.rotation = ConvertToQuaternion(t.getRotation());
+    return btTransform(ConvertTobtQuaternion(trans.rotation), ConvertTobtVector3(trans.position));
 }

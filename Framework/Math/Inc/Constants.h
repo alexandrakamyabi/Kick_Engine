@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Kick_Engine::Math::Constants
+namespace Kick_Engine::Kick_Math::Constants
 {
     constexpr const float Pi = 3.1415926535f;
     constexpr const float HalfPi = Pi * 0.5f;

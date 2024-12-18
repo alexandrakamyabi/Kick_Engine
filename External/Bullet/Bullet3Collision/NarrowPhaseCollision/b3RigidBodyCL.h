@@ -22,7 +22,7 @@ subject to the following restrictions:
 
 inline float b3GetInvMass(const b3RigidBodyData& body)
 {
-	return body.m_invMass;
+    return body.m_invMass;
 }
 
 #endif  //B3_RIGID_BODY_CL

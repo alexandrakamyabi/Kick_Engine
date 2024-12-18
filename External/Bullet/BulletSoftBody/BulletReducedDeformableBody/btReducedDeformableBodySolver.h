@@ -35,14 +35,14 @@ class btReducedDeformableBodySolver : public btDeformableBodySolver
   }
 
   // resize/clear data structures
-	virtual void reinitialize(const btAlignedObjectArray<btSoftBody*>& bodies, btScalar dt);
+    virtual void reinitialize(const btAlignedObjectArray<btSoftBody*>& bodies, btScalar dt);
 
   virtual void predictMotion(btScalar solverdt);
 
   virtual void applyTransforms(btScalar timeStep);
 
   // set up contact constraints
-	virtual void setConstraints(const btContactSolverInfo& infoGlobal);
+    virtual void setConstraints(const btContactSolverInfo& infoGlobal);
 
   // solve all constraints (fixed and contact)
   virtual btScalar solveContactConstraints(btCollisionObject** deformableBodies, int numDeformableBodies, const btContactSolverInfo& infoGlobal);

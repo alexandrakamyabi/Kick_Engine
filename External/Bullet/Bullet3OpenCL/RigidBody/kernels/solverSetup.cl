@@ -63,112 +63,112 @@ typedef unsigned char u8;
 
 
 ///////////////////////////////////////
-//	Vector
+//    Vector
 ///////////////////////////////////////
 __inline
 float fastDiv(float numerator, float denominator)
 {
-	return native_divide(numerator, denominator);	
-//	return numerator/denominator;	
+    return native_divide(numerator, denominator);    
+//    return numerator/denominator;    
 }
 
 __inline
 float4 fastDiv4(float4 numerator, float4 denominator)
 {
-	return native_divide(numerator, denominator);	
+    return native_divide(numerator, denominator);    
 }
 
 __inline
 float fastSqrtf(float f2)
 {
-	return native_sqrt(f2);
-//	return sqrt(f2);
+    return native_sqrt(f2);
+//    return sqrt(f2);
 }
 
 __inline
 float fastRSqrt(float f2)
 {
-	return native_rsqrt(f2);
+    return native_rsqrt(f2);
 }
 
 __inline
 float fastLength4(float4 v)
 {
-	return fast_length(v);
+    return fast_length(v);
 }
 
 __inline
 float4 fastNormalize4(float4 v)
 {
-	return fast_normalize(v);
+    return fast_normalize(v);
 }
 
 
 __inline
 float sqrtf(float a)
 {
-//	return sqrt(a);
-	return native_sqrt(a);
+//    return sqrt(a);
+    return native_sqrt(a);
 }
 
 __inline
 float4 cross3(float4 a, float4 b)
 {
-	return cross(a,b);
+    return cross(a,b);
 }
 
 __inline
 float dot3F4(float4 a, float4 b)
 {
-	float4 a1 = make_float4(a.xyz,0.f);
-	float4 b1 = make_float4(b.xyz,0.f);
-	return dot(a1, b1);
+    float4 a1 = make_float4(a.xyz,0.f);
+    float4 b1 = make_float4(b.xyz,0.f);
+    return dot(a1, b1);
 }
 
 __inline
 float length3(const float4 a)
 {
-	return sqrtf(dot3F4(a,a));
+    return sqrtf(dot3F4(a,a));
 }
 
 __inline
 float dot4(const float4 a, const float4 b)
 {
-	return dot( a, b );
+    return dot( a, b );
 }
 
-//	for height
+//    for height
 __inline
 float dot3w1(const float4 point, const float4 eqn)
 {
-	return dot3F4(point,eqn) + eqn.w;
+    return dot3F4(point,eqn) + eqn.w;
 }
 
 __inline
 float4 normalize3(const float4 a)
 {
-	float4 n = make_float4(a.x, a.y, a.z, 0.f);
-	return fastNormalize4( n );
-//	float length = sqrtf(dot3F4(a, a));
-//	return 1.f/length * a;
+    float4 n = make_float4(a.x, a.y, a.z, 0.f);
+    return fastNormalize4( n );
+//    float length = sqrtf(dot3F4(a, a));
+//    return 1.f/length * a;
 }
 
 __inline
 float4 normalize4(const float4 a)
 {
-	float length = sqrtf(dot4(a, a));
-	return 1.f/length * a;
+    float length = sqrtf(dot4(a, a));
+    return 1.f/length * a;
 }
 
 __inline
 float4 createEquation(const float4 a, const float4 b, const float4 c)
 {
-	float4 eqn;
-	float4 ab = b-a;
-	float4 ac = c-a;
-	eqn = normalize3( cross3(ab, ac) );
-	eqn.w = -dot3F4(eqn,a);
-	return eqn;
+    float4 eqn;
+    float4 ab = b-a;
+    float4 ac = c-a;
+    eqn = normalize3( cross3(ab, ac) );
+    eqn.w = -dot3F4(eqn,a);
+    return eqn;
 }
 
 
@@ -183,20 +183,20 @@ float4 createEquation(const float4 a, const float4 b, const float4 c)
 
 typedef struct
 {
-	int m_nConstraints;
-	int m_start;
-	int m_batchIdx;
-	int m_nSplit;
-//	int m_paddings[1];
+    int m_nConstraints;
+    int m_start;
+    int m_batchIdx;
+    int m_nSplit;
+//    int m_paddings[1];
 } ConstBuffer;
 
 typedef struct
 {
-	int m_solveFriction;
-	int m_maxBatch;	//	long batch really kills the performance
-	int m_batchIdx;
-	int m_nSplit;
-//	int m_paddings[1];
+    int m_solveFriction;
+    int m_maxBatch;    //    long batch really kills the performance
+    int m_batchIdx;
+    int m_nSplit;
+//    int m_paddings[1];
 } ConstBufferBatchSolve;
 
 
@@ -207,15 +207,15 @@ typedef struct
 
 typedef struct 
 {
-	int m_valInt0;
-	int m_valInt1;
-	int m_valInt2;
-	int m_valInt3;
+    int m_valInt0;
+    int m_valInt1;
+    int m_valInt2;
+    int m_valInt3;
 
-	float m_val0;
-	float m_val1;
-	float m_val2;
-	float m_val3;
+    float m_val0;
+    float m_val1;
+    float m_val2;
+    float m_val3;
 } SolverDebugInfo;
 
 
@@ -225,10 +225,10 @@ typedef struct
 
 typedef struct
 {
-	int m_nContacts;
-	float m_dt;
-	float m_positionDrift;
-	float m_positionConstraintCoeff;
+    int m_nContacts;
+    float m_dt;
+    float m_positionDrift;
+    float m_positionConstraintCoeff;
 } ConstBufferCTC;
 
 __kernel
@@ -240,35 +240,35 @@ float positionDrift,
 float positionConstraintCoeff
 )
 {
-	int gIdx = GET_GLOBAL_IDX;
-	
-	if( gIdx < nContacts )
-	{
-		int aIdx = abs(gContact[gIdx].m_bodyAPtrAndSignBit);
-		int bIdx = abs(gContact[gIdx].m_bodyBPtrAndSignBit);
+    int gIdx = GET_GLOBAL_IDX;
+    
+    if( gIdx < nContacts )
+    {
+        int aIdx = abs(gContact[gIdx].m_bodyAPtrAndSignBit);
+        int bIdx = abs(gContact[gIdx].m_bodyBPtrAndSignBit);
 
-		float4 posA = gBodies[aIdx].m_pos;
-		float4 linVelA = gBodies[aIdx].m_linVel;
-		float4 angVelA = gBodies[aIdx].m_angVel;
-		float invMassA = gBodies[aIdx].m_invMass;
-		b3Mat3x3 invInertiaA = gShapes[aIdx].m_initInvInertia;
+        float4 posA = gBodies[aIdx].m_pos;
+        float4 linVelA = gBodies[aIdx].m_linVel;
+        float4 angVelA = gBodies[aIdx].m_angVel;
+        float invMassA = gBodies[aIdx].m_invMass;
+        b3Mat3x3 invInertiaA = gShapes[aIdx].m_initInvInertia;
 
-		float4 posB = gBodies[bIdx].m_pos;
-		float4 linVelB = gBodies[bIdx].m_linVel;
-		float4 angVelB = gBodies[bIdx].m_angVel;
-		float invMassB = gBodies[bIdx].m_invMass;
-		b3Mat3x3 invInertiaB = gShapes[bIdx].m_initInvInertia;
+        float4 posB = gBodies[bIdx].m_pos;
+        float4 linVelB = gBodies[bIdx].m_linVel;
+        float4 angVelB = gBodies[bIdx].m_angVel;
+        float invMassB = gBodies[bIdx].m_invMass;
+        b3Mat3x3 invInertiaB = gShapes[bIdx].m_initInvInertia;
 
-		b3ContactConstraint4_t cs;
+        b3ContactConstraint4_t cs;
 
-    	setConstraint4( posA, linVelA, angVelA, invMassA, invInertiaA, posB, linVelB, angVelB, invMassB, invInertiaB,
-			&gContact[gIdx], dt, positionDrift, positionConstraintCoeff,
-			&cs );
-		
-		cs.m_batchIdx = gContact[gIdx].m_batchIdx;
+        setConstraint4( posA, linVelA, angVelA, invMassA, invInertiaA, posB, linVelB, angVelB, invMassB, invInertiaB,
+            &gContact[gIdx], dt, positionDrift, positionConstraintCoeff,
+            &cs );
+        
+        cs.m_batchIdx = gContact[gIdx].m_batchIdx;
 
-		gConstraintOut[gIdx] = cs;
-	}
+        gConstraintOut[gIdx] = cs;
+    }
 }
 
 

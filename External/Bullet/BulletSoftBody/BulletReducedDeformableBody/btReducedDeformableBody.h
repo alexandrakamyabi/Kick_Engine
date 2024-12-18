@@ -76,19 +76,19 @@ class btReducedDeformableBody : public btSoftBody
   // reduced space
   int m_nReduced;
   int m_nFull;
-  tDenseMatrix m_modes;														// modes of the reduced deformable model. Each inner array is a mode, outer array size = n_modes
-  tDenseArray m_reducedDofs;				   // Reduced degree of freedom
+  tDenseMatrix m_modes;                                                        // modes of the reduced deformable model. Each inner array is a mode, outer array size = n_modes
+  tDenseArray m_reducedDofs;                   // Reduced degree of freedom
   tDenseArray m_reducedDofsBuffer;     // Reduced degree of freedom at t^n
-  tDenseArray m_reducedVelocity;		   // Reduced velocity array
+  tDenseArray m_reducedVelocity;           // Reduced velocity array
   tDenseArray m_reducedVelocityBuffer; // Reduced velocity array at t^n
   tDenseArray m_reducedForceExternal;          // reduced external force
   tDenseArray m_reducedForceElastic;           // reduced internal elastic force
   tDenseArray m_reducedForceDamping;           // reduced internal damping force
-  tDenseArray m_eigenvalues;		// eigenvalues of the reduce deformable model
-  tDenseArray m_Kr;	// reduced stiffness matrix
+  tDenseArray m_eigenvalues;        // eigenvalues of the reduce deformable model
+  tDenseArray m_Kr;    // reduced stiffness matrix
   
   // full space
-  TVStack m_x0;					     				 // Rest position
+  TVStack m_x0;                                          // Rest position
   tDenseArray m_nodalMass;           // Mass on each node
   btAlignedObjectArray<int> m_fixedNodes; // index of the fixed nodes
   int m_nodeIndexOffset;             // offset of the node index needed for contact solver when there are multiple reduced deformable body in the world.
@@ -234,7 +234,7 @@ class btReducedDeformableBody : public btSoftBody
   btScalar getTotalMass() const;
   btTransform& getRigidTransform();
   const btVector3& getLinearVelocity() const;
-	const btVector3& getAngularVelocity() const;
+    const btVector3& getAngularVelocity() const;
 
   #if defined(BT_CLAMP_VELOCITY_TO) && BT_CLAMP_VELOCITY_TO > 0
   void clampVelocity(btVector3& v) const {

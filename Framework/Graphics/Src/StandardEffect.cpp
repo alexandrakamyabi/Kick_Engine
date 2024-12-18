@@ -10,202 +10,176 @@ using namespace Kick_Engine::Graphics;
 
 static constexpr size_t MaxBoneCount = 256;
 
-void StandardEffect::Initialize(const std::filesystem::path& filename)
+void StandardEffect::Initialize(const std::filesystem::path& filePath)
 {
-	mTransformBuffer.Initialize();
-	mSettingsBuffer.Initialize();
-	mLightBuffer.Initialize();
-	mMaterialBuffer.Initialize();
-	mBoneTransformBuffer.Initialize(MaxBoneCount * sizeof(Math::Matrix4));
-	mVertexShader.Initialize<Vertex>(filename);
-	mPixelShader.Initialize(filename);
-	mSampler.Initialize(Sampler::Filter::Linear, Sampler::AddressMode::Wrap);
-}
+    mTransformBuffer.Initialize();
+    mLightBuffer.Initialize();
+    mSettingsBuffer.Initialize();
+    mMaterialBuffer.Initialize();
+    mBoneTransformBuffer.Initialize(MaxBoneCount * sizeof(Kick_Math::Matrix4));
 
+    mVertexShader.Initialize<Vertex>(filePath);
+    mPixelShader.Initialize(filePath);
+    mSampler.Initialize(Sampler::Filter::Linear, Sampler::AddressMode::Wrap);
+}
 void StandardEffect::Terminate()
 {
-	mVertexShader.Terminate();
-	mPixelShader.Terminate();
-	mSampler.Terminate();
-	mBoneTransformBuffer.Terminate();
-	mMaterialBuffer.Terminate();
-	mLightBuffer.Terminate();
-	mSettingsBuffer.Terminate();
-	mTransformBuffer.Terminate();
+    mTransformBuffer.Terminate();
+    mSettingsBuffer.Terminate();
+    mVertexShader.Terminate();
+    mBoneTransformBuffer.Terminate();
+    mPixelShader.Terminate();
+    mSampler.Terminate();
+    mLightBuffer.Terminate();
+    mMaterialBuffer.Terminate();
 }
-
 void StandardEffect::Begin()
 {
-	ASSERT(mCamera != nullptr, "Standard Effect: no camera set!");
-	if (mUseLighting)
-	{
-		ASSERT(mDirectionalLight != nullptr, "Standard Effect: no light set!");
-	}
+    ASSERT(mCamera != nullptr, "StandardEffect: no camera set");
+    ASSERT(mDirectionalLight != nullptr, "StandardEffect: no light set");
+    mVertexShader.Bind();
+    mPixelShader.Bind();
 
-	mVertexShader.Bind();
-	mPixelShader.Bind();
+    mTransformBuffer.BindVS(0);
+    mLightBuffer.BindVS(1);
+    mLightBuffer.BindPS(1);
 
-	mSampler.BindVS(0);
-	mSampler.BindPS(0);
+    mMaterialBuffer.BindPS(2);
 
-	mTransformBuffer.BindVS(0);
+    mSettingsBuffer.BindVS(3);
+    mSettingsBuffer.BindPS(3);
 
-	mSettingsBuffer.BindVS(1);
-	mSettingsBuffer.BindPS(1);
+    mBoneTransformBuffer.BindVS(4);
 
-	if (mUseLighting)
-	{
-		mLightBuffer.BindVS(2);
-		mLightBuffer.BindPS(2);
-	}
-
-	mMaterialBuffer.BindPS(3);
-
-	mBoneTransformBuffer.BindVS(4);
+    mSampler.BindVS(0);
+    mSampler.BindPS(0);
 }
-
 void StandardEffect::End()
 {
-	if (mShadowMap != nullptr)
-	{
-		Texture::UnbindPS(4);
-	}
+    if (mShadowMap != nullptr)
+    {
+        Texture::UnbindPS(4);
+
+    }
 }
 
 void StandardEffect::Render(const RenderObject& renderObject)
 {
-	SettingsData settingsData;
-	settingsData.useDiffuseMap = renderObject.diffuseMapId > 0 && mSettingsData.useDiffuseMap > 0 ? 1 : 0;
-	settingsData.useNormalMap = renderObject.normalMapId > 0 && mSettingsData.useNormalMap > 0 ? 1 : 0;
-	settingsData.useSpecMap = renderObject.specMapId > 0 && mSettingsData.useSpecMap > 0 ? 1 : 0;
-	settingsData.useLighting = mSettingsData.useLighting > 0 ? 1 : 0;
-	settingsData.useBumpMap = renderObject.bumpMapId > 0 && mSettingsData.useBumpMap > 0;
-	settingsData.bumpWeight = mSettingsData.bumpWeight;
-	settingsData.useShadowMap = mShadowMap != nullptr && mSettingsData.useShadowMap > 0;
-	settingsData.depthBias = mSettingsData.depthBias;
-	settingsData.useSkinning = mSettingsData.useSkinning > 0 && renderObject.skeleton != nullptr;
-	mSettingsBuffer.Update(settingsData);
+    const auto& matWorld = renderObject.transform.GetMatrix4();
+    const auto& matView = mCamera->GetViewMatrix();
+    const auto& matProj = mCamera->GetProjectionMatrix();
 
-	const Math::Matrix4 matWorld = renderObject.transform.GetMatrix4();
-	const Math::Matrix4 matView = mCamera->GetViewMatrix();
-	const Math::Matrix4 matProj = mCamera->GetProjectionMatrix();
+    SettingsData settingsData;
+    settingsData.useDiffuseMap = mSettingsData.useDiffuseMap > 0 && renderObject.diffuseMapId > 0;
+    settingsData.useNormalMap = mSettingsData.useNormalMap > 0 && renderObject.normalMapId > 0;
+    settingsData.useSpecMap = mSettingsData.useSpecMap > 0 && renderObject.specMapId > 0;
+    settingsData.useBumpMap = mSettingsData.useBumpMap > 0 && renderObject.bumpMapId > 0;
+    settingsData.useShadowMap = mSettingsData.useShadowMap > 0 && mShadowMap != nullptr;
+    settingsData.useSkinning = mSettingsData.useSkinning > 0 && renderObject.skeleton != nullptr;
+    settingsData.bumpWeight = mSettingsData.bumpWeight;
+    settingsData.depthBias = mSettingsData.depthBias;
 
-	Math::Matrix4 matFinal = matWorld * matView * matProj;
+    TransformData data;
+    data.wvp = Transpose(matWorld * matView * matProj);
+    data.world = Transpose(matWorld);
+    data.viewPosition = mCamera->GetPosition();
+    if (settingsData.useShadowMap)
+    {
+        const auto& matLightView = mLightCamera->GetViewMatrix();
+        const auto& matLightProj = mLightCamera->GetProjectionMatrix();
+        data.lwvp = Transpose(matWorld * matLightView * matLightProj);
 
-	TransformData transformData;
-	transformData.wvp = Math::Transpose(matFinal);
-	transformData.world = Math::Transpose(matWorld);
-	transformData.viewPosition = mCamera->GetPosition();
+        mShadowMap->BindPS(4);
+    }
 
-	if (settingsData.useShadowMap > 0)
-	{
-		const Math::Matrix4 matLightView = mLightCamera->GetViewMatrix();
-		const Math::Matrix4 matLightProj = mLightCamera->GetProjectionMatrix();
-		transformData.lwvp = Math::Transpose(matWorld * matLightView * matLightProj);
+    if (settingsData.useSkinning > 0)
+    {
+        AnimationUtil::BoneTransforms boneTransforms;
+        AnimationUtil::ComputerBoneTransform(renderObject.modelId, boneTransforms, renderObject.animator);
+        AnimationUtil::ApplyBoneOffsets(renderObject.modelId, boneTransforms);
+        for (Kick_Math::Matrix4& m : boneTransforms)
+        {
+            m = Transpose(m);
+        }
+        boneTransforms.resize(MaxBoneCount);
+        mBoneTransformBuffer.Update(boneTransforms.data());
+    }
 
-		mShadowMap->BindPS(4);
-	}
-	mTransformBuffer.Update(transformData);
+    mTransformBuffer.Update(data);
+    mLightBuffer.Update(*mDirectionalLight);
+    mMaterialBuffer.Update(renderObject.material);
+    mSettingsBuffer.Update(settingsData);
 
-	if (settingsData.useSkinning)
-	{
-		AnimationUtil::BoneTransforms boneTransforms;
-		AnimationUtil::ComputeBoneTransforms(renderObject.modelId, boneTransforms, renderObject.animator);
-		AnimationUtil::ApplyBoneOffsets(renderObject.modelId, boneTransforms);
-
-		for (Math::Matrix4& transform : boneTransforms)
-		{
-			transform = Transpose(transform);
-		}
-		boneTransforms.resize(MaxBoneCount);
-		mBoneTransformBuffer.Update(boneTransforms.data());
-	}
-
-	if (mUseLighting)
-	{
-	mLightBuffer.Update(*mDirectionalLight);
-	}
-	mMaterialBuffer.Update(renderObject.material);
-
-	TextureManager* tm = TextureManager::Get();
-	tm->BindPS(renderObject.diffuseMapId, 0);
-	tm->BindPS(renderObject.normalMapId, 1);
-	tm->BindPS(renderObject.specMapId, 2);
-	tm->BindVS(renderObject.bumpMapId, 3);
-
-	renderObject.meshBuffer.Render();
+    auto tm = TextureManager::Get();
+    tm->BindPS(renderObject.diffuseMapId, 0);
+    tm->BindPS(renderObject.normalMapId, 1);
+    tm->BindPS(renderObject.specMapId, 2);
+    tm->BindVS(renderObject.bumpMapId, 3);
+    renderObject.meshBuffer.Render();
 }
+
 
 void StandardEffect::SetCamera(const Camera& camera)
 {
-	mCamera = &camera;
+    mCamera = &camera;
 }
 
 void StandardEffect::SetLightCamera(const Camera& camera)
 {
-	mLightCamera = &camera;
+    mLightCamera = &camera;
 }
 
 void StandardEffect::SetDirectionalLight(const DirectionalLight& directionalLight)
 {
-	mDirectionalLight = &directionalLight;
+    mDirectionalLight = &directionalLight;
 }
 
 void StandardEffect::SetShadowMap(const Texture& shadowMap)
 {
-	mShadowMap = &shadowMap;
+    mShadowMap = &shadowMap;
 }
 
 void StandardEffect::DebugUI()
 {
-	if (ImGui::CollapsingHeader("StandardEffect"))
-	{
-		bool useDiffuseMap = mSettingsData.useDiffuseMap > 0;
-		if (ImGui::Checkbox("UseDiffuseMap", &useDiffuseMap))
-		{
-			mSettingsData.useDiffuseMap = useDiffuseMap ? 1 : 0;
-		}
+    if (ImGui::CollapsingHeader("StandardEffect", ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        bool useDiffuse = mSettingsData.useDiffuseMap > 0;
+        if (ImGui::Checkbox("UseDiffuse", &useDiffuse))
+        {
+            mSettingsData.useDiffuseMap = useDiffuse ? 1 : 0;
+        }
 
-		bool useNormalMap = mSettingsData.useNormalMap > 0;
-		if (ImGui::Checkbox("UseNormalMap", &useNormalMap))
-		{
-			mSettingsData.useNormalMap = useNormalMap ? 1 : 0;
-		}
+        bool useNormal = mSettingsData.useNormalMap > 0;
+        if (ImGui::Checkbox("UseNormal", &useNormal))
+        {
+            mSettingsData.useNormalMap = useNormal ? 1 : 0;
+        }
 
-		bool useSpecMap = mSettingsData.useSpecMap > 0;
-		if (ImGui::Checkbox("UseSpecMap", &useSpecMap))
-		{
-			mSettingsData.useSpecMap = useSpecMap ? 1 : 0;
-		}
+        bool useSpec = mSettingsData.useSpecMap > 0;
+        if (ImGui::Checkbox("UseSpec", &useSpec))
+        {
+            mSettingsData.useSpecMap = useSpec ? 1 : 0;
+        }
 
-		bool useLighting = mSettingsData.useLighting > 0;
-		if (ImGui::Checkbox("UseLighting", &useLighting))
-		{
-			mSettingsData.useLighting = useLighting ? 1 : 0;
-		}
+        bool useBump = mSettingsData.useBumpMap > 0;
+        if (ImGui::Checkbox("UseBump", &useBump))
+        {
+            mSettingsData.useBumpMap = useBump ? 1 : 0;
+        }
 
-		bool useBumpMap = mSettingsData.useBumpMap > 0;
-		if (ImGui::Checkbox("UseBumpMap", &useBumpMap))
-		{
-			mSettingsData.useBumpMap = useBumpMap ? 1 : 0;
-		}
-		ImGui::DragFloat("BumpWeight", &mSettingsData.bumpWeight, 0.01f, 0.0f, 5.0f);
+        ImGui::DragFloat("BumpWeight", &mSettingsData.bumpWeight, 0.1f, 0.0f, 2.0f);
 
-		bool useShadowMap = mSettingsData.useShadowMap > 0;
-		if (ImGui::Checkbox("useShadowMap", &useShadowMap))
-		{
-			mSettingsData.useShadowMap = useShadowMap ? 1 : 0;
-		}
-		ImGui::DragFloat("DepthBias", &mSettingsData.depthBias, 0.000001f, 0.0f, 1.0f, "%.6f");
-		bool useSkinning = mSettingsData.useSkinning > 0;
-		if (ImGui::Checkbox("UseSkinning", &useSkinning))
-		{
-			mSettingsData.useSkinning = useSkinning > 0 ? 1 : 0;
-		}
-	}
-}
+        bool useShadow = mSettingsData.useShadowMap > 0;
+        if (ImGui::Checkbox("UseShadow", &useShadow))
+        {
+            mSettingsData.useShadowMap = useShadow ? 1 : 0;
+        }
 
-void StandardEffect::SetLightingMode(bool mode)
-{
-	mUseLighting = mode;
+        bool useSkinning = mSettingsData.useSkinning > 0;
+        if (ImGui::Checkbox("UseNormal", &useSkinning))
+        {
+            mSettingsData.useSkinning = useSkinning ? 1 : 0;
+        }
+        ImGui::DragFloat("DepthBias", &mSettingsData.depthBias, 0.0001f, 0.0f, 1.0f, "%.6f");
+    }
 }

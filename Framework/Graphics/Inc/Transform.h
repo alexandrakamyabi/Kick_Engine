@@ -4,20 +4,20 @@
 
 namespace Kick_Engine::Graphics
 {
-	struct Transform
-	{
-		Math::Vector3 position = Math::Vector3::Zero;
-		Math::Quaternion rotation = Math::Quaternion::Identity;
-		Math::Vector3 scale = Math::Vector3::One;
+    struct Transform
+    {
+        Kick_Engine::Kick_Math::Vector3 position = Kick_Engine::Kick_Math::Vector3::Zero;
+        Kick_Engine::Kick_Math::Quaternion rotation = Kick_Engine::Kick_Math::Quaternion::Identity;
+        Kick_Engine::Kick_Math::Vector3 scale = Kick_Engine::Kick_Math::Vector3::One;
 
-		Math::Matrix4 GetMatrix4() const
-		{
-			return 
-			{
-				Math::Matrix4::Scaling(scale) *
-				Math::Matrix4::MatrixRotationQuaternion(rotation) *
-				Math::Matrix4::Translation(position)
-			};
-		}
-	};
+        Kick_Engine::Kick_Math::Matrix4 GetMatrix4() const
+        {
+            Kick_Math::Matrix4 mat = Kick_Math::Matrix4::MatrixRotationQuaternion(rotation);
+            return {
+                Kick_Engine::Kick_Math::Matrix4::Scaling(scale) *
+                Kick_Engine::Kick_Math::Matrix4::MatrixRotationQuaternion(rotation) *
+                Kick_Engine::Kick_Math::Matrix4::Translation(position)
+            };
+        }
+    };
 }

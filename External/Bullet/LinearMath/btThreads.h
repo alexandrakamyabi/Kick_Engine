@@ -44,16 +44,16 @@ void btResetThreadIndexCounter();  // notify that all worker threads have been d
 ///
 class btSpinMutex
 {
-	int mLock;
+    int mLock;
 
 public:
-	btSpinMutex()
-	{
-		mLock = 0;
-	}
-	void lock();
-	void unlock();
-	bool tryLock();
+    btSpinMutex()
+    {
+        mLock = 0;
+    }
+    void lock();
+    void unlock();
+    bool tryLock();
 };
 
 //
@@ -70,28 +70,28 @@ public:
 SIMD_FORCE_INLINE void btMutexLock(btSpinMutex* mutex)
 {
 #if BT_THREADSAFE
-	mutex->lock();
+    mutex->lock();
 #else
-	(void)mutex;
+    (void)mutex;
 #endif  // #if BT_THREADSAFE
 }
 
 SIMD_FORCE_INLINE void btMutexUnlock(btSpinMutex* mutex)
 {
 #if BT_THREADSAFE
-	mutex->unlock();
+    mutex->unlock();
 #else
-	(void)mutex;
+    (void)mutex;
 #endif  // #if BT_THREADSAFE
 }
 
 SIMD_FORCE_INLINE bool btMutexTryLock(btSpinMutex* mutex)
 {
 #if BT_THREADSAFE
-	return mutex->tryLock();
+    return mutex->tryLock();
 #else
-	(void)mutex;
-	return true;
+    (void)mutex;
+    return true;
 #endif  // #if BT_THREADSAFE
 }
 
@@ -101,8 +101,8 @@ SIMD_FORCE_INLINE bool btMutexTryLock(btSpinMutex* mutex)
 class btIParallelForBody
 {
 public:
-	virtual ~btIParallelForBody() {}
-	virtual void forLoop(int iBegin, int iEnd) const = 0;
+    virtual ~btIParallelForBody() {}
+    virtual void forLoop(int iBegin, int iEnd) const = 0;
 };
 
 //
@@ -112,8 +112,8 @@ public:
 class btIParallelSumBody
 {
 public:
-	virtual ~btIParallelSumBody() {}
-	virtual btScalar sumLoop(int iBegin, int iEnd) const = 0;
+    virtual ~btIParallelSumBody() {}
+    virtual btScalar sumLoop(int iBegin, int iEnd) const = 0;
 };
 
 //
@@ -123,25 +123,25 @@ public:
 class btITaskScheduler
 {
 public:
-	btITaskScheduler(const char* name);
-	virtual ~btITaskScheduler() {}
-	const char* getName() const { return m_name; }
+    btITaskScheduler(const char* name);
+    virtual ~btITaskScheduler() {}
+    const char* getName() const { return m_name; }
 
-	virtual int getMaxNumThreads() const = 0;
-	virtual int getNumThreads() const = 0;
-	virtual void setNumThreads(int numThreads) = 0;
-	virtual void parallelFor(int iBegin, int iEnd, int grainSize, const btIParallelForBody& body) = 0;
-	virtual btScalar parallelSum(int iBegin, int iEnd, int grainSize, const btIParallelSumBody& body) = 0;
-	virtual void sleepWorkerThreadsHint() {}  // hint the task scheduler that we may not be using these threads for a little while
+    virtual int getMaxNumThreads() const = 0;
+    virtual int getNumThreads() const = 0;
+    virtual void setNumThreads(int numThreads) = 0;
+    virtual void parallelFor(int iBegin, int iEnd, int grainSize, const btIParallelForBody& body) = 0;
+    virtual btScalar parallelSum(int iBegin, int iEnd, int grainSize, const btIParallelSumBody& body) = 0;
+    virtual void sleepWorkerThreadsHint() {}  // hint the task scheduler that we may not be using these threads for a little while
 
-	// internal use only
-	virtual void activate();
-	virtual void deactivate();
+    // internal use only
+    virtual void activate();
+    virtual void deactivate();
 
 protected:
-	const char* m_name;
-	unsigned int m_savedThreadCounter;
-	bool m_isActive;
+    const char* m_name;
+    unsigned int m_savedThreadCounter;
+    bool m_isActive;
 };
 
 // set the task scheduler to use for all calls to btParallelFor()

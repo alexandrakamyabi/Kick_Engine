@@ -29,37 +29,37 @@ ATTRIBUTE_ALIGNED16(class)
 btEmptyShape : public btConcaveShape
 {
 public:
-	BT_DECLARE_ALIGNED_ALLOCATOR();
+    BT_DECLARE_ALIGNED_ALLOCATOR();
 
-	btEmptyShape();
+    btEmptyShape();
 
-	virtual ~btEmptyShape();
+    virtual ~btEmptyShape();
 
-	///getAabb's default implementation is brute force, expected derived classes to implement a fast dedicated version
-	void getAabb(const btTransform& t, btVector3& aabbMin, btVector3& aabbMax) const;
+    ///getAabb's default implementation is brute force, expected derived classes to implement a fast dedicated version
+    void getAabb(const btTransform& t, btVector3& aabbMin, btVector3& aabbMax) const;
 
-	virtual void setLocalScaling(const btVector3& scaling)
-	{
-		m_localScaling = scaling;
-	}
-	virtual const btVector3& getLocalScaling() const
-	{
-		return m_localScaling;
-	}
+    virtual void setLocalScaling(const btVector3& scaling)
+    {
+        m_localScaling = scaling;
+    }
+    virtual const btVector3& getLocalScaling() const
+    {
+        return m_localScaling;
+    }
 
-	virtual void calculateLocalInertia(btScalar mass, btVector3 & inertia) const;
+    virtual void calculateLocalInertia(btScalar mass, btVector3 & inertia) const;
 
-	virtual const char* getName() const
-	{
-		return "Empty";
-	}
+    virtual const char* getName() const
+    {
+        return "Empty";
+    }
 
-	virtual void processAllTriangles(btTriangleCallback*, const btVector3&, const btVector3&) const
-	{
-	}
+    virtual void processAllTriangles(btTriangleCallback*, const btVector3&, const btVector3&) const
+    {
+    }
 
 protected:
-	btVector3 m_localScaling;
+    btVector3 m_localScaling;
 };
 
 #endif  //BT_EMPTY_SHAPE_H

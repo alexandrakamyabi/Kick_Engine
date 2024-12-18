@@ -8,71 +8,72 @@
 
 using namespace Kick_Engine;
 using namespace Kick_Engine::Graphics;
-using namespace Kick_Engine::Math;
+using namespace Kick_Engine::Kick_Math;
 
-void ParticleSystemEffect::Initialize()
+void ParticleEffect::Initialize()
 {
-	std::filesystem::path filePath = L"../../Assets/Shaders/Particle.fx";
-	mVertexShader.Initialize<Vertex>(filePath);
-	mPixelShader.Initialize(filePath);
-	mParticleBuffer.Initialize();
-	mSampler.Initialize(Sampler::Filter::Linear, Sampler::AddressMode::Wrap);
-	mBlendState.Initialize(BlendState::Mode::AlphaBlend);
+    std::filesystem::path filePath = L"../../Assets/Shaders/Particle.fx";
+    mVertexShader.Initialize<Vertex>(filePath);
+    mPixelShader.Initialize(filePath);
+    mParticleBuffer.Initialize();
+    mSampler.Initialize(Sampler::Filter::Linear, Sampler::AddressMode::Wrap);
+    mBlendState.Initialize(BlendState::Mode::AlphaBlend);
 }
 
-void ParticleSystemEffect::Terminate()
+void ParticleEffect::Terminate()
 {
-	mBlendState.Terminate();
-	mSampler.Terminate();
-	mParticleBuffer.Terminate();
-	mPixelShader.Terminate();
-	mVertexShader.Terminate();
+    mBlendState.Terminate();
+    mSampler.Terminate();
+    mParticleBuffer.Terminate();
+    mPixelShader.Terminate();
+    mVertexShader.Terminate();
 }
 
-void ParticleSystemEffect::Begin()
+void ParticleEffect::Begin()
 {
-	mVertexShader.Bind();
-	mPixelShader.Bind();
-	mParticleBuffer.BindVS(0);
-	mSampler.BindPS(0);
-	mBlendState.Set();
+    mVertexShader.Bind();
+    mPixelShader.Bind();
+    mParticleBuffer.BindVS(0);
+    mParticleBuffer.BindPS(0);
+    mSampler.BindPS(0);
+    mBlendState.Set();
 }
 
-void ParticleSystemEffect::End()
+void ParticleEffect::End()
 {
-	mBlendState.ClearState();
+    mBlendState.ClearState();
 }
 
-void ParticleSystemEffect::Render(const RenderObject& renderObject)
+void ParticleEffect::Render(const RenderObject& renderObject)
 {
-	Render(renderObject, Colors::White);
+    Render(renderObject, Colors::White);
 }
 
-void ParticleSystemEffect::Render(const RenderObject& renderObject, const Color& color)
+void ParticleEffect::Render(const RenderObject& renderObject, const Color& color)
 {
-	Matrix4 matView = mCamera->GetViewMatrix();
-	Matrix4 matScale = Matrix4::Scaling(renderObject.transform.scale);
-	Vector3 localPos = TransformCoord(renderObject.transform.position, matView);
-	Matrix4 matTransform = Matrix4::Translation(localPos);
-	Matrix4 matCamLocal = matScale * matTransform;
-	Matrix4 matProj = mCamera->GetProjectionMatrix();
-	Matrix4 matFinal = matCamLocal * matProj;
+    Matrix4 matView = mCamera->GetViewMatrix();
+    Matrix4 matScale = Matrix4::Scaling(renderObject.transform.scale);
+    Matrix4 matTransform = Matrix4::Translation(TransformCoord(renderObject.transform.position, matView));
+    Matrix4 matCamLocal = matScale * matTransform;
+    Matrix4 matProj = mCamera->GetProjectionMatrix();
+    Matrix4 matFinal = matCamLocal * matProj;
 
-	ParticleData data;
-	data.wvp = Transpose(matFinal);
-	data.color = color;
-	mParticleBuffer.Update(data);
-	TextureManager::Get()->BindPS(renderObject.diffuseMapId, 0);
+    ParticleData data;
+    data.wvp = Transpose(matFinal);
+    data.color = color;
+    mParticleBuffer.Update(data);
 
-	renderObject.meshBuffer.Render();
+    TextureManager::Get()->BindPS(renderObject.diffuseMapId, 0);
+
+    renderObject.meshBuffer.Render();
 }
 
-void ParticleSystemEffect::DebugUI()
+void ParticleEffect::DebugUI()
 {
-	//
+    // not atm
 }
 
-void ParticleSystemEffect::SetCamera(const Camera& camera)
+void ParticleEffect::SetCamera(const Camera& camera)
 {
-	mCamera = &camera;
+    mCamera = &camera;
 }

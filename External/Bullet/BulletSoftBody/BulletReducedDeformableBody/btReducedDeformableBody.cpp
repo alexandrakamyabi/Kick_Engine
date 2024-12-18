@@ -20,13 +20,13 @@ btReducedDeformableBody::btReducedDeformableBody(btSoftBodyWorldInfo* worldInfo,
 
   // rigid motion
   m_linearVelocity.setZero();
-	m_angularVelocity.setZero();
+    m_angularVelocity.setZero();
   m_internalDeltaLinearVelocity.setZero();
   m_internalDeltaAngularVelocity.setZero();
   m_angularVelocityFromReduced.setZero();
   m_internalDeltaAngularVelocityFromReduced.setZero();
-	m_angularFactor.setValue(1, 1, 1);
-	m_linearFactor.setValue(1, 1, 1);
+    m_angularFactor.setValue(1, 1, 1);
+    m_linearFactor.setValue(1, 1, 1);
   // m_invInertiaLocal.setValue(1, 1, 1);
   m_invInertiaLocal.setIdentity();
   m_mass = 0.0;
@@ -62,14 +62,14 @@ void btReducedDeformableBody::setMassProps(const tDenseArray& mass_array)
 {
   btScalar total_mass = 0;
   btVector3 CoM(0, 0, 0);
-	for (int i = 0; i < m_nFull; ++i)
-	{
-		m_nodalMass[i] = m_rhoScale * mass_array[i];
-		m_nodes[i].m_im = mass_array[i] > 0 ? 1.0 / (m_rhoScale * mass_array[i]) : 0;
-		total_mass += m_rhoScale * mass_array[i];
+    for (int i = 0; i < m_nFull; ++i)
+    {
+        m_nodalMass[i] = m_rhoScale * mass_array[i];
+        m_nodes[i].m_im = mass_array[i] > 0 ? 1.0 / (m_rhoScale * mass_array[i]) : 0;
+        total_mass += m_rhoScale * mass_array[i];
 
     CoM += m_nodalMass[i] * m_nodes[i].m_x;
-	}
+    }
   // total rigid body mass
   m_mass = total_mass;
   m_inverseMass = total_mass > 0 ? 1.0 / total_mass : 0;
@@ -200,7 +200,7 @@ void btReducedDeformableBody::updateExternalForceProjectMatrix(bool initialized)
   // C(q) is updated once per position update
   for (int r = 0; r < m_nReduced; ++r)
   {
-  	m_projCq[r].resize(3 * m_nFull, 0);
+      m_projCq[r].resize(3 * m_nFull, 0);
     for (int i = 0; i < m_nFull; ++i)
     {
       btMatrix3x3 r_star = Cross(m_localMomentArm[i]);
@@ -245,7 +245,7 @@ void btReducedDeformableBody::applyInternalVelocityChanges()
 
 void btReducedDeformableBody::predictIntegratedTransform(btScalar dt, btTransform& predictedTransform)
 {
-	btTransformUtil::integrateTransform(m_rigidTransformWorld, m_linearVelocity, m_angularVelocity, dt, predictedTransform);
+    btTransformUtil::integrateTransform(m_rigidTransformWorld, m_linearVelocity, m_angularVelocity, dt, predictedTransform);
 }
 
 void btReducedDeformableBody::updateReducedDofs(btScalar solverdt)
@@ -401,8 +401,8 @@ void btReducedDeformableBody::proceedToTransform(btScalar dt, bool end_of_time_s
 
 void btReducedDeformableBody::transformTo(const btTransform& trs)
 {
-	btTransform current_transform = getRigidTransform();
-	btTransform new_transform(trs.getBasis() * current_transform.getBasis().transpose(),
+    btTransform current_transform = getRigidTransform();
+    btTransform new_transform(trs.getBasis() * current_transform.getBasis().transpose(),
                             trs.getOrigin() - current_transform.getOrigin());
   transform(new_transform);
 }
@@ -584,7 +584,7 @@ void btReducedDeformableBody::updateModesByRotation(const btMatrix3x3& rotation)
 
 void btReducedDeformableBody::updateInertiaTensor()
 {
-	m_invInertiaTensorWorld = m_rigidTransformWorld.getBasis() * m_invInertiaTensorWorldInitial * m_rigidTransformWorld.getBasis().transpose();
+    m_invInertiaTensorWorld = m_rigidTransformWorld.getBasis() * m_invInertiaTensorWorldInitial * m_rigidTransformWorld.getBasis().transpose();
 }
 
 void btReducedDeformableBody::applyDamping(btScalar timeStep)

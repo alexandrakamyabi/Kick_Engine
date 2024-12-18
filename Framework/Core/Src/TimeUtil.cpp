@@ -1,22 +1,20 @@
 #include "Precompiled.h"
 #include "TimeUtil.h"
 
-using namespace Kick_Engine;
-using namespace Kick_Engine::Core;
-
-float TimeUtil::GetTime()
+float Kick_Engine::Core::TimeUtil::GetTime()
 {
-	static const auto startTime = std::chrono::high_resolution_clock::now();
-	const auto currentTime = std::chrono::high_resolution_clock::now();
-	const auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - startTime).count();
-	return milliseconds / 1000.0f;
+    static const auto startTime = std::chrono::high_resolution_clock::now();
+    const auto currentTime = std::chrono::high_resolution_clock::now();
+    const auto miliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - startTime).count();
+
+    return miliseconds / 1000.0f;
 }
 
-float TimeUtil::GetDeltaTime()
+float Kick_Engine::Core::TimeUtil::GetDeltaTime()
 {
-	static auto lastCallTime = std::chrono::high_resolution_clock::now();
-	const auto currentTime = std::chrono::high_resolution_clock::now();
-	const auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - lastCallTime).count();
-	lastCallTime = currentTime;
-	return milliseconds / 1000.0f;
+    static  auto lastCallTime = std::chrono::high_resolution_clock::now();
+    const auto currentTime = std::chrono::high_resolution_clock::now();
+    const auto miliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - lastCallTime).count();
+    lastCallTime = currentTime;
+    return miliseconds / 1000.0f;
 }

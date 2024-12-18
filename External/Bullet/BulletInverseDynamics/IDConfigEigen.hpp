@@ -17,7 +17,7 @@ typedef float idScalar;
 template <typename T>
 struct idArray
 {
-	typedef std::vector<T> type;
+    typedef std::vector<T> type;
 };
 typedef std::vector<int>::size_type idArrayIdx;
 // default to standard malloc/free

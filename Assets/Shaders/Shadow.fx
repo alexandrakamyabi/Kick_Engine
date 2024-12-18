@@ -1,4 +1,4 @@
-//Description: Shadow Effect that generates a depth map to a render target
+// Description: Shadow effect to generates a shadow render target
 
 cbuffer TransformBuffer : register(b0)
 {
@@ -16,7 +16,7 @@ struct VS_INPUT
 struct VS_OUTPUT
 {
     float4 position : SV_Position;
-    float4 lightNDCPosition : TEXCOORD;
+    float4 lightNDCPosition : TEXCOORD0;
 };
 
 VS_OUTPUT VS(VS_INPUT input)
@@ -31,5 +31,4 @@ float4 PS(VS_OUTPUT input) : SV_Target
 {
     float depth = 1.0f - input.lightNDCPosition.z / input.lightNDCPosition.w;
     return float4(depth, 1.0f, 1.0f, 1.0f);
-
 }

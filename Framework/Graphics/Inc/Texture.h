@@ -2,44 +2,45 @@
 
 namespace Kick_Engine::Graphics
 {
-	class Texture
-	{
-	public:
-		enum class Format
-		{
-			RGBA_U8,
-			RGBA_U32,
-		};
+    class Texture
+    {
+    public:
+        static void UnbindPS(uint32_t slot);
 
-		static void UnbindPS(uint32_t slot);
+        enum class Format
+        {
+            RGBA_U8,
+            RGBA_U32
+        };
 
-		Texture() = default;
-		virtual ~Texture();
+        Texture() = default;
+        virtual ~Texture();
 
-		//delete copy
-		Texture(const Texture&) = delete;
-		Texture& operator=(const Texture&) = delete;
-		//allow the move
-		Texture(Texture&&) noexcept;
-		Texture& operator=(Texture&&) noexcept;
+        //delete the copy
+        Texture(const Texture&) = delete;
+        Texture& operator=(const Texture&) = delete;
 
-		virtual void Initialize(const std::filesystem::path& fileName);
-		virtual void Initialize(uint32_t width, uint32_t height, Format format);
-		virtual void Terminate();
-		
-		void BindVS(uint32_t slot) const;
-		void BindPS(uint32_t slot) const;
+        //allow moving
+        Texture(Texture&& rhs) noexcept;
+        Texture& operator=(Texture&&) noexcept;
 
-		void* GetRawData() const;
+        virtual void Initialize(const std::filesystem::path& fileName);
+        virtual void Initialize(uint32_t width, uint32_t height, Format format);
+        virtual void Terminate();
 
-		uint32_t GetWidth() const;
-		uint32_t GetHeight() const;
+        void BindVS(uint32_t slot) const;
+        void BindPS(uint32_t slot) const;
 
-	protected:
-		DXGI_FORMAT GetDXGIFormat(Format format);
-		ID3D11ShaderResourceView* mShaderResourceView = nullptr;
+        void* GetRawData() const { return mShaderResourceView; }
+        ID3D11ShaderResourceView* GetShaderResourceView() const { return mShaderResourceView; }
+        uint32_t GetWidth() const { return mWidth; }
+        uint32_t GetHeight() const { return mHeight; }
 
-		uint32_t mWidth = 0;
-		uint32_t mHeight = 0;
-	};
+    protected:
+        DXGI_FORMAT GetDXGIFormat(Format format);
+
+        ID3D11ShaderResourceView* mShaderResourceView = nullptr;
+        uint32_t mWidth = 0;
+        uint32_t mHeight = 0;
+    };
 }

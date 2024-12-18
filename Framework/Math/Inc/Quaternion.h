@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Kick_Engine::Math
+namespace Kick_Engine::Kick_Math
 {
     struct Matrix4;
 
@@ -22,7 +22,7 @@ namespace Kick_Engine::Math
         bool operator == (const Quaternion& q) const { return x == q.x && y == q.y && z == q.z && w == q.w; }
         bool operator != (const Quaternion& q) const { return x != q.x || y != q.y || z != q.z || w != q.w; }
 
-        // Unary operators		
+        // Unary operators        
         Quaternion operator+(const Quaternion& rhs) const { return Quaternion(x + rhs.x, y + rhs.y, z + rhs.z, w + rhs.w); }
         Quaternion operator*(float s) const { return Quaternion(x * s, y * s, z * s, w * s); }
         Quaternion operator/(float s) const { return Quaternion(x / s, y / s, z / s, w / s); }
@@ -31,19 +31,21 @@ namespace Kick_Engine::Math
         static const Quaternion Identity;
         static const Quaternion Zero;
 
+        // Member functions
         void Conjugate() noexcept;
         void Inverse() noexcept;
         float Magnitude() const noexcept;
-        float MagnitudeSqr() const noexcept;
+        float MagnitudeSquared() const noexcept;
         void Normalize() noexcept;
         float Dot(const Quaternion& q) const noexcept;
 
-        //static functions
+
+        // Static functions
         static Quaternion Conjugate(const Quaternion& q);
         static float Magnitude(const Quaternion& q);
         static Quaternion Normalize(const Quaternion& q);
 
-        static Quaternion CreateFromAxisAngle(const Vector3& acis, float angle) noexcept;
+        static Quaternion CreateFromAxisAngle(const Vector3& axis, float angle) noexcept;
         static Quaternion CreateFromYawPitchRoll(float yaw, float pitch, float roll) noexcept;
         static Quaternion CreateFromRotationMatrix(const Matrix4& m) noexcept;
 

@@ -23,7 +23,7 @@ class btReducedDeformableStaticConstraint : public btDeformableStaticConstraint
                                       const btVector3& dir,
                                       const btContactSolverInfo& infoGlobal,
                                       btScalar dt);
-	// btReducedDeformableStaticConstraint(const btReducedDeformableStaticConstraint& other);
+    // btReducedDeformableStaticConstraint(const btReducedDeformableStaticConstraint& other);
   btReducedDeformableStaticConstraint() {}
   virtual ~btReducedDeformableStaticConstraint() {}
 
@@ -89,7 +89,7 @@ class btReducedDeformableRigidContactConstraint : public btDeformableRigidContac
                                             const btSoftBody::DeformableRigidContact& c, 
                                             const btContactSolverInfo& infoGlobal,
                                             btScalar dt);
-	// btReducedDeformableRigidContactConstraint(const btReducedDeformableRigidContactConstraint& other);
+    // btReducedDeformableRigidContactConstraint(const btReducedDeformableRigidContactConstraint& other);
   btReducedDeformableRigidContactConstraint() {}
   virtual ~btReducedDeformableRigidContactConstraint() {}
 
@@ -127,14 +127,14 @@ class btReducedDeformableNodeRigidContactConstraint : public btReducedDeformable
                                                 const btSoftBody::DeformableNodeRigidContact& contact, 
                                                 const btContactSolverInfo& infoGlobal,
                                                 btScalar dt);
-	// btReducedDeformableNodeRigidContactConstraint(const btReducedDeformableNodeRigidContactConstraint& other);
+    // btReducedDeformableNodeRigidContactConstraint(const btReducedDeformableNodeRigidContactConstraint& other);
   btReducedDeformableNodeRigidContactConstraint() {}
   virtual ~btReducedDeformableNodeRigidContactConstraint() {}
 
   virtual void warmStarting();
 
   // get the velocity of the deformable node in contact
-	virtual btVector3 getVb() const;
+    virtual btVector3 getVb() const;
 
   // get the velocity change of the rigid body
   virtual btVector3 getDeltaVa() const;
@@ -142,17 +142,17 @@ class btReducedDeformableNodeRigidContactConstraint : public btReducedDeformable
   // get velocity change of the node in contat
   virtual btVector3 getDeltaVb() const;
 
-	// get the split impulse velocity of the deformable face at the contact point
-	virtual btVector3 getSplitVb() const;
+    // get the split impulse velocity of the deformable face at the contact point
+    virtual btVector3 getSplitVb() const;
 
-	// get the velocity change of the input soft body node in the constraint
-	virtual btVector3 getDv(const btSoftBody::Node*) const;
+    // get the velocity change of the input soft body node in the constraint
+    virtual btVector3 getDv(const btSoftBody::Node*) const;
 
-	// cast the contact to the desired type
-	const btSoftBody::DeformableNodeRigidContact* getContact() const
-	{
-		return static_cast<const btSoftBody::DeformableNodeRigidContact*>(m_contact);
-	}
+    // cast the contact to the desired type
+    const btSoftBody::DeformableNodeRigidContact* getContact() const
+    {
+        return static_cast<const btSoftBody::DeformableNodeRigidContact*>(m_contact);
+    }
   
   // this calls reduced deformable body's applyFullSpaceImpulse
   virtual void applyImpulse(const btVector3& impulse);
@@ -163,31 +163,31 @@ class btReducedDeformableFaceRigidContactConstraint : public btReducedDeformable
 {
  public:
   btSoftBody::Face* m_face;
-	bool m_useStrainLimiting;
+    bool m_useStrainLimiting;
 
   btReducedDeformableFaceRigidContactConstraint(btReducedDeformableBody* rsb, 
                                                 const btSoftBody::DeformableFaceRigidContact& contact, 
                                                 const btContactSolverInfo& infoGlobal,
                                                 btScalar dt, 
                                                 bool useStrainLimiting);
-	// btReducedDeformableFaceRigidContactConstraint(const btReducedDeformableFaceRigidContactConstraint& other);
+    // btReducedDeformableFaceRigidContactConstraint(const btReducedDeformableFaceRigidContactConstraint& other);
   btReducedDeformableFaceRigidContactConstraint() {}
   virtual ~btReducedDeformableFaceRigidContactConstraint() {}
 
   // get the velocity of the deformable face at the contact point
-	virtual btVector3 getVb() const;
+    virtual btVector3 getVb() const;
 
-	// get the split impulse velocity of the deformable face at the contact point
-	virtual btVector3 getSplitVb() const;
+    // get the split impulse velocity of the deformable face at the contact point
+    virtual btVector3 getSplitVb() const;
 
-	// get the velocity change of the input soft body node in the constraint
-	virtual btVector3 getDv(const btSoftBody::Node*) const;
+    // get the velocity change of the input soft body node in the constraint
+    virtual btVector3 getDv(const btSoftBody::Node*) const;
 
-	// cast the contact to the desired type
-	const btSoftBody::DeformableFaceRigidContact* getContact() const
-	{
-		return static_cast<const btSoftBody::DeformableFaceRigidContact*>(m_contact);
-	}
+    // cast the contact to the desired type
+    const btSoftBody::DeformableFaceRigidContact* getContact() const
+    {
+        return static_cast<const btSoftBody::DeformableFaceRigidContact*>(m_contact);
+    }
 
   // this calls reduced deformable body's applyFullSpaceImpulse
   virtual void applyImpulse(const btVector3& impulse);

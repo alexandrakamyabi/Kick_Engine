@@ -4,44 +4,36 @@
 
 namespace Kick_Engine::Graphics
 {
-	class MeshBuilder
-	{
-	public:
-		//Pyramid
-		static MeshPC CreatePyramidPC(float size);
+    class MeshBuilder
+    {
+    public:
+        //cubes
+        static MeshPC CreateCubePC(float size, const Color& color);
+        static MeshPX CreateCubePX(float size);
+        static Mesh CreateCube(float size);
+        
+        static MeshPX CreateSkyboxPX(float size);
+        static MeshPX CreateSkySpherePX(int slices, int rings, float radius);
+        //sphere
+        static MeshPC CreateSpherePC(int slices, int rings, float radius);
+        static MeshPX CreateSpherePX(int slices, int rings, float radius);
+        static Mesh CreateSphere(int slices, int rings, float radius);
 
-		//Cube
-		static MeshPC CreateCubePC(float size);
-		static Mesh CreateCube(float size);
+        //rect
+        static MeshPC CreateRectPC(float width, float height, float depth);
+        static MeshPX CreateRectPX(float width, float height, float depth);
 
-		//Rectangle
-		static MeshPC CreateRectPC(float width, float height, float depth);
+        //plane
+        static MeshPC CreatePlanePC(int numRows, int numCols, float spacing);
+        static Mesh CreateGroundPlane(int numRows, int numCols, float spacing);
 
-		//Plane
-		static MeshPC CreateVerticalPlanePC(uint32_t numRows, uint32_t numCols, float spacing);
-		static MeshPC CreateHorizontalPlanePC(uint32_t numRows, uint32_t numCols, float spacing, Color color);
-		static MeshPX CreateVerticalPlanePX(uint32_t numRows, uint32_t numCols, float spacing);
-		static MeshPX CreateHorizontalPlanePX(uint32_t numRows, uint32_t numCols, float spacing);
-		static Mesh CreateHorizontalPlane(uint32_t numRows, uint32_t numCols, float spacing);
-		static MeshD CreatePlane(uint32_t numRows, uint32_t numCols, float spacing, Kick_Engine::Color color);
+        //cylinder
+        static MeshPC CreateCylinderPC(int slices, int rings);
 
-		//Cylinder
-		static MeshPC CreateCylinderPC(uint32_t slices, uint32_t rings);
+        // ScreenQuad
+        static MeshPX CreateScreenQuad();
 
-		//Sphere
-		static MeshPC CreateSpherePC(uint32_t slices, uint32_t rings, float radius);
-		static MeshPX CreateSpherePX(uint32_t slices, uint32_t rings, float radius);
-		static Mesh CreateSphere(uint32_t slices, uint32_t rings, float radius);
-
-		//Sky Stuff
-		static MeshPX CreateSkySpherePX(uint32_t slices, uint32_t rings, float radius);
-		static Mesh CreateSkySphere(uint32_t slices, uint32_t rings, float radius);
-		static MeshPX CreateSkyBoxPX(float size);
-
-		//screen stuff
-		static MeshPX CreateScreenQuad();
-		
-		//Sprite Quad
-		static Mesh CreateSpriteQuad(float width, float height);
-	};
+        // Texture Quad
+        static Mesh CreateSpriteQuad(float width, float height);
+    };
 }

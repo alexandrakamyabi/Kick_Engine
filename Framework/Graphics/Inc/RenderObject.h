@@ -1,55 +1,46 @@
 #pragma once
 
-#include "MeshBuffer_D3D11.h"
-#include "TextureManager.h"
-#include "Transform.h"
 #include "Material.h"
+#include "MeshBuffer.h"
+#include "Transform.h"
+#include "TextureManager.h"
 #include "ModelManager.h"
-#include "Animator.h"
 
 namespace Kick_Engine::Graphics
 {
-	struct Model;
+    struct Model;
+    class Animator;
+    class RenderObject
+    {
+    public:
+        void Terminate();
 
-	struct RenderObject
-	{
-		void Terminate();
+        Transform transform;
+        MeshBuffer meshBuffer;
 
-		Transform transform;
-		MeshBuffer_D3D11 meshBuffer;
+        ModelId modelId;
+        Material material;
+        TextureId diffuseMapId;
+        TextureId normalMapId;
+        TextureId specMapId;
+        TextureId bumpMapId;
 
-		Material material;
+        const Skeleton* skeleton = nullptr;
+        const Animator* animator = nullptr;
+    };
 
-		TextureID diffuseMapId;
-		TextureID normalMapId;
-		TextureID specMapId;
-		TextureID bumpMapId;
-		bool useLighting = 1;
+    using RenderGroup = std::vector<RenderObject>;
+    [[nodiscard]] RenderGroup CreateRenderGroup(ModelId id, const Animator* animator = nullptr);
+    [[nodiscard]] RenderGroup CreateRenderGroup(const Model& model, const Animator* animator = nullptr);
+    void CleanupRenderGroup(RenderGroup& renderGroup);
+    void SetRenderGroupPosition(RenderGroup& renderGroup, const Kick_Math::Vector3& position);
 
-		ModelId modelId;
-		const Skeleton* skeleton = nullptr;
-		const Animator* animator = nullptr;
-
-		void UseLighting(bool lighting)
-		{
-			useLighting = lighting;
-		}
-	};
-
-	using RenderGroup = std::vector<RenderObject>;
-	[[nodiscard]] RenderGroup CreateRenderGroup(ModelId id, const Animator* animator = nullptr);
-	[[nodiscard]] RenderGroup CreateRenderGroup(const Model& model, ModelId id = 0, const Animator* animator = nullptr);
-	void CleanupRenderGroup(RenderGroup& renderGroup);
-
-	void SetRenderGroupPosition(RenderGroup& renderGroup, const Math::Vector3& position);
-
-	template<class Effect>
-	void DrawRenderGroup(Effect& effect, RenderGroup& renderGroup)
-	{
-		for (RenderObject& renderObject : renderGroup)
-		{
-			effect.Render(renderObject);
-		}
-	}
-
+    template<class Effect>
+    void DrawRenderGroup(Effect& effect, const RenderGroup& renderGroup)
+    {
+        for (const RenderObject& renderObject : renderGroup)
+        {
+            effect.Render(renderObject);
+        }
+    }
 }

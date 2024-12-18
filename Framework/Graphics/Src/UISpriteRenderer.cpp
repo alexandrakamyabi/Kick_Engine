@@ -1,8 +1,8 @@
 #include "Precompiled.h"
 #include "UISpriteRenderer.h"
-#include "UISprite.h"
 
 #include "GraphicsSystem.h"
+#include "UISprite.h"
 
 using namespace Kick_Engine;
 using namespace Kick_Engine::Graphics;
@@ -28,7 +28,7 @@ void UISpriteRenderer::StaticTerminate()
 	}
 }
 
-UISpriteRenderer* Kick_Engine::Graphics::UISpriteRenderer::Get()
+UISpriteRenderer*::UISpriteRenderer::Get()
 {
 	ASSERT(sSpriteRenderer != nullptr, "UISpriteRenderer: is not initialized");
 	return sSpriteRenderer.get();
@@ -36,12 +36,12 @@ UISpriteRenderer* Kick_Engine::Graphics::UISpriteRenderer::Get()
 
 UISpriteRenderer::~UISpriteRenderer()
 {
-	ASSERT(sSpriteRenderer == nullptr, "UISpriteRenderer: Terminate must be called");
+	ASSERT(mSpriteBatch == nullptr, "UISpriteRenderer: terminate must be called");
 }
 
 void UISpriteRenderer::Initialize()
 {
-	Graphics_D3D11* gs = GraphicsSystem::Get();
+	GraphicsSystem* gs = GraphicsSystem::Get();
 	mCommonStates = new DirectX::CommonStates(gs->GetDevice());
 	mSpriteBatch = new DirectX::SpriteBatch(gs->GetContext());
 }
@@ -53,7 +53,6 @@ void UISpriteRenderer::Terminate()
 		delete mCommonStates;
 		mCommonStates = nullptr;
 	}
-
 	if (mSpriteBatch != nullptr)
 	{
 		delete mSpriteBatch;
@@ -63,6 +62,7 @@ void UISpriteRenderer::Terminate()
 
 void UISpriteRenderer::BeginRender()
 {
+	ASSERT(mSpriteBatch != nullptr, "UISpriteRenderer: was not initialized");
 	mSpriteBatch->Begin(
 		DirectX::SpriteSortMode_Deferred,
 		mCommonStates->NonPremultiplied(),
@@ -77,7 +77,7 @@ void UISpriteRenderer::EndRender()
 {
 	mSpriteBatch->End();
 
-	//restore the state object
+	// restore the state objects
 	auto blendState = mCommonStates->Opaque();
 	auto depthStencilState = mCommonStates->DepthDefault();
 	auto rasterizerState = mCommonStates->CullCounterClockwise();
@@ -88,20 +88,20 @@ void UISpriteRenderer::EndRender()
 	context->RSSetState(rasterizerState);
 }
 
-void UISpriteRenderer::Render(const UISprite* sprite)
+void UISpriteRenderer::Render(const UISprite* uiSprite)
 {
-	const Texture* texture = TextureManager::Get()->GetTexture(sprite->mTextureId);
+	const Texture* texture = TextureManager::Get()->GetTexture(uiSprite->mTextureId);
 	if (texture != nullptr)
 	{
 		mSpriteBatch->Draw(
-			(ID3D11ShaderResourceView*)texture->GetRawData(),
-			sprite->mPosition,
-			&sprite->mRect,
-			sprite->mColor,
-			sprite->mRotation,
-			sprite->mOrigin,
-			sprite->mScale,
-			sprite->mFlip
+			(ID3D11ShaderResourceView*)texture->GetShaderResourceView(),
+			uiSprite->mPosition,
+			&uiSprite->mRect,
+			uiSprite->mColor,
+			uiSprite->mRotation,
+			uiSprite->mOrigin,
+			uiSprite->mScale,
+			uiSprite->mFlip
 		);
 	}
 }

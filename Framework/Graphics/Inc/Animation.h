@@ -5,25 +5,26 @@
 
 namespace Kick_Engine::Graphics
 {
-	class Animation
-	{
-	public:
-		Transform GetTransform(float time) const;
-		float GetDuration() const;
-		void PlayEvents(float prevTime, float curTime);
+    class Animation
+    {
+    public:
+        Transform GetTransform(float time) const;
+        float GetDuration() const;
 
-	private:
-		const Math::Vector3& GetPosition(float time) const;
-		const Math::Quaternion& GetRotation(float time) const;
-		const Math::Vector3& GetScale(float time) const;
+        void PlayEvents(float prevTime, float currentTime);
 
-		friend class AnimationBuilder;
-		friend class AnimationIO;
+    private:
+        Kick_Math::Vector3 GetPosition(float time) const;
+        Kick_Math::Quaternion GetRotation(float time) const;
+        Kick_Math::Vector3 GetScale(float time) const;
 
-		PositionKeys mPositionKeys;
-		RotationKeys mRotationKeys;
-		ScaleKeys mScaleKeys;
-		EventKeys mEventKeys;
-		float mDuration;
-	};
+        friend class AnimationBuilder;
+        friend class AnimationIO;
+
+        EventKeys mEventKeys;
+        PositionKeys mPositionKeys;
+        RotationKeys mRotationKeys;
+        ScaleKeys mScaleKeys;
+        float mDuration;
+    };
 }

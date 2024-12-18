@@ -31,50 +31,50 @@ namespace bParse
 class bChunkPtr4
 {
 public:
-	bChunkPtr4() {}
-	int code;
-	int len;
-	union {
-		int m_uniqueInt;
-	};
-	int dna_nr;
-	int nr;
+    bChunkPtr4() {}
+    int code;
+    int len;
+    union {
+        int m_uniqueInt;
+    };
+    int dna_nr;
+    int nr;
 };
 
 // ----------------------------------------------------- //
 class bChunkPtr8
 {
 public:
-	bChunkPtr8() {}
-	int code, len;
-	union {
-		b3Long64 oldPrev;
-		int m_uniqueInts[2];
-	};
-	int dna_nr, nr;
+    bChunkPtr8() {}
+    int code, len;
+    union {
+        b3Long64 oldPrev;
+        int m_uniqueInts[2];
+    };
+    int dna_nr, nr;
 };
 
 // ----------------------------------------------------- //
 class bChunkInd
 {
 public:
-	bChunkInd() {}
-	int code, len;
-	void *oldPtr;
-	int dna_nr, nr;
+    bChunkInd() {}
+    int code, len;
+    void *oldPtr;
+    int dna_nr, nr;
 };
 
 // ----------------------------------------------------- //
 class ChunkUtils
 {
 public:
-	// file chunk offset
-	static int getOffset(int flags);
+    // file chunk offset
+    static int getOffset(int flags);
 
-	// endian utils
-	static short swapShort(short sht);
-	static int swapInt(int inte);
-	static b3Long64 swapLong64(b3Long64 lng);
+    // endian utils
+    static short swapShort(short sht);
+    static int swapInt(int inte);
+    static b3Long64 swapLong64(b3Long64 lng);
 };
 
 const int CHUNK_HEADER_LEN = ((sizeof(bChunkInd)));

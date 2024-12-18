@@ -1,1 +1,3 @@
+C:\Users\Kamyabi\Desktop\Engine-main\External\DirectXTK\Bin\Desktop_2019\x64\Debug\DirectXTK.lib
+E:\Engine-main\External\DirectXTK\Bin\Desktop_2019\x64\Debug\DirectXTK.lib
 E:\Kick_Engine\External\DirectXTK\Bin\Desktop_2019\x64\Debug\DirectXTK.lib

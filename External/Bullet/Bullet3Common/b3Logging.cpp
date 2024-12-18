@@ -25,32 +25,32 @@ subject to the following restrictions:
 void b3PrintfFuncDefault(const char* msg)
 {
 #ifdef _WIN32
-	OutputDebugStringA(msg);
+    OutputDebugStringA(msg);
 #endif
-	printf("%s", msg);
-	//is this portable?
-	fflush(stdout);
+    printf("%s", msg);
+    //is this portable?
+    fflush(stdout);
 }
 
 void b3WarningMessageFuncDefault(const char* msg)
 {
 #ifdef _WIN32
-	OutputDebugStringA(msg);
+    OutputDebugStringA(msg);
 #endif
-	printf("%s", msg);
-	//is this portable?
-	fflush(stdout);
+    printf("%s", msg);
+    //is this portable?
+    fflush(stdout);
 }
 
 void b3ErrorMessageFuncDefault(const char* msg)
 {
 #ifdef _WIN32
-	OutputDebugStringA(msg);
+    OutputDebugStringA(msg);
 #endif
-	printf("%s", msg);
+    printf("%s", msg);
 
-	//is this portable?
-	fflush(stdout);
+    //is this portable?
+    fflush(stdout);
 }
 
 static b3PrintfFunc* b3s_printfFunc = b3PrintfFuncDefault;
@@ -60,15 +60,15 @@ static b3ErrorMessageFunc* b3s_errorMessageFunc = b3ErrorMessageFuncDefault;
 ///The developer can route b3Printf output using their own implementation
 void b3SetCustomPrintfFunc(b3PrintfFunc* printfFunc)
 {
-	b3s_printfFunc = printfFunc;
+    b3s_printfFunc = printfFunc;
 }
 void b3SetCustomWarningMessageFunc(b3PrintfFunc* warningMessageFunc)
 {
-	b3s_warningMessageFunc = warningMessageFunc;
+    b3s_warningMessageFunc = warningMessageFunc;
 }
 void b3SetCustomErrorMessageFunc(b3PrintfFunc* errorMessageFunc)
 {
-	b3s_errorMessageFunc = errorMessageFunc;
+    b3s_errorMessageFunc = errorMessageFunc;
 }
 
 //#define B3_MAX_DEBUG_STRING_LENGTH 2048
@@ -76,42 +76,42 @@ void b3SetCustomErrorMessageFunc(b3PrintfFunc* errorMessageFunc)
 
 void b3OutputPrintfVarArgsInternal(const char* str, ...)
 {
-	char strDebug[B3_MAX_DEBUG_STRING_LENGTH] = {0};
-	va_list argList;
-	va_start(argList, str);
+    char strDebug[B3_MAX_DEBUG_STRING_LENGTH] = {0};
+    va_list argList;
+    va_start(argList, str);
 #ifdef _MSC_VER
-	vsprintf_s(strDebug, B3_MAX_DEBUG_STRING_LENGTH, str, argList);
+    vsprintf_s(strDebug, B3_MAX_DEBUG_STRING_LENGTH, str, argList);
 #else
-	vsnprintf(strDebug, B3_MAX_DEBUG_STRING_LENGTH, str, argList);
+    vsnprintf(strDebug, B3_MAX_DEBUG_STRING_LENGTH, str, argList);
 #endif
-	(b3s_printfFunc)(strDebug);
-	va_end(argList);
+    (b3s_printfFunc)(strDebug);
+    va_end(argList);
 }
 void b3OutputWarningMessageVarArgsInternal(const char* str, ...)
 {
-	char strDebug[B3_MAX_DEBUG_STRING_LENGTH] = {0};
-	va_list argList;
-	va_start(argList, str);
+    char strDebug[B3_MAX_DEBUG_STRING_LENGTH] = {0};
+    va_list argList;
+    va_start(argList, str);
 #ifdef _MSC_VER
-	vsprintf_s(strDebug, B3_MAX_DEBUG_STRING_LENGTH, str, argList);
+    vsprintf_s(strDebug, B3_MAX_DEBUG_STRING_LENGTH, str, argList);
 #else
-	vsnprintf(strDebug, B3_MAX_DEBUG_STRING_LENGTH, str, argList);
+    vsnprintf(strDebug, B3_MAX_DEBUG_STRING_LENGTH, str, argList);
 #endif
-	(b3s_warningMessageFunc)(strDebug);
-	va_end(argList);
+    (b3s_warningMessageFunc)(strDebug);
+    va_end(argList);
 }
 void b3OutputErrorMessageVarArgsInternal(const char* str, ...)
 {
-	char strDebug[B3_MAX_DEBUG_STRING_LENGTH] = {0};
-	va_list argList;
-	va_start(argList, str);
+    char strDebug[B3_MAX_DEBUG_STRING_LENGTH] = {0};
+    va_list argList;
+    va_start(argList, str);
 #ifdef _MSC_VER
-	vsprintf_s(strDebug, B3_MAX_DEBUG_STRING_LENGTH, str, argList);
+    vsprintf_s(strDebug, B3_MAX_DEBUG_STRING_LENGTH, str, argList);
 #else
-	vsnprintf(strDebug, B3_MAX_DEBUG_STRING_LENGTH, str, argList);
+    vsnprintf(strDebug, B3_MAX_DEBUG_STRING_LENGTH, str, argList);
 #endif
-	(b3s_errorMessageFunc)(strDebug);
-	va_end(argList);
+    (b3s_errorMessageFunc)(strDebug);
+    va_end(argList);
 }
 
 void b3EnterProfileZoneDefault(const char* name)
@@ -124,20 +124,20 @@ static b3EnterProfileZoneFunc* b3s_enterFunc = b3EnterProfileZoneDefault;
 static b3LeaveProfileZoneFunc* b3s_leaveFunc = b3LeaveProfileZoneDefault;
 void b3EnterProfileZone(const char* name)
 {
-	(b3s_enterFunc)(name);
+    (b3s_enterFunc)(name);
 }
 void b3LeaveProfileZone()
 {
-	(b3s_leaveFunc)();
+    (b3s_leaveFunc)();
 }
 
 void b3SetCustomEnterProfileZoneFunc(b3EnterProfileZoneFunc* enterFunc)
 {
-	b3s_enterFunc = enterFunc;
+    b3s_enterFunc = enterFunc;
 }
 void b3SetCustomLeaveProfileZoneFunc(b3LeaveProfileZoneFunc* leaveFunc)
 {
-	b3s_leaveFunc = leaveFunc;
+    b3s_leaveFunc = leaveFunc;
 }
 
 #ifndef _MSC_VER

@@ -1,159 +1,172 @@
 #include "Precompiled.h"
 #include "TerrainEffect.h"
 
+#include "Camera.h"
+#include "Texture.h"
+#include "RenderObject.h"
+#include "VertexTypes.h"
+
 using namespace Kick_Engine;
 using namespace Kick_Engine::Graphics;
 
-#include "Camera.h"
-#include "RenderObject.h"
-#include "RenderTarget.h"
-#include"VertexTypes.h"
-
 void TerrainEffect::Initialize()
 {
-	std::filesystem::path shaderFile = L"../../Assets/Shaders/Terrain.fx";
-	mVertexShader.Initialize<Vertex>(shaderFile);
-	mPixelShader.Initialize(shaderFile);
+    std::filesystem::path shaderFile = L"../../Assets/Shaders/Terrain.fx";
+    mVertexShader.Initialize<Vertex>(shaderFile);
+    mPixelShader.Initialize(shaderFile);
 
-	mTransformBuffer.Initialize();
-	mSettingsBuffer.Initialize();
-	mLightBuffer.Initialize();
-	mMaterialBuffer.Initialize();
-	mSampler.Initialize(Sampler::Filter::Linear, Sampler::AddressMode::Wrap);
+    mTransformBuffer.Initialize();
+    mLightingBuffer.Initialize();
+    mMaterialBuffer.Initialize();
+    mSettingsBuffer.Initialize();
+    mMaterialBuffer.Initialize();
+    mSampler.Initialize(Sampler::Filter::Linear, Sampler::AddressMode::Wrap);
 }
 
 void TerrainEffect::Terminate()
 {
-	mSampler.Terminate();
-	mMaterialBuffer.Terminate();
-	mLightBuffer.Terminate();
-	mSettingsBuffer.Terminate();
-	mTransformBuffer.Terminate();
-	mPixelShader.Terminate();
-	mVertexShader.Terminate();
+    mSampler.Terminate();
+    mSettingsBuffer.Terminate();
+    mMaterialBuffer.Terminate();
+    mLightingBuffer.Terminate();
+    mTransformBuffer.Terminate();
+    mPixelShader.Terminate();
+    mVertexShader.Terminate();
 }
 
 void TerrainEffect::Begin()
 {
-	mVertexShader.Bind();
-	mPixelShader.Bind();
+    mVertexShader.Bind();
+    mPixelShader.Bind();
 
-	mTransformBuffer.BindVS(0);
+    mTransformBuffer.BindVS(0);
 
-	mSettingsBuffer.BindVS(1);
-	mSettingsBuffer.BindPS(1);
+    mLightingBuffer.BindVS(1);
+    mLightingBuffer.BindPS(1);
 
-	mLightBuffer.BindVS(2);
-	mLightBuffer.BindPS(2);
+    mMaterialBuffer.BindPS(2);
+    mMaterialBuffer.BindVS(2);
 
-	mMaterialBuffer.BindPS(3);
+    mSettingsBuffer.BindVS(3);
+    mSettingsBuffer.BindPS(3);
 
-	mSampler.BindVS(0);
-	mSampler.BindPS(0);
+    mSampler.BindVS(0);
+    mSampler.BindPS(0);
 }
 
 void TerrainEffect::End()
 {
-	if (mShadowMap != nullptr)
-	{
-		Texture::UnbindPS(4);
-	}
+    if (mShadowMap != nullptr)
+    {
+        Texture::UnbindPS(3);
+    }
 }
 
 void TerrainEffect::Render(const RenderObject& renderObject)
 {
-	SettingsData settingsData;
-	settingsData.useNormalMap = renderObject.normalMapId > 0 && mSettingsData.useNormalMap > 0 ? 1 : 0;
-	settingsData.useSpecMap = renderObject.specMapId > 0 && mSettingsData.useSpecMap > 0 ? 1 : 0;
-	settingsData.useShadowMap = mShadowMap != nullptr && mSettingsData.useShadowMap > 0;
-	settingsData.useBlend = renderObject.bumpMapId > 0 && mSettingsData.useBlend > 0;
-	settingsData.depthBias = mSettingsData.depthBias;
-	settingsData.blendWidth = mSettingsData.blendWidth;
-	settingsData.blendHeight = mSettingsData.blendHeight;
-	mSettingsBuffer.Update(settingsData);
+    ASSERT(mCamera != nullptr, "TerrainEffect: no camera specified");
+    ASSERT(mDirectionalLight != nullptr, "TerrainEffect: no light specified");
 
-	const Math::Matrix4 matWorld = renderObject.transform.GetMatrix4();
-	const Math::Matrix4 matView = mCamera->GetViewMatrix();
-	const Math::Matrix4 matProj = mCamera->GetProjectionMatrix();
+    
+    const Kick_Math::Matrix4 matWorld = renderObject.transform.GetMatrix4();
+    Kick_Math::Matrix4 matView = mCamera->GetViewMatrix();
+    Kick_Math::Matrix4 matProj = mCamera->GetProjectionMatrix();
 
-	Math::Matrix4 matFinal = matWorld * matView * matProj;
+    SettingsData settingsData;
+    settingsData.useNormalMap = mSettingsData.useNormalMap > 0 && renderObject.normalMapId > 0;
+    settingsData.useSpecMap = mSettingsData.useSpecMap > 0 && renderObject.specMapId > 0;
+    settingsData.useBlend = mSettingsData.useBlend > 0 && renderObject.bumpMapId > 0;
+    settingsData.useShadowMap = mSettingsData.useShadowMap > 0 && mShadowMap != nullptr;
+    settingsData.depthBias = mSettingsData.depthBias;
+    settingsData.blendHeight = mSettingsData.blendHeight;
+    settingsData.blendWidth = mSettingsData.blendWidth;
+    
+    
+    TransformData transformData;
+    transformData.wvp = Transpose(matWorld * matView * matProj);
+    transformData.world = Transpose(matWorld);
+    transformData.viewPosition = mCamera->GetPosition();
 
-	TransformData transformData;
-	transformData.wvp = Math::Transpose(matFinal);
-	transformData.world = Math::Transpose(matWorld);
-	transformData.viewPos = mCamera->GetPosition();
+    if (settingsData.useShadowMap > 0)
+    {
+        matView = mLightCamera->GetViewMatrix();
+        matProj = mLightCamera->GetProjectionMatrix();
+        transformData.lwvp = Transpose(matWorld * matView * matProj);
 
-	if (settingsData.useShadowMap > 0)
-	{
-		const Math::Matrix4 matLightView = mLightCamera->GetViewMatrix();
-		const Math::Matrix4 matLightProj = mLightCamera->GetProjectionMatrix();
-		transformData.lwvp = Math::Transpose(matWorld * matLightView * matLightProj);
+        mShadowMap->BindPS(4);
+    }
 
-		mShadowMap->BindPS(4);
-	}
-	mTransformBuffer.Update(transformData);
+    mTransformBuffer.Update(transformData);
+    mSettingsBuffer.Update(settingsData);
+    mLightingBuffer.Update(*mDirectionalLight);
+    mMaterialBuffer.Update(renderObject.material);
 
-	mLightBuffer.Update(*mDirectionalLight);
-	mMaterialBuffer.Update(renderObject.material);
+    TextureManager* tm = TextureManager::Get();
+    tm->BindPS(renderObject.diffuseMapId, 0);
+    tm->BindPS(renderObject.normalMapId, 1);
+    tm->BindPS(renderObject.specMapId, 2);
+    tm->BindPS(renderObject.bumpMapId, 3);
 
-	TextureManager* tm = TextureManager::Get();
-	tm->BindPS(renderObject.diffuseMapId, 0);
-	tm->BindPS(renderObject.normalMapId, 1);
-	tm->BindPS(renderObject.specMapId, 2);
-	tm->BindPS(renderObject.bumpMapId, 3);
-
-	renderObject.meshBuffer.Render();
+    renderObject.meshBuffer.Render();
 }
 
 void TerrainEffect::DebugUI()
 {
-	if (ImGui::CollapsingHeader("TerrainEffect", ImGuiTreeNodeFlags_DefaultOpen))
-	{
-		bool useNormalMap = mSettingsData.useNormalMap > 0;
-		if (ImGui::Checkbox("UseNormalMap", &useNormalMap))
-		{
-			mSettingsData.useNormalMap = useNormalMap ? 1 : 0;
-		}
+    if (ImGui::CollapsingHeader("TerrainEffect", ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        bool useNormalMap = mSettingsData.useNormalMap > 0;
+        if (ImGui::Checkbox("UseNorm##Terrain", &useNormalMap))
+        {
+            mSettingsData.useNormalMap = useNormalMap ? 1 : 0;
+        }
+        bool useSpecMap = mSettingsData.useSpecMap > 0;
+        if (ImGui::Checkbox("UseSpec##Terrain", &useNormalMap))
+        {
+            mSettingsData.useSpecMap = useSpecMap ? 1 : 0;
+        }
+        bool useShadowMap = mSettingsData.useShadowMap > 0;
+        if (ImGui::Checkbox("UseShadow##Terrain", &useShadowMap))
+        {
+            mSettingsData.useShadowMap = useShadowMap ? 1 : 0;
+        }
+        ImGui::DragFloat("DepthBias##Terrain", &mSettingsData.depthBias, 0.000001f, 0.0f, 10.0f, ".6f");
 
-		bool useSpecMap = mSettingsData.useSpecMap > 0;
-		if (ImGui::Checkbox("UseSpecMap", &useSpecMap))
-		{
-			mSettingsData.useSpecMap = useSpecMap ? 1 : 0;
-		}
-
-		bool useShadowMap = mSettingsData.useShadowMap > 0;
-		if (ImGui::Checkbox("UseShadowMap", &useShadowMap))
-		{
-			mSettingsData.useShadowMap = useShadowMap ? 1 : 0;
-		}
-		ImGui::DragFloat("DepthBias", &mSettingsData.depthBias, 0.000001f, 0.0f, 1.0f, "%.6f");
-
-		bool useBlend = mSettingsData.useBlend > 0;
-		if (ImGui::Checkbox("UseBlend", &useBlend))
-		{
-			mSettingsData.useBlend = useBlend ? 1 : 0;
-		}
-		ImGui::DragFloat("BlendHeight##Terrain", &mSettingsData.blendHeight, 0.1f, 0.0f, 100.0f);
-		ImGui::DragFloat("BlendWidth##Terrain", &mSettingsData.blendWidth, 0.1f, 0.0f, 100.0f);
-	}
+        bool useBlend = mSettingsData.useBlend > 0;
+        if (ImGui::Checkbox("UseBlend##Terrain", &useBlend))
+        {
+            mSettingsData.useBlend = useBlend ? 1 : 0;
+        }
+        ImGui::DragFloat("BlendHeight##Terrain", &mSettingsData.blendHeight, 0.1f, 0.0f, 20.0f);
+        ImGui::DragFloat("BlendWidth##Terrain", &mSettingsData.blendWidth, 0.1f, 0.0f, 20.0f);
+    }
 }
 
 void TerrainEffect::SetCamera(const Camera& camera)
 {
-	mCamera = &camera;
+    mCamera = &camera;
 }
 
 void TerrainEffect::SetLightCamera(const Camera& camera)
 {
-	mLightCamera = &camera;
+    mLightCamera = &camera;
 }
 
 void TerrainEffect::SetDirectionalLight(const DirectionalLight& directionalLight)
 {
-	mDirectionalLight = &directionalLight;
+    mDirectionalLight = &directionalLight;
 }
 
 void TerrainEffect::SetShadowMap(const Texture& shadowMap)
 {
-	mShadowMap = &shadowMap;
+    mShadowMap = &shadowMap;
+}
+
+void TerrainEffect::ChangeBlend()
+{
+    mSettingsData.useBlend = 0;
+}
+
+void Kick_Engine::Graphics::TerrainEffect::NormalBlend()
+{
+    mSettingsData.useBlend = 1;
 }

@@ -18,5 +18,5 @@ subject to the following restrictions:
 
 btCollisionAlgorithm::btCollisionAlgorithm(const btCollisionAlgorithmConstructionInfo& ci)
 {
-	m_dispatcher = ci.m_dispatcher1;
+    m_dispatcher = ci.m_dispatcher1;
 }

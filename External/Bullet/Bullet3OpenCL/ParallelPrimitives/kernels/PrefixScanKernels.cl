@@ -29,16 +29,16 @@ typedef unsigned int u32;
 
 /*typedef struct
 {
-	uint m_numElems;
-	uint m_numBlocks;
-	uint m_numScanBlocks;
-	uint m_padding[1];
+    uint m_numElems;
+    uint m_numBlocks;
+    uint m_numScanBlocks;
+    uint m_padding[1];
 } ConstBuffer;
 */
 
 u32 ScanExclusive(__local u32* data, u32 n, int lIdx, int lSize)
 {
-	u32 blocksum;
+    u32 blocksum;
     int offset = 1;
     for(int nActive=n>>1; nActive>0; nActive>>=1, offset<<=1)
     {
@@ -49,19 +49,19 @@ u32 ScanExclusive(__local u32* data, u32 n, int lIdx, int lSize)
             int bi = offset*(2*iIdx+2)-1;
             data[bi] += data[ai];
         }
-	}
+    }
 
     GROUP_LDS_BARRIER;
 
     if( lIdx == 0 )
-	{
-		blocksum = data[ n-1 ];
+    {
+        blocksum = data[ n-1 ];
         data[ n-1 ] = 0;
-	}
+    }
 
-	GROUP_LDS_BARRIER;
+    GROUP_LDS_BARRIER;
 
-	offset >>= 1;
+    offset >>= 1;
     for(int nActive=1; nActive<n; nActive<<=1, offset>>=1 )
     {
         GROUP_LDS_BARRIER;
@@ -73,35 +73,35 @@ u32 ScanExclusive(__local u32* data, u32 n, int lIdx, int lSize)
             data[ai] = data[bi];
             data[bi] += temp;
         }
-	}
-	GROUP_LDS_BARRIER;
+    }
+    GROUP_LDS_BARRIER;
 
-	return blocksum;
+    return blocksum;
 }
 
 __attribute__((reqd_work_group_size(WG_SIZE,1,1)))
 __kernel
 void LocalScanKernel(__global u32* dst, __global u32 *src, __global u32 *sumBuffer,
-		uint4 cb)
+        uint4 cb)
 {
-	__local u32 ldsData[WG_SIZE*2];
+    __local u32 ldsData[WG_SIZE*2];
 
-	int gIdx = GET_GLOBAL_IDX;
-	int lIdx = GET_LOCAL_IDX;
+    int gIdx = GET_GLOBAL_IDX;
+    int lIdx = GET_LOCAL_IDX;
 
-	ldsData[2*lIdx]     = ( 2*gIdx < cb.m_numElems )? src[2*gIdx]: 0;
-	ldsData[2*lIdx + 1] = ( 2*gIdx+1 < cb.m_numElems )? src[2*gIdx + 1]: 0;
+    ldsData[2*lIdx]     = ( 2*gIdx < cb.m_numElems )? src[2*gIdx]: 0;
+    ldsData[2*lIdx + 1] = ( 2*gIdx+1 < cb.m_numElems )? src[2*gIdx + 1]: 0;
 
-	u32 sum = ScanExclusive(ldsData, WG_SIZE*2, GET_LOCAL_IDX, GET_GROUP_SIZE);
+    u32 sum = ScanExclusive(ldsData, WG_SIZE*2, GET_LOCAL_IDX, GET_GROUP_SIZE);
 
-	if( lIdx == 0 ) sumBuffer[GET_GROUP_IDX] = sum;
+    if( lIdx == 0 ) sumBuffer[GET_GROUP_IDX] = sum;
 
-	if( (2*gIdx) < cb.m_numElems )
+    if( (2*gIdx) < cb.m_numElems )
     {
         dst[2*gIdx]     = ldsData[2*lIdx];
-	}
-	if( (2*gIdx + 1) < cb.m_numElems )
-	{
+    }
+    if( (2*gIdx + 1) < cb.m_numElems )
+    {
         dst[2*gIdx + 1] = ldsData[2*lIdx + 1];
     }
 }
@@ -110,45 +110,45 @@ __attribute__((reqd_work_group_size(WG_SIZE,1,1)))
 __kernel
 void AddOffsetKernel(__global u32 *dst, __global u32 *blockSum, uint4 cb)
 {
-	const u32 blockSize = WG_SIZE*2;
+    const u32 blockSize = WG_SIZE*2;
 
-	int myIdx = GET_GROUP_IDX+1;
-	int lIdx = GET_LOCAL_IDX;
+    int myIdx = GET_GROUP_IDX+1;
+    int lIdx = GET_LOCAL_IDX;
 
-	u32 iBlockSum = blockSum[myIdx];
+    u32 iBlockSum = blockSum[myIdx];
 
-	int endValue = min((myIdx+1)*(blockSize), cb.m_numElems);
-	for(int i=myIdx*blockSize+lIdx; i<endValue; i+=GET_GROUP_SIZE)
-	{
-		dst[i] += iBlockSum;
-	}
+    int endValue = min((myIdx+1)*(blockSize), cb.m_numElems);
+    for(int i=myIdx*blockSize+lIdx; i<endValue; i+=GET_GROUP_SIZE)
+    {
+        dst[i] += iBlockSum;
+    }
 }
 
 __attribute__((reqd_work_group_size(WG_SIZE,1,1)))
 __kernel
 void TopLevelScanKernel(__global u32* dst, uint4 cb)
 {
-	__local u32 ldsData[2048];
-	int gIdx = GET_GLOBAL_IDX;
-	int lIdx = GET_LOCAL_IDX;
-	int lSize = GET_GROUP_SIZE;
+    __local u32 ldsData[2048];
+    int gIdx = GET_GLOBAL_IDX;
+    int lIdx = GET_LOCAL_IDX;
+    int lSize = GET_GROUP_SIZE;
 
-	for(int i=lIdx; i<cb.m_numScanBlocks; i+=lSize )
-	{
-		ldsData[i] = (i<cb.m_numBlocks)? dst[i]:0;
-	}
+    for(int i=lIdx; i<cb.m_numScanBlocks; i+=lSize )
+    {
+        ldsData[i] = (i<cb.m_numBlocks)? dst[i]:0;
+    }
 
-	GROUP_LDS_BARRIER;
+    GROUP_LDS_BARRIER;
 
-	u32 sum = ScanExclusive(ldsData, cb.m_numScanBlocks, GET_LOCAL_IDX, GET_GROUP_SIZE);
+    u32 sum = ScanExclusive(ldsData, cb.m_numScanBlocks, GET_LOCAL_IDX, GET_GROUP_SIZE);
 
-	for(int i=lIdx; i<cb.m_numBlocks; i+=lSize )
-	{
-		dst[i] = ldsData[i];
-	}
+    for(int i=lIdx; i<cb.m_numBlocks; i+=lSize )
+    {
+        dst[i] = ldsData[i];
+    }
 
-	if( gIdx == 0 )
-	{
-		dst[cb.m_numBlocks] = sum;
-	}
+    if( gIdx == 0 )
+    {
+        dst[cb.m_numBlocks] = sum;
+    }
 }

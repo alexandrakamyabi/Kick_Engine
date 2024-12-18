@@ -7,7 +7,7 @@
 #include <objbase.h>
 #include <Windows.h>
 
-//std headers
+// std headers
 #include <algorithm>
 #include <array>
 #include <atomic>

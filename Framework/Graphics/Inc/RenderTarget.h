@@ -1,30 +1,29 @@
 #pragma once
-
-#include "Colours.h"
+#include "Colors.h"
 #include "Texture.h"
 
 namespace Kick_Engine::Graphics
 {
-	class RenderTarget final : public Texture
-	{
-	public:
-		RenderTarget() = default;
-		~RenderTarget() override;
+    class RenderTarget final : public Texture
+    {
+    public:
+        RenderTarget() = default;
+        ~RenderTarget() override;
 
-		void Initialize(const std::filesystem::path& fileName) override;
-		void Initialize(uint32_t width, uint32_t height, Format format) override;
-		void Terminate() override;
-		void BeginRender(Color clearColor = Colors::Black);
-		void EndRender();
+        void Initialize(const std::filesystem::path& fileName) override;
+        void Initialize(uint32_t width, uint32_t height, Format format) override;
+        void Terminate() override;
 
-	private:
-		ID3D11RenderTargetView* mRenderTargetView = nullptr;
-		ID3D11DepthStencilView* mDepthStencilView = nullptr;
-		D3D11_VIEWPORT mViewPort{};
+        void BeginRender(Color clearColor = Colors::Black);
+        void EndRender();
 
-		ID3D11RenderTargetView* mOldRenderTargetView = nullptr;
-		ID3D11DepthStencilView* mOldDepthStencilView = nullptr;
-		D3D11_VIEWPORT mOldViewPort{};
+    private:
+        ID3D11RenderTargetView* mRenderTargetView = nullptr;    
+        ID3D11DepthStencilView* mDepthStencilView = nullptr;
+        D3D11_VIEWPORT mViewport{};
 
-	};
+        ID3D11RenderTargetView* mOldRenderTargetView = nullptr;
+        ID3D11DepthStencilView* mOldDepthStencilView = nullptr;
+        D3D11_VIEWPORT mOldViewport{};
+    };
 }
