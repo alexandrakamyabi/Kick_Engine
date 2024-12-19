@@ -49,22 +49,32 @@ void CharacterControllerComponent::Update(float deltaTime)
 	}
 	if (input->IsKeyDown(KeyCode::LEFT) || input->IsKeyDown(KeyCode::A))
 	{
-		velocity += right * 5.5f;
+		//velocity += right * 5.5f;
 		AnimationIndex = 2;
+		mCharacterRigidBody->SetRotationVelocity({ 0.0f,1.0f,0.0f });
 	}
 	else if (input->IsKeyDown(KeyCode::RIGHT) || input->IsKeyDown(KeyCode::D))
 	{
-		velocity += right * -5.5f;
+		//velocity += right * -5.5f;
 		AnimationIndex = 2;
+		mCharacterRigidBody->SetRotationVelocity({ 0.0f,-1.0f,0.0f });
 	}
+
+	else
+	{
+
+		mCharacterRigidBody->SetRotationVelocity({ 0.0f,0.0f,0.0f });
+	}
+
 
 	velocity.y = currentVelocity.y;
 	
 	mCharacterRigidBody->SetVelocity(velocity);
 
+
 	if (AnimationIndex != mCurrentAnimationIndex)
 	{
-		//set animation
+	
 		mCurrentAnimationIndex = AnimationIndex;
 		mCharacterAnimation->Play(mCurrentAnimationIndex, true);
 	}

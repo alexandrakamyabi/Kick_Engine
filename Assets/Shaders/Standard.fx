@@ -155,7 +155,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
     float3 r = reflect(-light, n);
     float base = saturate(dot(r, view));
     float s = pow(base, materialPower);
-    float4 specular = s * lightSpecular * materialSpecular;
+    float4 specular = (materialPower > 0.0f) ? s * lightSpecular * materialSpecular : 0.0f;
     
     float4 emissive = materialEmissive;
     

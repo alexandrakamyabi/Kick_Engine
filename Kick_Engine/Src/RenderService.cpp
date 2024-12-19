@@ -71,6 +71,7 @@ void RenderService::Render()
 
 void RenderService::DebugUI()
 {
+    mDirectionalLight.direction = { 0.193f , -0.193f , -0.962f };
     ImGui::Text("FPS: %f", mFPS);
     if (ImGui::CollapsingHeader("Light", ImGuiTreeNodeFlags_DefaultOpen))
     {
