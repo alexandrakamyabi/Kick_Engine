@@ -8,10 +8,8 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE, LPSTR, int)
     Kick_Engine::App& mainApp = Kick_Engine::MainApp();
     mainApp.AddState<GameState>("GameState");
 
-    mainApp.ChangeState("GameState");
-
     Kick_Engine::AppConfig config;
-    config.appName = L"Hello Quaternion";
+    config.appName = L"Hello Len";
     config.winWidth = 1280;
     config.winHeight = 780;
     mainApp.Run(config);

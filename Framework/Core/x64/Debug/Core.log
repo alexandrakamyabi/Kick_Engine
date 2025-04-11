@@ -1,1 +1,10 @@
-﻿  Core.vcxproj -> E:\Kick_Engine\x64\Debug\Core.lib
+﻿  Precompiled.cpp
+  BlockAllocator.cpp
+  TimeUtil.cpp
+E:\Kick_Engine\Framework\Core\Src\BlockAllocator.cpp(30,5): warning C4477: 'snprintf' : format string '%s' requires an argument of type 'char *', but variadic argument 4 has type 'std::string'
+  (compiling source file '/Src/BlockAllocator.cpp')
+  
+  Window.cpp
+  WindowMessageHandler.cpp
+  Generating Code...
+  Core.vcxproj -> E:\Kick_Engine\x64\Debug\Core.lib
