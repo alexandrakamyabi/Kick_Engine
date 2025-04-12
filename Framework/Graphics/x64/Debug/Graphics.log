@@ -1,1 +1,171 @@
-﻿  Graphics.vcxproj -> E:\Kick_Engine\x64\Debug\Graphics.lib
+﻿  Precompiled.cpp
+  Animation.cpp
+  AnimationBuilder.cpp
+  AnimationUtil.cpp
+  Animator.cpp
+  BillboardEffect.cpp
+  BlendState.cpp
+  Camera.cpp
+  ConstantBuffer.cpp
+  DebugUI.cpp
+  GaussianBlurEffect.cpp
+E:\Kick_Engine\Framework\Graphics\Src\GaussianBlurEffect.cpp(15,53): warning C4244: 'initializing': conversion from 'uint32_t' to 'float', possible loss of data
+  GraphicsSystem.cpp
+  (compiling source file '/Src/GaussianBlurEffect.cpp')
+  
+E:\Kick_Engine\Framework\Graphics\Src\GaussianBlurEffect.cpp(15,29): warning C4244: 'initializing': conversion from 'uint32_t' to 'const float', possible loss of data
+  (compiling source file '/Src/GaussianBlurEffect.cpp')
+  
+E:\Kick_Engine\Framework\Graphics\Src\GaussianBlurEffect.cpp(16,55): warning C4244: 'initializing': conversion from 'uint32_t' to 'float', possible loss of data
+  (compiling source file '/Src/GaussianBlurEffect.cpp')
+  
+E:\Kick_Engine\Framework\Graphics\Src\GaussianBlurEffect.cpp(16,30): warning C4244: 'initializing': conversion from 'uint32_t' to 'const float', possible loss of data
+  (compiling source file '/Src/GaussianBlurEffect.cpp')
+  
+E:\Kick_Engine\Framework\Graphics\Src\GaussianBlurEffect.cpp(17,57): warning C4244: 'argument': conversion from 'const float' to 'uint32_t', possible loss of data
+  (compiling source file '/Src/GaussianBlurEffect.cpp')
+  
+E:\Kick_Engine\Framework\Graphics\Src\GaussianBlurEffect.cpp(17,44): warning C4244: 'argument': conversion from 'const float' to 'uint32_t', possible loss of data
+  (compiling source file '/Src/GaussianBlurEffect.cpp')
+  
+E:\Kick_Engine\Framework\Graphics\Src\GaussianBlurEffect.cpp(18,55): warning C4244: 'argument': conversion from 'const float' to 'uint32_t', possible loss of data
+  (compiling source file '/Src/GaussianBlurEffect.cpp')
+  
+E:\Kick_Engine\Framework\Graphics\Src\GaussianBlurEffect.cpp(18,42): warning C4244: 'argument': conversion from 'const float' to 'uint32_t', possible loss of data
+  (compiling source file '/Src/GaussianBlurEffect.cpp')
+  
+E:\Kick_Engine\Framework\Graphics\Src\GaussianBlurEffect.cpp(48,46): warning C4244: '=': conversion from 'uint32_t' to 'float', possible loss of data
+  (compiling source file '/Src/GaussianBlurEffect.cpp')
+  
+E:\Kick_Engine\Framework\Graphics\Src\GaussianBlurEffect.cpp(49,48): warning C4244: '=': conversion from 'uint32_t' to 'float', possible loss of data
+  (compiling source file '/Src/GaussianBlurEffect.cpp')
+  
+E:\Kick_Engine\Framework\Graphics\Src\GaussianBlurEffect.cpp(74,28): warning C4018: '<': signed/unsigned mismatch
+  (compiling source file '/Src/GaussianBlurEffect.cpp')
+  
+E:\Kick_Engine\Framework\Graphics\Src\GraphicsSystem.cpp(123,112): warning C4244: 'argument': conversion from 'float' to 'UINT8', possible loss of data
+  (compiling source file '/Src/GraphicsSystem.cpp')
+  
+  MeshBuffer.cpp
+  MeshBuilder.cpp
+E:\Kick_Engine\Framework\Graphics\Src\MeshBuilder.cpp(496,91): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file '/Src/MeshBuilder.cpp')
+  
+E:\Kick_Engine\Framework\Graphics\Src\MeshBuilder.cpp(496,65): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file '/Src/MeshBuilder.cpp')
+  
+  ModelIO.cpp
+E:\Kick_Engine\Framework\Graphics\Src\ModelIO.cpp(11,20): warning C4267: 'initializing': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file '/Src/ModelIO.cpp')
+  
+E:\Kick_Engine\Framework\Graphics\Src\ModelIO.cpp(18,41): warning C4267: '=': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file '/Src/ModelIO.cpp')
+  
+E:\Kick_Engine\Framework\Graphics\Src\ModelIO.cpp(25,38): warning C4267: '=': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file '/Src/ModelIO.cpp')
+  
+E:\Kick_Engine\Framework\Graphics\Src\ModelIO.cpp(254,24): warning C4267: 'initializing': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file '/Src/ModelIO.cpp')
+  
+E:\Kick_Engine\Framework\Graphics\Src\ModelIO.cpp(264,29): warning C4267: 'initializing': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file '/Src/ModelIO.cpp')
+  
+E:\Kick_Engine\Framework\Graphics\Src\ModelIO.cpp(358,28): warning C4267: 'initializing': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file '/Src/ModelIO.cpp')
+  
+E:\Kick_Engine\Framework\Graphics\Src\ModelIO.cpp(367,32): warning C4267: 'initializing': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file '/Src/ModelIO.cpp')
+  
+  ModelManager.cpp
+  ParticleSystemEffect.cpp
+  PixelShader.cpp
+  PostProcessingEffect.cpp
+E:\Kick_Engine\Framework\Graphics\Src\PostProcessingEffect.cpp(77,65): warning C4244: 'initializing': conversion from 'uint32_t' to 'float', possible loss of data
+  (compiling source file '/Src/PostProcessingEffect.cpp')
+  
+E:\Kick_Engine\Framework\Graphics\Src\PostProcessingEffect.cpp(77,41): warning C4244: 'initializing': conversion from 'uint32_t' to 'const float', possible loss of data
+  (compiling source file '/Src/PostProcessingEffect.cpp')
+  
+E:\Kick_Engine\Framework\Graphics\Src\PostProcessingEffect.cpp(78,67): warning C4244: 'initializing': conversion from 'uint32_t' to 'float', possible loss of data
+  (compiling source file '/Src/PostProcessingEffect.cpp')
+  
+E:\Kick_Engine\Framework\Graphics\Src\PostProcessingEffect.cpp(78,42): warning C4244: 'initializing': conversion from 'uint32_t' to 'const float', possible loss of data
+  (compiling source file '/Src/PostProcessingEffect.cpp')
+  
+E:\Kick_Engine\Framework\Graphics\Src\PostProcessingEffect.cpp(87,65): warning C4244: 'initializing': conversion from 'uint32_t' to 'float', possible loss of data
+  (compiling source file '/Src/PostProcessingEffect.cpp')
+  
+E:\Kick_Engine\Framework\Graphics\Src\PostProcessingEffect.cpp(87,41): warning C4244: 'initializing': conversion from 'uint32_t' to 'const float', possible loss of data
+  (compiling source file '/Src/PostProcessingEffect.cpp')
+  
+E:\Kick_Engine\Framework\Graphics\Src\PostProcessingEffect.cpp(88,67): warning C4244: 'initializing': conversion from 'uint32_t' to 'float', possible loss of data
+  (compiling source file '/Src/PostProcessingEffect.cpp')
+  
+E:\Kick_Engine\Framework\Graphics\Src\PostProcessingEffect.cpp(88,42): warning C4244: 'initializing': conversion from 'uint32_t' to 'const float', possible loss of data
+  (compiling source file '/Src/PostProcessingEffect.cpp')
+  
+  RenderObject.cpp
+E:\Kick_Engine\Framework\Graphics\Src\RenderObject.cpp(21,5): warning C4477: 'snprintf' : format string '%d' requires an argument of type 'int', but variadic argument 4 has type 'Kick_Engine::Graphics::ModelId'
+  (compiling source file '/Src/RenderObject.cpp')
+      E:\Kick_Engine\Framework\Graphics\Src\RenderObject.cpp(21,5):
+      consider using '%zd' in the format string
+  
+  RenderTarget.cpp
+  Generating Code...
+E:\Kick_Engine\Framework\Graphics\Src\ModelIO.cpp(188,1): warning C4715: 'Kick_Engine::Graphics::ModelIO::SaveMaterial': not all control paths return a value
+  Compiling...
+  Sampler.cpp
+  ShadowEffect.cpp
+  SimpleDraw.cpp
+  StandardEffect.cpp
+  Terrain.cpp
+E:\Kick_Engine\Framework\Graphics\Src\Terrain.cpp(12,5): warning C4477: 'snprintf' : format string '%s' requires an argument of type 'char *', but variadic argument 4 has type 'const std::filesystem::path::value_type *'
+  (compiling source file '/Src/Terrain.cpp')
+      E:\Kick_Engine\Framework\Graphics\Src\Terrain.cpp(12,5):
+      consider using '%ls' in the format string
+      E:\Kick_Engine\Framework\Graphics\Src\Terrain.cpp(12,5):
+      consider using '%lls' in the format string
+      E:\Kick_Engine\Framework\Graphics\Src\Terrain.cpp(12,5):
+      consider using '%Ls' in the format string
+      E:\Kick_Engine\Framework\Graphics\Src\Terrain.cpp(12,5):
+      consider using '%ws' in the format string
+  
+E:\Kick_Engine\Framework\Graphics\Src\Terrain.cpp(69,35): warning C4018: '>=': signed/unsigned mismatch
+  (compiling source file '/Src/Terrain.cpp')
+  
+E:\Kick_Engine\Framework\Graphics\Src\Terrain.cpp(69,56): warning C4018: '>=': signed/unsigned mismatch
+  (compiling source file '/Src/Terrain.cpp')
+  
+  TerrainEffect.cpp
+  Texture.cpp
+  TextureManager.cpp
+  UIFont.cpp
+  UISprite.cpp
+E:\Kick_Engine\Framework\Graphics\Src\UISprite.cpp(78,34): warning C4244: 'initializing': conversion from 'LONG' to 'float', possible loss of data
+  (compiling source file '/Src/UISprite.cpp')
+  
+E:\Kick_Engine\Framework\Graphics\Src\UISprite.cpp(78,20): warning C4244: 'initializing': conversion from 'LONG' to 'const float', possible loss of data
+  (compiling source file '/Src/UISprite.cpp')
+  
+E:\Kick_Engine\Framework\Graphics\Src\UISprite.cpp(79,36): warning C4244: 'initializing': conversion from 'LONG' to 'float', possible loss of data
+  (compiling source file '/Src/UISprite.cpp')
+  
+E:\Kick_Engine\Framework\Graphics\Src\UISprite.cpp(79,21): warning C4244: 'initializing': conversion from 'LONG' to 'const float', possible loss of data
+  (compiling source file '/Src/UISprite.cpp')
+  
+E:\Kick_Engine\Framework\Graphics\Src\UISprite.cpp(86,34): warning C4244: 'initializing': conversion from 'LONG' to 'float', possible loss of data
+  (compiling source file '/Src/UISprite.cpp')
+  
+E:\Kick_Engine\Framework\Graphics\Src\UISprite.cpp(86,20): warning C4244: 'initializing': conversion from 'LONG' to 'const float', possible loss of data
+  (compiling source file '/Src/UISprite.cpp')
+  
+E:\Kick_Engine\Framework\Graphics\Src\UISprite.cpp(87,36): warning C4244: 'initializing': conversion from 'LONG' to 'float', possible loss of data
+  (compiling source file '/Src/UISprite.cpp')
+  
+E:\Kick_Engine\Framework\Graphics\Src\UISprite.cpp(87,21): warning C4244: 'initializing': conversion from 'LONG' to 'const float', possible loss of data
+  (compiling source file '/Src/UISprite.cpp')
+  
+  UISpriteRenderer.cpp
+  VertexShader.cpp
+  Generating Code...
+  Graphics.vcxproj -> E:\Kick_Engine\x64\Debug\Graphics.lib
