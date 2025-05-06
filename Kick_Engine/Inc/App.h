@@ -23,6 +23,7 @@ namespace Kick_Engine
             static_assert(std::is_base_of_v<AppState, StateType>, "AddState must be a type of AppState");
 
             auto [iter, success] = mAppStates.try_emplace(stateName, nullptr);
+            auto [iter, success] = mAppStates.try_emplace(stateName, nullptr);
             if (success)
             {
                 auto& ptr = iter->second;
